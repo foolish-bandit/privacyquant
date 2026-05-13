@@ -1,0 +1,25 @@
+id: "ucpa.enforcement.parameters"
+statute: "UCPA"
+section: "Utah Code §§ 13-61-401 to -404"
+title: "Enforcement — AG; Cure Period in Effect"
+effective_date: "2023-12-31"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller or processor violates UCPA"
+requirement: >
+  Enforced by the Utah AG after referral from the Division of Consumer Protection following
+  an opportunity to cure. 30-day cure period in effect. No private right of action.
+  Civil penalty up to $7,500 per violation plus actual damages.
+exceptions: []
+contract_signals:
+  - "Utah Attorney General"
+  - "civil penalty"
+  - "UCPA violation"
+  - "Division of Consumer Protection"
+cross_refs:
+  - "vcdpa.enforcement.parameters"
+  - "icdpa.enforcement.parameters"
+source_url: "https://le.utah.gov/xcode/Title13/Chapter61/C13-61_2022050420220504.pdf"
+git_hash: ""
