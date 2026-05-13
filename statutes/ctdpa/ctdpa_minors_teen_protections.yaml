@@ -1,0 +1,31 @@
+id: "ctdpa.minors.teen_protections"
+statute: "CTDPA"
+section: "Conn. Gen. Stat. §§ 42-515 et seq. (2023 amendments)"
+title: "Teen Protections — Ages 13 to 15"
+effective_date: "2023-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller knows or has reason to believe a consumer is at least 13 and less than 16 years of age"
+requirement: >
+  For consumers known to be between 13 and under 16 years of age, processing for purposes of
+  targeted advertising, sale, or profiling with legal or significant effects is DEFAULT OFF —
+  the controller may not engage in such processing without opt-in consent.
+  Heightened data minimization applies to known minors.
+  For consumers known to be under 13, COPPA-aligned obligations apply.
+exceptions: []
+contract_signals:
+  - "minor"
+  - "teen"
+  - "known minor"
+  - "13 to 16"
+  - "children's data"
+  - "age-appropriate"
+  - "COPPA"
+cross_refs:
+  - "modpa.minors.flat_ban"
+  - "njdpa.minors.teen_protections"
+  - "ccpa.sensitive_data.categories"
+source_url: "https://www.cga.ct.gov/2022/ACT/PA/PDF/2022PA-00015-R00SB-00006-PA.PDF"
+git_hash: ""
