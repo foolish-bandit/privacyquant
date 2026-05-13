@@ -1,7 +1,7 @@
 id: "ccpa.applicability.threshold"
 statute: "CCPA/CPRA"
 section: "Cal. Civ. Code § 1798.140(d)"
-title: "Applicability Threshold"
+title: "Applicability Threshold (2025 CPI-Adjusted)"
 effective_date: "2020-01-01"
 supersedes: []
 amended_by: []
@@ -11,17 +11,19 @@ trigger: "For-profit entity doing business in California"
 requirement: >
   A for-profit entity is subject if it does business in California, alone or jointly determines
   purposes and means of processing California consumers' PI, AND meets ANY ONE of:
-  (a) annual gross revenues exceeding $25 million (inflation-adjusted; confirm current figure);
+  (a) annual gross revenues exceeding $26,625,000 (2025 CPI-adjusted; effective Jan. 1, 2025;
+      adjusted biennially per § 1798.199.95(d); baseline was $25,000,000);
   (b) annually buys, sells, or shares PI of 100,000 or more consumers or households;
   (c) derives 50% or more of annual revenues from selling or sharing consumers' PI.
   Also covers entities controlled by, controlling, or in a joint venture (≥40% common ownership)
   with a covered business that processes CA PI under shared branding.
+  Scope includes employee data and B2B contact data — unlike most other state privacy laws.
 exceptions:
   - "Most non-profits (verify current amendment activity)"
-  - "HIPAA-covered data (data-level)"
-  - "GLBA-covered data (data-level)"
-  - "FCRA-covered data (data-level)"
-  - "DPPA-covered data (data-level)"
+  - "HIPAA-covered data (data-level exemption)"
+  - "GLBA-covered data (data-level exemption)"
+  - "FCRA-covered data (data-level exemption)"
+  - "DPPA-covered data (data-level exemption)"
   - "De-identified or aggregate consumer information"
 contract_signals:
   - "California Consumer Privacy Act"
@@ -30,9 +32,11 @@ contract_signals:
   - "California Privacy Rights Act"
   - "California residents"
   - "Cal. Civ. Code § 1798"
+  - "26,625,000"
 cross_refs:
+  - "ccpa.enforcement.parameters"
   - "vcdpa.applicability.threshold"
   - "cpa.applicability.threshold"
   - "ctdpa.applicability.threshold"
-source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=1798.140.&lawCode=CIV"
+source_url: "https://cppa.ca.gov/regulations/cpi_adjustment.html"
 git_hash: ""
