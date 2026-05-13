@@ -1,0 +1,28 @@
+id: "ridtppa.applicability.threshold"
+statute: "RIDTPPA"
+section: "R.I. Gen. Laws § 6-48.1-2"
+title: "Applicability Threshold — Low Thresholds (10k/35k)"
+effective_date: "2026-01-01"
+supersedes: []
+amended_by: []
+requirement_type: threshold
+obligation_bearer: controller
+trigger: "Person conducting business in Rhode Island or producing products/services targeted to Rhode Island residents"
+requirement: >
+  Applies to persons conducting business in Rhode Island or targeting RI residents AND during a calendar year:
+  (a) control/process PD of at least 35,000 RI consumers (excluding solely-payment-transaction data); OR
+  (b) control/process PD of at least 10,000 RI consumers AND derive over 20% of gross revenue from sale of PD.
+  Lowest-tier thresholds match DE, MD, NH.
+exceptions:
+  - "Standard exemptions"
+contract_signals:
+  - "Rhode Island Data Transparency and Privacy Protection Act"
+  - "RIDTPPA"
+  - "Rhode Island residents"
+  - "R.I. Gen. Laws § 6-48.1"
+cross_refs:
+  - "dpdpa.applicability.threshold"
+  - "nhdpa.applicability.threshold"
+  - "modpa.applicability.threshold"
+source_url: "https://webserver.rilegislature.gov/BillText/BillText24/HouseText24/H7787A.pdf"
+git_hash: ""
