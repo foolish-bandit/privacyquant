@@ -1,0 +1,27 @@
+id: "ocpa.rights.appeal"
+statute: "OCPA"
+section: "ORS § 646A.574(3)"
+title: "Right to Appeal Denied Request"
+effective_date: "2024-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller declines to take action on a consumer rights request"
+requirement: >
+  If the controller declines to act, it must inform the consumer within 45 days with reasons
+  and instructions for how to appeal. The controller must complete the appeal within 45 days
+  of receipt (extendable by 60 days with notice). If the appeal is denied, the controller
+  must provide the consumer with a method to contact the Oregon AG to submit a complaint.
+exceptions: []
+contract_signals:
+  - "right to appeal"
+  - "appeal denied request"
+  - "appeal process"
+  - "consumer appeal"
+cross_refs:
+  - "vcdpa.rights.appeal"
+  - "cpa.rights.appeal"
+  - "modpa.rights.appeal"
+source_url: "https://www.oregonlegislature.gov/bills_laws/ors/ors646A.html"
+git_hash: ""
