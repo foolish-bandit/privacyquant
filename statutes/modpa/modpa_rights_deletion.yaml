@@ -1,0 +1,35 @@
+id: "modpa.rights.deletion"
+statute: "MODPA"
+section: "Md. Code Com. Law § 14-4605(a)(3)"
+title: "Right to Deletion"
+effective_date: "2025-10-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Consumer submits an authenticated request to delete personal data"
+requirement: >
+  Controller must delete PD provided by or obtained about the consumer. Response deadline:
+  45 days (extendable once by 45 days with notice). Controller must also direct processors
+  to delete the PD. MODPA's strict data minimization standard (modpa.data_minimization.strict_standard)
+  means the amount of PD subject to deletion requests may be narrower than other states —
+  but what IS collected must be deleted on valid request.
+exceptions:
+  - "Processing necessary to complete a transaction or perform a contract"
+  - "Processing necessary to detect or protect against security incidents"
+  - "Processing required to comply with a legal obligation"
+  - "Processing necessary to exercise or defend legal claims"
+contract_signals:
+  - "right to erasure"
+  - "right to deletion"
+  - "delete personal data"
+  - "data deletion request"
+  - "erase personal data"
+  - "right to be forgotten"
+cross_refs:
+  - "ccpa.rights.deletion"
+  - "vcdpa.rights.deletion"
+  - "cpa.rights.deletion"
+  - "modpa.data_minimization.strict_standard"
+source_url: "https://mgaleg.maryland.gov/2024RS/Chapters_noln/CH_182_sb0541e.pdf"
+git_hash: ""
