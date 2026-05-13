@@ -1,0 +1,32 @@
+id: "ctdpa.controller_duties.admt_impact_assessment"
+statute: "CTDPA"
+section: "Conn. Gen. Stat. § 42-522, as amended by 2025 Conn. Pub. Acts 25-113"
+title: "Automated Decision-Making Technology — Impact Assessment"
+effective_date: "2026-08-01"
+supersedes: []
+amended_by:
+  - "2025 Conn. Pub. Acts 25-113"
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller conducts high-risk processing involving automated decision-making technology"
+requirement: >
+  Beginning August 1, 2026, controllers must conduct and document required assessments for
+  high-risk processing involving automated decision-making technology where the CTDPA, as amended,
+  requires assessment of reasonably foreseeable risks and mitigation measures. The assessment should
+  be reviewed when processing materially changes.
+exceptions: []
+contract_signals:
+  - "automated decision-making technology"
+  - "ADMT"
+  - "automated decision making"
+  - "algorithmic decision"
+  - "impact assessment"
+  - "data protection assessment"
+  - "high-risk processing"
+  - "profiling"
+cross_refs:
+  - "ctdpa.controller_duties.data_protection_assessment"
+  - "ccpa.controller_duties.data_protection_assessment"
+  - "cpa.controller_duties.data_protection_assessment"
+source_url: "https://www.cga.ct.gov/2025/ACT/PA/PDF/2025PA-00113-R00HB-07154-PA.PDF"
+git_hash: ""

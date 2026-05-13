@@ -1,0 +1,30 @@
+id: "ocpa.sensitive_data.precise_geolocation_sale_ban"
+statute: "OCPA"
+section: "Or. Rev. Stat. § 646A.574; 2025 Or. Laws ch. 278"
+title: "Precise Geolocation Data — Sale Ban"
+effective_date: "2026-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller sells or proposes to sell precise geolocation data concerning an Oregon consumer"
+requirement: >
+  Beginning January 1, 2026, Oregon law prohibits the sale of precise geolocation data concerning
+  any Oregon consumer. Precise geolocation data includes present or past location data that
+  identifies the location of a consumer or a device linked or linkable to a consumer within a radius
+  of 1,750 feet.
+exceptions: []
+contract_signals:
+  - "precise geolocation"
+  - "geolocation data"
+  - "location data"
+  - "sale of location data"
+  - "sell precise geolocation data"
+  - "1750 feet"
+  - "1,750 feet"
+cross_refs:
+  - "ccpa.sensitive_data.categories"
+  - "vcdpa.sensitive_data.consent"
+  - "cpa.sensitive_data.consent"
+source_url: "https://www.doj.state.or.us/consumer-protection/id-theft-data-breaches/privacy/privacy-law-faqs-for-consumers/"
+git_hash: ""

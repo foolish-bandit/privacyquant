@@ -1,0 +1,27 @@
+id: "ocpa.minors.sale_under_16_ban"
+statute: "OCPA"
+section: "Or. Rev. Stat. § 646A.574; 2025 Or. Laws ch. 278"
+title: "Known Consumers Under 16 — Sale Ban"
+effective_date: "2026-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller has actual knowledge or willfully disregards that the consumer is under 16 years of age"
+requirement: >
+  Beginning January 1, 2026, a controller may not sell personal data concerning a consumer if the
+  controller has actual knowledge, or willfully disregards, that the consumer is under 16 years of age.
+  This is a flat prohibition for covered known-minor data rather than a consent-based opt-in rule.
+exceptions: []
+contract_signals:
+  - "known minor"
+  - "under 16"
+  - "consumer under 16"
+  - "minor personal data"
+  - "sale of children's data"
+  - "willfully disregards"
+cross_refs:
+  - "ccpa.enforcement.parameters"
+  - "modpa.minors.flat_ban"
+source_url: "https://www.doj.state.or.us/consumer-protection/id-theft-data-breaches/privacy/privacy-law-faqs-for-consumers/"
+git_hash: ""

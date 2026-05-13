@@ -1,0 +1,33 @@
+id: "cpa.controller_duties.biometric_policy"
+statute: "CPA"
+section: "Colo. Rev. Stat. § 6-1-1308; Colorado Privacy Act Rules, Part 8; 2024 Colo. Sess. Laws ch. 246"
+title: "Biometric Data — Written Policy and Retention Limits"
+effective_date: "2025-07-01"
+supersedes: []
+amended_by:
+  - "2024 Colo. Sess. Laws ch. 246"
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller or processor controls or processes biometric identifiers or biometric data"
+requirement: >
+  Beginning July 1, 2025, Colorado imposes biometric-specific obligations on controllers and
+  processors, including written policy requirements, retention limits, and restrictions on the
+  collection, use, disclosure, and retention of biometric identifiers and biometric data. Covered
+  entities should maintain a written biometric policy that identifies retention schedules and
+  deletion protocols for biometric identifiers and biometric data.
+exceptions: []
+contract_signals:
+  - "biometric data"
+  - "biometric identifier"
+  - "biometric policy"
+  - "retention schedule"
+  - "deletion protocol"
+  - "facial recognition"
+  - "fingerprint"
+  - "voiceprint"
+cross_refs:
+  - "cpa.sensitive_data.consent"
+  - "ccpa.sensitive_data.categories"
+  - "vcdpa.sensitive_data.consent"
+source_url: "https://coag.gov/app/uploads/2025/07/Consumer-Data-Privacy-Laws-Enacted-by-the-Colorado-General-Assembly.pdf"
+git_hash: ""
