@@ -1,0 +1,24 @@
+id: "ridtppa.enforcement.parameters"
+statute: "RIDTPPA"
+section: "R.I. Gen. Laws § 6-48.1-9"
+title: "Enforcement — AG; Cure Period at Enactment"
+effective_date: "2026-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller or processor violates RIDTPPA"
+requirement: >
+  Enforced by the Rhode Island AG under RI consumer protection framework.
+  No private right of action. Civil penalties under RI consumer protection framework.
+  Cure period at enactment — verify current status.
+exceptions: []
+contract_signals:
+  - "Rhode Island Attorney General"
+  - "civil penalty"
+  - "RIDTPPA violation"
+cross_refs:
+  - "dpdpa.enforcement.parameters"
+  - "nhdpa.enforcement.parameters"
+source_url: "https://webserver.rilegislature.gov/BillText/BillText24/HouseText24/H7787A.pdf"
+git_hash: ""
