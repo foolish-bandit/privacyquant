@@ -8,11 +8,11 @@ This directory contains the versioned statutory requirement nodes for US state c
 |---|---|---|---|---|
 | CCPA/CPRA | California | Jan 2020 / Jan 2023 | 14 | `ccpa/` |
 | VCDPA | Virginia | Jan 2023 | 11 | `vcdpa/` |
-| CPA | Colorado | Jul 2023 | 6 | `cpa/` |
-| CTDPA | Connecticut | Jul 2023 | 7 | `ctdpa/` |
+| CPA | Colorado | Jul 2023 | 5 | `cpa/` |
+| CTDPA | Connecticut | Jul 2023 | 5 | `ctdpa/` |
 | UCPA | Utah | Dec 2023 | 4 | `ucpa/` |
 | TDPSA | Texas | Jul 2024 | 3 | `tdpsa/` |
-| OCPA | Oregon | Jul 2024 | 6 | `ocpa/` |
+| OCPA | Oregon | Jul 2024 | 3 | `ocpa/` |
 | MCDPA | Montana | Oct 2024 | 3 | `mcdpa/` |
 | ICDPA | Iowa | Jan 2025 | 4 | `icdpa/` |
 | DPDPA | Delaware | Jan 2025 | 4 | `dpdpa/` |
@@ -27,7 +27,7 @@ This directory contains the versioned statutory requirement nodes for US state c
 | RIDTPPA | Rhode Island | Jan 2026 | 4 | `ridtppa/` |
 | FDBR | Florida | Jul 2024 | 2 | `fdbr/` |
 
-**Total: 99 nodes across 20 statutes.**
+**Total: 93 nodes across 20 statutes.**
 
 ## Node structure
 
@@ -62,4 +62,4 @@ The following nodes exist but have reduced coverage relative to CA/VA/CO — PRs
 - CPA: missing individual rights nodes (access, deletion, correction, portability, appeal)
 - TDPSA, NDPA, OCPA, MCDPA, ICDPA, INCDPA, TIPA, KCDPA, NHDPA, DPDPA, RIDTPPA, FDBR:
   individual rights nodes and processor contract nodes not yet written
-- Cross-state: `conflict_resolver` tool (v2 scope) will synthesize binding constraints across nodes
+- Cross-state: `pq_resolve_conflict` synthesizes compliance ceilings across 12 dimensions; `pq_resolve_conflict_nodes` adds live node evidence to the same analysis
