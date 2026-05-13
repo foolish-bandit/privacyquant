@@ -1,0 +1,28 @@
+id: "vcdpa.rights.appeal"
+statute: "VCDPA"
+section: "Va. Code § 59.1-577(C)"
+title: "Right to Appeal Denied Request"
+effective_date: "2023-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller declines to take action on a consumer rights request"
+requirement: >
+  If the controller declines to take action on a consumer's request, it must inform the consumer
+  within 45 days of the reasons and provide instructions for how the consumer may appeal the
+  decision. The controller must complete the appeal within 60 days of receipt. If the appeal is
+  denied, the controller must provide the consumer with an online mechanism to contact the
+  Virginia Attorney General to submit a complaint.
+exceptions: []
+contract_signals:
+  - "right to appeal"
+  - "appeal denied request"
+  - "appeal process"
+  - "consumer appeal"
+cross_refs:
+  - "cpa.rights.appeal"
+  - "ctdpa.rights.appeal"
+  - "modpa.rights.appeal"
+source_url: "https://law.lis.virginia.gov/vacode/title59.1/chapter53/section59.1-577/"
+git_hash: ""
