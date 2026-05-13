@@ -9,21 +9,24 @@ import { evaluateClause } from "./clause_evaluator.js";
 import { routeDSAR, RIGHT_LABELS } from "./dsar_router.js";
 import type { RightType } from "./dsar_router.js";
 import { rankActions, textQuery, allTags } from "./precedent_matcher.js";
+import { BM25Index, hybridMerge } from "./semantic_search.js";
+// ─── Additional tool modules ────────────────────────────────────────────────
+import { checkApplicability } from "./applicability_checker.js";
+import { draftDpaClause } from "./dpa_clause_drafter.js";
+import { resolveConflictWithNodes } from "./node_aware_conflict_resolver.js";
+import { buildDSARWorkflow } from "./dsar_workflow_router.js";
+import { auditCitations } from "./citation_auditor.js";
+import { draftNoticeClause } from "./notice_clause_drafter.js";
+import { scorePrivacyExposure } from "./privacy_exposure_scorer.js";
+import { watchLegislation } from "./legislation_watcher.js";
 import type { StatuteNode, StatuteIndex } from "./types.js";
-import { registerDraftDpaClauseTool } from "./draft_dpa_clause.js";
-import { registerWatchLegislationTool } from "./legislation_watcher.js";
-import { registerApplicabilityCheckerTool } from "./applicability_checker.js";
-import { registerFindPrecedentTool } from "./precedent_finder.js";
-import { registerNodeAwareConflictResolverTool } from "./node_aware_conflict_resolver.js";
-import { registerDSARWorkflowRouterTool } from "./dsar_workflow_router.js";
-import { registerCitationAuditorTool } from "./citation_auditor.js";
-import { registerNoticeClauseDrafterTool } from "./notice_clause_drafter.js";
-import { registerPrivacyExposureScorerTool } from "./privacy_exposure_scorer.js";
 
 // ─── Load the knowledge graph once at startup ──────────────────────────────
 let index: StatuteIndex;
+let bm25: BM25Index;
 try {
   index = loadIndex();
+  bm25 = new BM25Index(index);
 } catch (err) {
   process.stderr.write(`Fatal: ${err}\n`);
   process.exit(1);
@@ -212,10 +215,23 @@ If no results found, try broader terms or use pq_list_statutes to browse by stat
       query: effectiveQuery,
       statute,
       requirement_type,
-      limit,
+      limit: limit * 2, // fetch more for hybrid merge
     });
 
-    if (results.length === 0) {
+    // BM25 semantic search — handles morphological variants and novel phrasing
+    const bm25Results = bm25.search(effectiveQuery, statute, limit * 2);
+
+    // Merge keyword and semantic results, boosting nodes that appear in both
+    const hybridResults = hybridMerge(bm25Results, results, limit);
+
+    // Apply requirement_type filter post-merge if specified
+    const filtered = requirement_type
+      ? hybridResults.filter((r) => r.node.requirement_type === requirement_type)
+      : hybridResults;
+
+    const finalResults = filtered.slice(0, limit);
+
+    if (finalResults.length === 0) {
       const noMatchLines = [
         `No nodes matched${clause_text ? " the clause" : ` "${query}"`}${statute ? ` in ${statute}` : ""}.`,
         ``,
@@ -238,15 +254,15 @@ If no results found, try broader terms or use pq_list_statutes to browse by stat
       : `"${query}"`;
 
     const lines: string[] = [
-      `Found ${results.length} result${results.length !== 1 ? "s" : ""} for ${displayQuery}`,
+      `Found ${finalResults.length} result${finalResults.length !== 1 ? "s" : ""} for ${displayQuery} _(hybrid BM25 + keyword)_`,
       ``,
     ];
 
-    results.forEach((r, i) => {
+    finalResults.forEach((r, i) => {
       lines.push(`## ${i + 1}. ${r.node.title} (${r.node.statute})`);
-      lines.push(`**ID**: ${r.node.id} | **Score**: ${r.score} | **Type**: ${r.node.requirement_type}`);
-      if (r.matched_signals.length > 0) {
-        lines.push(`**Matched signals**: ${r.matched_signals.join(", ")}`);
+      lines.push(`**ID**: ${r.node.id} | **Score**: ${r.combined_score.toFixed(1)} | **Type**: ${r.node.requirement_type}`);
+      if (r.matched_terms.length > 0) {
+        lines.push(`**Matched terms**: ${r.matched_terms.slice(0, 8).join(", ")}`);
       }
       lines.push(`**Section**: ${r.node.section}`);
       lines.push(`**Trigger**: ${r.node.trigger}`);
@@ -1102,16 +1118,336 @@ settlement amount, factual pattern, operational lessons, and citation.`,
   }
 );
 
-// ─── Additional tool modules ───────────────────────────────────────────────
-registerDraftDpaClauseTool(server as Parameters<typeof registerDraftDpaClauseTool>[0]);
-registerWatchLegislationTool(server as Parameters<typeof registerWatchLegislationTool>[0]);
-registerApplicabilityCheckerTool(server as Parameters<typeof registerApplicabilityCheckerTool>[0]);
-registerFindPrecedentTool(server as Parameters<typeof registerFindPrecedentTool>[0]);
-registerNodeAwareConflictResolverTool(server as Parameters<typeof registerNodeAwareConflictResolverTool>[0]);
-registerDSARWorkflowRouterTool(server as Parameters<typeof registerDSARWorkflowRouterTool>[0]);
-registerCitationAuditorTool(server as Parameters<typeof registerCitationAuditorTool>[0]);
-registerNoticeClauseDrafterTool(server as Parameters<typeof registerNoticeClauseDrafterTool>[0]);
-registerPrivacyExposureScorerTool(server as Parameters<typeof registerPrivacyExposureScorerTool>[0]);
+// ─── Tool 8: pq_check_applicability ────────────────────────────────────────
+server.registerTool("pq_check_applicability", {
+  title: "Check Applicability of State Privacy Laws",
+  description: `Determine which US state consumer privacy laws likely apply based on controller/business threshold inputs. Returns Applies | Likely Applies | Does Not Apply | Insufficient Info per statute. Covers all 20 PrivacyQuant-covered states. Deterministic — no LLM.`,
+  inputSchema: {
+    annual_revenue_usd: z.number().optional().describe("Annual gross revenue in USD"),
+    consumers_processed: z.number().int().optional().describe("Number of consumers' PI processed annually"),
+    households_processed: z.number().int().optional().describe("Number of households' PI processed annually"),
+    revenue_pct_from_sale: z.number().min(0).max(100).optional().describe("% of annual revenue from selling PI"),
+    states_operating: z.array(z.string()).optional().describe("States where business operates — if omitted, evaluates all 20"),
+    is_nonprofit: z.boolean().optional().describe("True if entity is a non-profit organization"),
+    is_government: z.boolean().optional().describe("True if entity is a government body"),
+    is_hipaa_covered_entity: z.boolean().optional().describe("True if entity is HIPAA-covered (note: data-level exemption, not entity-level under most state laws)"),
+    is_glba_covered: z.boolean().optional().describe("True if entity is GLBA-covered financial institution"),
+  },
+}, async (input) => {
+  const result = checkApplicability(input);
+  const lines = [
+    `# Applicability Check`,
+    `**Summary**: ${result.summary}`,
+    result.any_applies ? `**Applicable statutes**: ${result.applicable_statutes.join(", ")}` : "",
+    result.needed_inputs.length > 0 ? `**Missing inputs**: ${result.needed_inputs.join(", ")}` : "",
+    ``,
+  ];
+  for (const r of result.results) {
+    const icon = r.verdict === "Applies" ? "✅" : r.verdict === "Likely Applies" ? "⚠️" : r.verdict === "Does Not Apply" ? "❌" : "❓";
+    lines.push(`## ${icon} ${r.statute} (${r.state}) — ${r.verdict}`);
+    lines.push(r.reason);
+    if (r.threshold_met.length) lines.push(`Met: ${r.threshold_met.join("; ")}`);
+    if (r.threshold_not_met.length) lines.push(`Not met: ${r.threshold_not_met.join("; ")}`);
+    if (r.needed_inputs.length) lines.push(`Needs: ${r.needed_inputs.join(", ")}`);
+    lines.push("");
+  }
+  lines.push(`_${result.disclaimer}_`);
+  return { content: [{ type: "text", text: lines.join("\n") }] };
+});
+
+// ─── Tool 9: pq_resolve_conflict_nodes ──────────────────────────────────────
+server.registerTool("pq_resolve_conflict_nodes", {
+  title: "Resolve Multi-State Conflicts with Node Evidence",
+  description: `Node-aware companion to pq_resolve_conflict. Returns the same compliance-ceiling analysis enriched with statutory node evidence, requirement excerpts, and section citations from the loaded graph. Use when you need the 'why' behind a binding rule, not just the rule. Deterministic — no LLM.`,
+  inputSchema: {
+    statutes: z.array(z.string()).min(2).describe("Statutes to resolve across — e.g. [\"CCPA\", \"CPA\", \"MODPA\"]"),
+    dimensions: z.array(z.string()).optional().describe("Compliance dimensions to check — omit for all 12"),
+    evidence_limit_per_position: z.number().int().min(1).max(5).default(2).describe("Max node evidence items per dimension per statute (default 2)"),
+  },
+}, async ({ statutes, dimensions, evidence_limit_per_position }) => {
+  const { ALL_DIMENSIONS } = await import("./conflict_resolver.js");
+  type Dimension = import("./conflict_resolver.js").Dimension;
+  const dims = (dimensions?.length ? dimensions : ALL_DIMENSIONS) as Dimension[];
+  const result = resolveConflictWithNodes(index, statutes, dims, evidence_limit_per_position);
+  const lines = [`# Conflict Resolution with Node Evidence`, `**Statutes**: ${statutes.join(", ")}`, ``];
+  for (const dim of result.enriched) {
+    lines.push(`## ${dim.dimension}`);
+    lines.push(`**Binding rule**: ${dim.binding_rule}`);
+    lines.push(`**Controlling statute**: ${dim.controlling_statute}`);
+    lines.push(`**Implementation baseline**: ${dim.implementation_baseline}`);
+    if (dim.node_evidence.length) {
+      lines.push(`**Supporting nodes**:`);
+      for (const ev of dim.node_evidence) {
+        lines.push(`- \`${ev.node_id}\` (${ev.statute} ${ev.section}): ${ev.requirement_excerpt}`);
+      }
+    }
+    lines.push("");
+  }
+  lines.push(`_${result.disclaimer}_`);
+  return { content: [{ type: "text", text: lines.join("\n") }] };
+});
+
+// ─── Tool 10: pq_draft_dpa_clause ───────────────────────────────────────────
+server.registerTool("pq_draft_dpa_clause", {
+  title: "Draft a DPA Clause from Statutory Requirements",
+  description: `Generate first-draft DPA or contract clause language that satisfies specific statutory requirements. Inverse of pq_check_clause. Provide node IDs (from pq_search_requirements) and get a ready-to-edit clause with coverage summary and practitioner notes. Requires ANTHROPIC_API_KEY.`,
+  inputSchema: {
+    node_ids: z.array(z.string().min(3)).min(1).max(8).describe("Node IDs to draft for — use pq_search_requirements to find them"),
+    role: z.enum(["controller", "processor", "both"]).default("processor").describe("Drafting perspective (default: processor obligations clause)"),
+    style: z.enum(["brief", "standard", "detailed"]).default("standard").describe("Clause length/detail level"),
+    context: z.string().max(500).optional().describe("Additional context from the attorney (party names, specific negotiation constraints, etc.)"),
+  },
+}, async ({ node_ids, role, style, context }) => {
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return { content: [{ type: "text", text: "pq_draft_dpa_clause requires ANTHROPIC_API_KEY." }] };
+  }
+  const nodes = node_ids.map((id) => index.byId.get(id)).filter(Boolean) as import("./types.js").StatuteNode[];
+  const missing = node_ids.filter((id) => !index.byId.has(id));
+  if (nodes.length === 0) {
+    return { content: [{ type: "text", text: `No nodes found for IDs: ${node_ids.join(", ")}. Use pq_search_requirements to find valid node IDs.` }] };
+  }
+  const result = await draftDpaClause(nodes, role, style, context);
+  const lines = [
+    `# Drafted DPA Clause`,
+    missing.length ? `**Missing nodes** (not found): ${missing.join(", ")}` : "",
+    `**Nodes covered**: ${nodes.map((n) => n.id).join(", ")}`,
+    ``,
+    `## Clause`,
+    `\`\`\``,
+    result.clause_text,
+    `\`\`\``,
+    ``,
+  ];
+  if (result.coverage.length) {
+    lines.push(`## Coverage`);
+    for (const c of result.coverage) lines.push(`- \`${c.node_id}\`: ${c.requirement_summary} → _"${c.clause_sentence}"_`);
+    lines.push("");
+  }
+  if (result.gaps.length) { lines.push(`## Gaps`); result.gaps.forEach((g) => lines.push(`- ${g}`)); lines.push(""); }
+  if (result.notes.length) { lines.push(`## Practitioner Notes`); result.notes.forEach((n) => lines.push(`- ${n}`)); lines.push(""); }
+  lines.push(`_Run pq_check_clause against the final edited text to verify coverage before execution._`);
+  return { content: [{ type: "text", text: lines.join("\n") }] };
+});
+
+// ─── Tool 11: pq_route_dsar_workflow ────────────────────────────────────────
+server.registerTool("pq_route_dsar_workflow", {
+  title: "Convert a DSAR into an Operational Workflow",
+  description: `Operational companion to pq_dsar_router. Given a received consumer rights request, generates a step-by-step checklist with deadline calculations, verification guidance, processor handoff steps, and escalation flags. Deterministic — no LLM.`,
+  inputSchema: {
+    consumer_state: z.string().min(2).max(2).describe("Consumer's state of residence (2-letter abbreviation)"),
+    right_invoked: z.enum(["access","deletion","correction","portability","opt_out_sale","opt_out_targeted_advertising","opt_out_profiling","limit_sensitive_pi","appeal"]).describe("The right invoked"),
+    controller_statutes: z.array(z.string()).optional().describe("Statutes the controller is subject to"),
+    controller_status: z.enum(["controller","processor","dual","unknown"]).default("controller").describe("Whether you are acting as controller, processor, or both"),
+    request_received_date: z.string().optional().describe("ISO date the request was received (YYYY-MM-DD) — enables deadline calculation"),
+    residency_verified: z.boolean().optional().describe("Whether consumer residency in the stated state has been verified"),
+    authorized_agent: z.boolean().optional().describe("Whether the request is submitted by an authorized agent"),
+    sensitive_data_involved: z.boolean().optional().describe("Whether the request involves sensitive personal data"),
+    specific_pieces_requested: z.boolean().optional().describe("Whether the consumer requested specific pieces of PI (triggers enhanced verification)"),
+    deletion_scope: z.enum(["all","partial","unknown"]).optional().describe("Scope of deletion requested"),
+  },
+}, async (input) => {
+  const result = buildDSARWorkflow(input as Parameters<typeof buildDSARWorkflow>[0]);
+  const lines = [
+    `# DSAR Workflow: ${result.right_label}`,
+    `**State**: ${result.consumer_state} | **Statute**: ${result.statute ?? "None"} | **Must respond**: ${result.must_respond ? "Yes" : "No"}`,
+    result.calculated_due_date ? `**Initial deadline**: ${result.calculated_due_date} (${result.initial_deadline_days} days)` : result.initial_deadline_days ? `**Initial deadline**: ${result.initial_deadline_days} calendar days from receipt` : "",
+    result.calculated_max_date && result.max_deadline_days !== result.initial_deadline_days ? `**Max with extension**: ${result.calculated_max_date}` : "",
+    result.appeal_right ? `**Appeal right**: Yes — ${result.appeal_deadline_days} days` : "**Appeal right**: No",
+    ``,
+  ];
+  if (result.escalation_flags.length) {
+    lines.push(`## ⚠️ Escalation Flags`);
+    result.escalation_flags.forEach((f) => lines.push(`- ${f}`));
+    lines.push("");
+  }
+  lines.push(`## Workflow Steps`);
+  for (const step of result.steps) {
+    lines.push(`### Step ${step.step}: ${step.action}`);
+    if (step.deadline) lines.push(`**Deadline**: ${step.deadline}`);
+    if (step.notes?.length) step.notes.forEach((n) => lines.push(`- ${n}`));
+    lines.push("");
+  }
+  lines.push(`_${result.disclaimer}_`);
+  return { content: [{ type: "text", text: lines.join("\n") }] };
+});
+
+// ─── Tool 12: pq_draft_notice_clause ────────────────────────────────────────
+server.registerTool("pq_draft_notice_clause", {
+  title: "Draft a Privacy Notice Clause",
+  description: `Draft first-draft privacy notice language from processing facts. Supports notice_at_collection, privacy_notice, opt_out_disclosure, sensitive_data_notice, financial_incentive, and ai_training_disclosure. Deterministic — no LLM. Always review with qualified counsel before publication.`,
+  inputSchema: {
+    notice_type: z.enum(["notice_at_collection","privacy_notice","opt_out_disclosure","sensitive_data_notice","financial_incentive","ai_training_disclosure"]).describe("Type of notice to draft"),
+    states: z.array(z.string()).describe("Applicable states — affects notice content and rights disclosures"),
+    business_name: z.string().optional().describe("Business name for the notice"),
+    data_categories: z.array(z.string()).optional().describe("Categories of PI collected"),
+    purposes: z.array(z.string()).optional().describe("Processing purposes"),
+    sale_or_sharing: z.boolean().optional().describe("Does business sell or share PI for targeted advertising?"),
+    targeted_advertising: z.boolean().optional().describe("Does business use PI for targeted advertising?"),
+    profiling_or_admt: z.boolean().optional().describe("Does business use profiling or automated decision-making?"),
+    sensitive_data: z.boolean().optional().describe("Does business process sensitive PI?"),
+    minors_data: z.boolean().optional().describe("Does business process data of known minors?"),
+    uses_llm_training: z.boolean().optional().describe("Does business use PI to train AI/LLM systems?"),
+    universal_opt_out: z.boolean().optional().describe("Does business recognize GPC/UOOM signals?"),
+    contact_method: z.string().optional().describe("Consumer contact method (email, URL, toll-free number)"),
+    style: z.enum(["plain","formal","layered"]).default("plain").describe("Notice style"),
+  },
+}, async (input) => {
+  const result = draftNoticeClause(input as Parameters<typeof draftNoticeClause>[0]);
+  const lines = [
+    `# ${result.notice_type.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())} Draft`,
+    result.missing_facts.length ? `**Missing facts** (add before publishing): ${result.missing_facts.join(", ")}` : "",
+    ``,
+    `## Draft Text`,
+    `\`\`\``,
+    result.clause_text,
+    `\`\`\``,
+    ``,
+  ];
+  if (result.drafting_notes.length) { lines.push(`## Drafting Notes`); result.drafting_notes.forEach((n) => lines.push(`- ${n}`)); lines.push(""); }
+  if (result.supporting_nodes.length) lines.push(`**Supporting nodes**: ${result.supporting_nodes.map((n) => `\`${n}\``).join(", ")}`);
+  lines.push(`_Run pq_audit_citations on the final text before publishing._`);
+  return { content: [{ type: "text", text: lines.join("\n") }] };
+});
+
+// ─── Tool 13: pq_score_privacy_risk ─────────────────────────────────────────
+server.registerTool("pq_score_privacy_risk", {
+  title: "Score Privacy Exposure Risk",
+  description: `Produce a deterministic privacy exposure triage score (0–100) with band (Minimal/Low/Moderate/High/Critical), component breakdown, regulator-interest notes, remediation priorities, and analogous enforcement precedents. Triage aid — not an enforcement prediction. Deterministic — no LLM.`,
+  inputSchema: {
+    states: z.array(z.string()).optional().describe("Applicable states"),
+    industry: z.string().optional().describe("Industry/sector (used for enforcement context)"),
+    sale_or_sharing: z.boolean().optional().describe("Business sells or shares PI"),
+    targeted_advertising: z.boolean().optional().describe("Uses targeted advertising"),
+    profiling_or_admt: z.boolean().optional().describe("Uses profiling or ADMT"),
+    sensitive_data: z.boolean().optional().describe("Processes sensitive PI"),
+    minors_data: z.boolean().optional().describe("Processes known minors' data"),
+    health_data: z.boolean().optional().describe("Processes consumer health data"),
+    biometric_data: z.boolean().optional().describe("Processes biometric data"),
+    precise_geolocation: z.boolean().optional().describe("Processes precise geolocation data"),
+    universal_opt_out_gap: z.boolean().optional().describe("GPC/UOOM signals not currently honored"),
+    dsar_backlog: z.boolean().optional().describe("Outstanding or overdue consumer rights requests"),
+    processor_contract_gap: z.boolean().optional().describe("Missing or deficient processor/service-provider contracts"),
+    notice_gap: z.boolean().optional().describe("Notice at collection missing or deficient"),
+    security_incident: z.boolean().optional().describe("Active or recent security incident/breach"),
+    repeat_issue: z.boolean().optional().describe("Known or repeat compliance issue"),
+    remediation_started: z.boolean().optional().describe("Active remediation underway — credit applied"),
+    top_precedents: z.number().int().min(1).max(5).default(3).describe("Number of analogous enforcement actions to return"),
+  },
+}, async (input) => {
+  const result = scorePrivacyExposure(input);
+  const lines = [
+    `# Privacy Exposure Score`,
+    `**Score**: ${result.score}/100 — **${result.band}**`,
+    ``,
+    `## Score Breakdown`,
+  ];
+  for (const c of result.components) {
+    lines.push(`- **${c.label}**: ${c.points}/${c.max} — ${c.note}`);
+  }
+  lines.push("");
+  if (result.regulator_interest_notes.length) {
+    lines.push(`## Regulator Interest`);
+    result.regulator_interest_notes.forEach((n) => lines.push(`- ${n}`));
+    lines.push("");
+  }
+  if (result.remediation_priorities.length) {
+    lines.push(`## Remediation Priorities`);
+    result.remediation_priorities.forEach((p) => lines.push(p));
+    lines.push("");
+  }
+  if (result.analogous_precedents.length) {
+    lines.push(`## Analogous Enforcement Precedents`);
+    for (const p of result.analogous_precedents) {
+      lines.push(`### ${p.case_name} (${p.year}) — ${p.monetary_amount_usd ? `$${p.monetary_amount_usd.toLocaleString()}` : "Injunctive"}`);
+      lines.push(p.factual_pattern);
+      lines.push("");
+    }
+  }
+  lines.push(`_${result.disclaimer}_`);
+  return { content: [{ type: "text", text: lines.join("\n") }] };
+});
+
+// ─── Tool 14: pq_audit_citations ────────────────────────────────────────────
+server.registerTool("pq_audit_citations", {
+  title: "Audit Privacy-Law Text for Citation Discipline",
+  description: `Flag citation discipline issues in privacy-law work product: uncited legal claims, unresolved placeholders, suspicious section numbers, standalone CPRA references, and unresolvable PrivacyQuant node IDs. Conservative — flags possible issues without making legal judgments. Deterministic — no LLM.`,
+  inputSchema: {
+    text: z.string().min(50).max(50000).describe("The privacy-law work product text to audit"),
+    strict: z.boolean().default(false).describe("Strict mode: uncited legal claims become errors (not warnings)"),
+    include_passed_claims: z.boolean().default(false).describe("Include sentences that passed citation check in output"),
+  },
+}, async ({ text, strict, include_passed_claims }) => {
+  const result = auditCitations(text, index, strict, include_passed_claims);
+  const lines = [
+    `# Citation Audit`,
+    `**Summary**: ${result.summary}`,
+    result.error_count > 0 ? `**Errors**: ${result.error_count}` : "",
+    result.warning_count > 0 ? `**Warnings**: ${result.warning_count}` : "",
+    result.info_count > 0 ? `**Info**: ${result.info_count}` : "",
+    ``,
+  ];
+  if (result.flags.length) {
+    lines.push(`## Flags`);
+    for (const f of result.flags) {
+      const icon = f.severity === "error" ? "🔴" : f.severity === "warning" ? "⚠️" : "ℹ️";
+      lines.push(`${icon} **${f.type}**: ${f.message}`);
+      lines.push(`  _Excerpt_: "${f.excerpt}"`);
+      if (f.suggestion) lines.push(`  _Suggestion_: ${f.suggestion}`);
+      lines.push("");
+    }
+  }
+  lines.push(`_${result.disclaimer}_`);
+  return { content: [{ type: "text", text: lines.join("\n") }] };
+});
+
+// ─── Tool 15: pq_watch_legislation ──────────────────────────────────────────
+server.registerTool("pq_watch_legislation", {
+  title: "Watch for Active Privacy Legislation",
+  description: `Search the Open States / Plural Policy API for active privacy bills in PrivacyQuant-covered states. Returns legislative leads that may require statutory node updates. Requires OPENSTATES_API_KEY or PLURAL_API_KEY environment variable. Live API — results change over time.`,
+  inputSchema: {
+    states: z.array(z.string().min(2).max(2)).optional().describe("States to search — omit for all 20 covered states"),
+    keywords: z.array(z.string()).optional().describe("Search keywords — defaults to [\"consumer privacy\", \"personal data\", \"personal information\", \"data protection\"]"),
+    updated_since: z.string().optional().describe("ISO date — only return bills updated since this date (YYYY-MM-DD)"),
+    per_state_limit: z.number().int().min(1).max(20).default(5).describe("Max bills to return per state (default 5)"),
+  },
+}, async ({ states, keywords, updated_since, per_state_limit }) => {
+  const result = await watchLegislation(
+    states ?? [],
+    keywords ?? [],
+    updated_since,
+    per_state_limit
+  );
+  const lines = [
+    `# Legislative Watch`,
+    `**States searched**: ${result.states_searched.join(", ")}`,
+    `**Keywords**: ${result.keywords_used.join(", ")}`,
+    `**Status**: ${result.api_status}${result.error_message ? ` — ${result.error_message}` : ""}`,
+    `**Bills found**: ${result.total_bills_found}`,
+    ``,
+  ];
+  if (result.api_status === "no_key") {
+    lines.push(result.error_message ?? "API key required.");
+  } else {
+    for (const [state, leads] of Object.entries(result.results_by_state)) {
+      lines.push(`## ${state}`);
+      for (const lead of leads) {
+        lines.push(`### ${lead.identifier}: ${lead.title}`);
+        lines.push(`**Latest action**: ${lead.latest_action} (${lead.latest_action_date})`);
+        lines.push(`**Status**: ${lead.status}`);
+        if (lead.sources.length) lines.push(`**Source**: ${lead.sources[0].url}`);
+        lines.push(`**Open States**: ${lead.openstates_url}`);
+        lines.push(`_${lead.verify_marker}_`);
+        lines.push("");
+      }
+    }
+    if (result.total_bills_found === 0) lines.push("No active bills found matching the search criteria.");
+    lines.push(`## Review Workflow`);
+    result.review_workflow.forEach((s) => lines.push(s));
+    lines.push("");
+  }
+  lines.push(`_${result.disclaimer}_`);
+  return { content: [{ type: "text", text: lines.join("\n") }] };
+});
 
 // ─── Start ─────────────────────────────────────────────────────────────────
 async function main(): Promise<void> {
