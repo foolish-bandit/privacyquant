@@ -1,8 +1,8 @@
 id: "ccpa.enforcement.parameters"
 statute: "CCPA/CPRA"
 section: "Cal. Civ. Code §§ 1798.155, 1798.199.90; Cal. Bus. & Prof. Code § 17206"
-title: "Enforcement — CPPA and AG; Civil Penalties"
-effective_date: "2023-01-01"
+title: "Enforcement — CPPA and AG; Civil Penalties (2025 CPI-Adjusted)"
+effective_date: "2025-01-01"
 supersedes: []
 amended_by: []
 requirement_type: hard
@@ -10,11 +10,16 @@ obligation_bearer: business
 trigger: "Business violates CCPA/CPRA or implementing regulations"
 requirement: >
   The California Privacy Protection Agency (CPPA) and California Attorney General have concurrent
-  enforcement authority. Civil penalties: up to $2,500 per violation; up to $7,500 per intentional
-  violation or violation involving a known minor. No mandatory cure period as of Jan 2023 (CPPA has
-  discretion to provide cure opportunity). Private right of action available under § 1798.150 for
-  data breaches resulting from failure to implement reasonable security — up to $750 per consumer
-  per incident or actual damages, whichever is greater, plus injunctive relief and attorney fees.
+  enforcement authority. Civil penalties (2025 CPI-adjusted, effective January 1, 2025):
+  up to $2,663 per violation; up to $7,988 per intentional violation or violation involving a
+  known minor. These figures replace the prior $2,500/$7,500 figures and are adjusted biennially
+  per CPI under Cal. Civ. Code § 1798.199.95(d).
+  No mandatory cure period — CPPA has discretion to provide cure opportunity but is not required to.
+  Private right of action under § 1798.150 for data breaches resulting from failure to implement
+  reasonable security: $107 to $799 per consumer per incident (2025 CPI-adjusted from $100–$750),
+  or actual damages whichever is greater, plus injunctive relief and attorney fees.
+  Revenue threshold for covered "business" (§ 1798.140(d)): annual gross revenues exceeding
+  $26,625,000 (2025 CPI-adjusted from $25,000,000 baseline).
 exceptions: []
 contract_signals:
   - "CPPA"
@@ -23,8 +28,11 @@ contract_signals:
   - "civil penalty"
   - "CCPA violation"
   - "data breach notification"
+  - "$2,663"
+  - "$7,988"
 cross_refs:
+  - "ccpa.applicability.threshold"
   - "vcdpa.enforcement.parameters"
   - "cpa.enforcement.parameters"
-source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=1798.155.&lawCode=CIV"
+source_url: "https://cppa.ca.gov/regulations/cpi_adjustment.html"
 git_hash: ""
