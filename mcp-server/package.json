@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "description": "MCP server exposing the PrivacyQuant statutory knowledge graph to Claude",
   "type": "module",
-  "main": "dist/bootstrap.js",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/bootstrap.js",
-    "dev": "tsx src/bootstrap.ts"
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.95.2",

@@ -10,6 +10,15 @@ import { routeDSAR, RIGHT_LABELS } from "./dsar_router.js";
 import type { RightType } from "./dsar_router.js";
 import { rankActions, textQuery, allTags } from "./precedent_matcher.js";
 import type { StatuteNode, StatuteIndex } from "./types.js";
+import { registerDraftDpaClauseTool } from "./draft_dpa_clause.js";
+import { registerWatchLegislationTool } from "./legislation_watcher.js";
+import { registerApplicabilityCheckerTool } from "./applicability_checker.js";
+import { registerFindPrecedentTool } from "./precedent_finder.js";
+import { registerNodeAwareConflictResolverTool } from "./node_aware_conflict_resolver.js";
+import { registerDSARWorkflowRouterTool } from "./dsar_workflow_router.js";
+import { registerCitationAuditorTool } from "./citation_auditor.js";
+import { registerNoticeClauseDrafterTool } from "./notice_clause_drafter.js";
+import { registerPrivacyExposureScorerTool } from "./privacy_exposure_scorer.js";
 
 // ─── Load the knowledge graph once at startup ──────────────────────────────
 let index: StatuteIndex;
@@ -1092,6 +1101,17 @@ settlement amount, factual pattern, operational lessons, and citation.`,
     };
   }
 );
+
+// ─── Additional tool modules ───────────────────────────────────────────────
+registerDraftDpaClauseTool(server as Parameters<typeof registerDraftDpaClauseTool>[0]);
+registerWatchLegislationTool(server as Parameters<typeof registerWatchLegislationTool>[0]);
+registerApplicabilityCheckerTool(server as Parameters<typeof registerApplicabilityCheckerTool>[0]);
+registerFindPrecedentTool(server as Parameters<typeof registerFindPrecedentTool>[0]);
+registerNodeAwareConflictResolverTool(server as Parameters<typeof registerNodeAwareConflictResolverTool>[0]);
+registerDSARWorkflowRouterTool(server as Parameters<typeof registerDSARWorkflowRouterTool>[0]);
+registerCitationAuditorTool(server as Parameters<typeof registerCitationAuditorTool>[0]);
+registerNoticeClauseDrafterTool(server as Parameters<typeof registerNoticeClauseDrafterTool>[0]);
+registerPrivacyExposureScorerTool(server as Parameters<typeof registerPrivacyExposureScorerTool>[0]);
 
 // ─── Start ─────────────────────────────────────────────────────────────────
 async function main(): Promise<void> {
