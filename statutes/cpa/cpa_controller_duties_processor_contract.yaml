@@ -1,0 +1,32 @@
+id: "cpa.controller_duties.processor_contract"
+statute: "CPA"
+section: "Colo. Rev. Stat. § 6-1-1305"
+title: "Processor Contract Requirements"
+effective_date: "2023-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller engages a processor to process personal data on its behalf"
+requirement: >
+  A binding contract must govern the processor's data processing and include: nature and
+  purpose of processing; type of PD; duration; rights and obligations of both parties.
+  The contract must require the processor to: process data only per controller instructions;
+  maintain confidentiality; delete or return PD upon termination; make available information
+  necessary for compliance demonstrations; allow and contribute to audits; engage subprocessors
+  only under equivalent obligations; assist with consumer rights fulfillment and security.
+exceptions: []
+contract_signals:
+  - "data processing agreement"
+  - "DPA"
+  - "processor agreement"
+  - "subprocessor"
+  - "controller-processor"
+  - "processing on behalf of"
+  - "data processing addendum"
+cross_refs:
+  - "ccpa.controller_duties.service_provider_contract"
+  - "vcdpa.controller_duties.processor_contract"
+  - "modpa.controller_duties.processor_contract"
+source_url: "https://leg.colorado.gov/sites/default/files/documents/2021A/bills/2021a_190_enr.pdf"
+git_hash: ""
