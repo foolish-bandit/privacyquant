@@ -22,6 +22,9 @@ exceptions:                   # plain-language exceptions (empty list if none)
   - string
 contract_signals:             # keywords/phrases appearing in DPAs/contracts that signal relevance
   - string
+data_categories:              # optional: IAB/Fideslang data category keys that trigger this node
+  - string                    # dot-notation IAB taxonomy key, e.g. "user.biometric", "user.health_and_medical"
+                              # see references/fideslang-mapping.yaml for full cross-reference
 cross_refs:                   # IDs of related requirements in other statutes
   - string
 source_url: string            # official legislative source URL
