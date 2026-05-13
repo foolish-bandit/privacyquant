@@ -26,7 +26,6 @@ contract_signals:
   - "personal data used for training"
 cross_refs:
   - "ctdpa.controller_duties.privacy_notice"
-  - "ctdpa.controller_duties.data_protection_assessment"
   - "ccpa.controller_duties.privacy_notice"
 source_url: "https://www.cga.ct.gov/2025/ACT/PA/PDF/2025PA-00113-R00HB-07154-PA.PDF"
 git_hash: ""

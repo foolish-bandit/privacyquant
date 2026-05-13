@@ -23,6 +23,5 @@ contract_signals:
 cross_refs:
   - "ccpa.rights.correction"
   - "vcdpa.rights.correction"
-  - "ndpa.rights.correction"
 source_url: "https://capitol.texas.gov/tlodocs/88R/billtext/pdf/HB04.pdf"
 git_hash: ""

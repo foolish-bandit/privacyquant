@@ -351,7 +351,7 @@ const DIMENSION_DATA: Record<Dimension, DimensionData> = {
       statute: "INCDPA", state: "IN",
       position: "Required effective January 1, 2026.",
       strictness_rank: 4,
-      node_refs: ["incdpa.uoom_required"],
+      node_refs: ["incdpa.uoom.required"],
     },
     "tipa": {
       statute: "TIPA", state: "TN",
@@ -1011,6 +1011,20 @@ function findPosition(
     if (k.includes(key) || key.includes(k)) return v;
   }
   return undefined;
+}
+
+/** Return every node_ref string used across all dimensions and positions.
+ *  Used by the startup validator to detect stale references after node renames. */
+export function getAllConflictNodeRefs(): string[] {
+  const refs = new Set<string>();
+  for (const dimensionData of Object.values(DIMENSION_DATA)) {
+    for (const position of Object.values(dimensionData)) {
+      for (const ref of position.node_refs) {
+        refs.add(ref);
+      }
+    }
+  }
+  return [...refs];
 }
 
 export function resolveConflict(

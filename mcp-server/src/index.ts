@@ -20,6 +20,7 @@ import { draftNoticeClause, formatResult as formatNoticeDraft } from "./notice_c
 import { scorePrivacyExposure, formatResult as formatExposureScore } from "./privacy_exposure_scorer.js";
 import { watchLegislation, formatResult as formatLegislation } from "./legislation_watcher.js";
 import { registerDraftDpaClauseTool } from "./draft_dpa_clause.js";
+import { validateIndex } from "./validate.js";
 import type { StatuteNode, StatuteIndex } from "./types.js";
 
 // ─── Load the knowledge graph once at startup ──────────────────────────────
@@ -31,6 +32,22 @@ try {
 } catch (err) {
   process.stderr.write(`Fatal: ${err}\n`);
   process.exit(1);
+}
+
+// ─── Startup integrity checks ──────────────────────────────────────────────
+{
+  const validationMessages = validateIndex(index);
+  const errors = validationMessages.filter((m) => m.startsWith("ERROR:"));
+  const warnings = validationMessages.filter((m) => m.startsWith("WARN:"));
+  for (const w of warnings) {
+    process.stderr.write(`${w}\n`);
+  }
+  if (errors.length > 0) {
+    for (const e of errors) {
+      process.stderr.write(`${e}\n`);
+    }
+    process.exit(1);
+  }
 }
 
 // ─── Server ────────────────────────────────────────────────────────────────

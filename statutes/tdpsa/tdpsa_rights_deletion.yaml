@@ -27,6 +27,5 @@ contract_signals:
 cross_refs:
   - "ccpa.rights.deletion"
   - "vcdpa.rights.deletion"
-  - "ndpa.rights.deletion"
 source_url: "https://capitol.texas.gov/tlodocs/88R/billtext/pdf/HB04.pdf"
 git_hash: ""

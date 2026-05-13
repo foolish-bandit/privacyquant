@@ -26,7 +26,7 @@ contract_signals:
   - "privacy framework"
   - "documented privacy policies"
 cross_refs:
-  - "ocpa.enforcement.parameters"
+  - "ocpa.enforcement.cure_period_expired"
   - "vcdpa.enforcement.parameters"
 source_url: "https://www.sos.tn.gov/products/division-publications/public-chapter-0902"
 git_hash: ""
