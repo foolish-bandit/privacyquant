@@ -1,0 +1,30 @@
+id: "ucpa.rights.narrow_regime"
+statute: "UCPA"
+section: "Utah Code § 13-61-201"
+title: "Consumer Rights — Narrowest Regime"
+effective_date: "2023-12-31"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Consumer submits authenticated request under UCPA"
+requirement: >
+  UCPA provides the narrowest consumer rights regime of any comprehensive state privacy law:
+  Right to access (confirm and obtain copy); right to delete; right to portability; right to
+  opt out of sale and targeted advertising.
+  NO correction right; NO profiling opt-out; NO right to appeal; NO UOOM recognition required.
+  Controller must respond within 45 days (extendable once by 45 days).
+exceptions:
+  - "Requests that are manifestly unfounded or excessive"
+contract_signals:
+  - "access request"
+  - "deletion request"
+  - "opt-out of sale"
+  - "portability request"
+  - "consumer rights request"
+cross_refs:
+  - "vcdpa.rights.access"
+  - "cpa.rights.opt_out_sale"
+  - "icdpa.rights.narrow_regime"
+source_url: "https://le.utah.gov/xcode/Title13/Chapter61/C13-61_2022050420220504.pdf"
+git_hash: ""
