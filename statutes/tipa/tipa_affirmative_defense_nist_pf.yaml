@@ -1,0 +1,32 @@
+id: "tipa.affirmative_defense.nist_pf"
+statute: "TIPA"
+section: "Tenn. Code § 47-18-3213"
+title: "Affirmative Defense — NIST Privacy Framework Alignment"
+effective_date: "2025-07-01"
+supersedes: []
+amended_by: []
+requirement_type: soft
+obligation_bearer: controller
+trigger: "Controller maintains a written privacy program reasonably conforming to the NIST Privacy Framework or comparable standard"
+requirement: >
+  TIPA provides an affirmative defense to enforcement for entities maintaining a written privacy
+  program 'reasonably conforming' to the NIST Privacy Framework or other documented policies
+  designed to protect consumer privacy at an appropriate scale and scope.
+  This is the most explicit safe-harbor language in any US state privacy statute.
+  Documenting NIST PF alignment before a potential enforcement action is high-leverage —
+  it earns the affirmative defense at no marginal cost for a multi-state program.
+  Factors considered: size and complexity of controller; nature and scope of activities;
+  sensitivity of PD processed; cost and availability of tools; compliance with comparable laws.
+exceptions: []
+contract_signals:
+  - "NIST Privacy Framework"
+  - "NIST PF"
+  - "written privacy program"
+  - "affirmative defense"
+  - "privacy framework"
+  - "documented privacy policies"
+cross_refs:
+  - "ocpa.enforcement.parameters"
+  - "vcdpa.enforcement.parameters"
+source_url: "https://www.sos.tn.gov/products/division-publications/public-chapter-0902"
+git_hash: ""
