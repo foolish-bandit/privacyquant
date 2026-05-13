@@ -1,0 +1,31 @@
+id: "ocpa.rights.opt_out_sale"
+statute: "OCPA"
+section: "ORS § 646A.574(1)(e)"
+title: "Right to Opt Out of Sale, Targeted Advertising, and Profiling"
+effective_date: "2024-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller sells personal data, processes for targeted advertising, or profiles consumers for significant decisions"
+requirement: >
+  Consumers have the right to opt out of: (1) sale of PD; (2) targeted advertising;
+  (3) profiling that produces a legal or similarly significant effect.
+  Controller must provide a clear and conspicuous opt-out mechanism.
+  UOOM recognition (including GPC) required effective January 1, 2026.
+  Cure period sunset January 1, 2026.
+exceptions: []
+contract_signals:
+  - "opt-out of sale"
+  - "opt out of targeted advertising"
+  - "opt out of profiling"
+  - "right to opt out"
+  - "sale of personal data"
+  - "Global Privacy Control"
+  - "GPC"
+cross_refs:
+  - "ccpa.rights.opt_out_sale_sharing"
+  - "cpa.rights.opt_out_sale"
+  - "modpa.rights.opt_out_sale"
+source_url: "https://www.oregonlegislature.gov/bills_laws/ors/ors646A.html"
+git_hash: ""
