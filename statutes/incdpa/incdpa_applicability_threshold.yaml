@@ -1,0 +1,30 @@
+id: "incdpa.applicability.threshold"
+statute: "INCDPA"
+section: "Ind. Code § 24-15"
+title: "Applicability Threshold"
+effective_date: "2026-01-01"
+supersedes: []
+amended_by: []
+requirement_type: threshold
+obligation_bearer: controller
+trigger: "Person conducting business in Indiana or producing products/services targeted to Indiana residents"
+requirement: >
+  Applies to persons conducting business in Indiana or targeting IN residents AND during a calendar year:
+  (a) control/process PD of at least 100,000 IN consumers; OR
+  (b) control/process PD of at least 25,000 IN consumers AND derive over 50% of gross revenue from sale of PD.
+exceptions:
+  - "Standard exemptions (GLBA, HIPAA, FCRA, DPPA, FERPA, COPPA)"
+  - "Government entities"
+  - "Non-profits"
+  - "Higher education"
+  - "Employment data and B2B contacts"
+contract_signals:
+  - "Indiana Consumer Data Protection Act"
+  - "INCDPA"
+  - "Indiana residents"
+  - "Ind. Code § 24-15"
+cross_refs:
+  - "vcdpa.applicability.threshold"
+  - "kcdpa.applicability.threshold"
+source_url: "https://iga.in.gov/legislative/2023/bills/senate/5/details"
+git_hash: ""
