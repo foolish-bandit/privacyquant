@@ -1,0 +1,35 @@
+id: "modpa.sensitive_data.ban_on_sale"
+statute: "MODPA"
+section: "Md. Code Com. Law § 14-4607(a)(2)-(4)"
+title: "Sensitive Data — Flat Ban on Sale; Consent Required to Process"
+effective_date: "2025-10-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller possesses or intends to process sensitive personal data of Maryland consumers"
+requirement: >
+  Two distinct obligations:
+  (1) FLAT BAN ON SALE of sensitive data. Consent does NOT cure the prohibition.
+  Ad-tech architectures relying on consent for sensitive data sale (e.g., health-data adtech,
+  financial-data sharing) cannot operate as designed for MD-resident consumers.
+  (2) OPT-IN CONSENT required to process sensitive data (cannot rely on legitimate interest or
+  other legal bases).
+  Consumer health data receives additional heightened treatment.
+  Standard sensitive categories plus MD-specific scrutiny on consumer health data.
+exceptions:
+  - "Processing necessary to provide a requested product or service where sensitive data is integral"
+  - "Processing necessary to comply with applicable law"
+contract_signals:
+  - "sensitive personal data"
+  - "sensitive data"
+  - "health data"
+  - "ban on sale of sensitive"
+  - "consent to process sensitive"
+  - "consumer health data"
+cross_refs:
+  - "ccpa.sensitive_data.categories"
+  - "vcdpa.sensitive_data.consent"
+  - "cpa.sensitive_data.consent"
+source_url: "https://mgaleg.maryland.gov/2024RS/Chapters_noln/CH_182_sb0541e.pdf"
+git_hash: ""
