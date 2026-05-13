@@ -1,0 +1,31 @@
+id: "ocpa.rights.access"
+statute: "OCPA"
+section: "ORS § 646A.574(1)(a)"
+title: "Right to Access"
+effective_date: "2024-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Consumer submits an authenticated request to confirm processing or obtain a copy of personal data"
+requirement: >
+  Controller must confirm whether it is processing the consumer's PD and provide access to
+  that PD. Response deadline: 45 days (extendable once by 45 days with notice). Must be
+  provided free of charge twice per 12-month period.
+exceptions:
+  - "Request is manifestly unfounded, excessive, or repetitive"
+  - "Compliance would require revealing a trade secret"
+contract_signals:
+  - "right of access"
+  - "right to access"
+  - "confirm processing"
+  - "data subject access request"
+  - "DSAR"
+  - "access to personal data"
+cross_refs:
+  - "ccpa.rights.access"
+  - "vcdpa.rights.access"
+  - "cpa.rights.access"
+  - "modpa.rights.access"
+source_url: "https://www.oregonlegislature.gov/bills_laws/ors/ors646A.html"
+git_hash: ""
