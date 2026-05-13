@@ -1,0 +1,29 @@
+id: "ctdpa.rights.portability"
+statute: "CTDPA"
+section: "Conn. Gen. Stat. § 42-518(a)(4)"
+title: "Right to Data Portability"
+effective_date: "2023-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Consumer submits an authenticated request to obtain a portable copy of personal data"
+requirement: >
+  Controller must provide a copy of the consumer's PD in a portable, readily usable format
+  that allows the consumer to transmit the data to another controller without hindrance,
+  where technically feasible. Response deadline: 45 days.
+exceptions:
+  - "Disclosure would reveal a trade secret"
+  - "Request is manifestly unfounded, excessive, or repetitive"
+contract_signals:
+  - "data portability"
+  - "portable format"
+  - "machine-readable copy"
+  - "transmit to another controller"
+  - "right to data portability"
+cross_refs:
+  - "ccpa.rights.portability"
+  - "vcdpa.rights.portability"
+  - "cpa.rights.portability"
+source_url: "https://www.cga.ct.gov/2022/ACT/PA/PDF/2022PA-00015-R00SB-00006-PA.PDF"
+git_hash: ""
