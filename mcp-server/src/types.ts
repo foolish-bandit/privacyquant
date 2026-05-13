@@ -22,8 +22,10 @@ export interface StatuteNode {
   requirement: string;
   exceptions: string[];
   contract_signals: string[];
-  data_categories: string[];
-  nist_controls: string[];
+  /** Optional: IAB/Fideslang data category keys — see references/fideslang-mapping.yaml */
+  data_categories?: string[];
+  /** Optional: NIST SP 800-53 Rev. 5 control IDs — see references/nist-controls-mapping.yaml */
+  nist_controls?: string[];
   cross_refs: string[];
   source_url: string;
   git_hash: string;
