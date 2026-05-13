@@ -1,0 +1,36 @@
+id: "njdpa.applicability.threshold"
+statute: "NJDPA"
+section: "N.J. Stat. § 56:8-166.5"
+title: "Applicability Threshold — Activity-Based Second Tier (Any Sale Revenue)"
+effective_date: "2025-01-15"
+supersedes: []
+amended_by: []
+requirement_type: threshold
+obligation_bearer: controller
+trigger: "Person conducting business in New Jersey or producing products/services targeted to New Jersey residents"
+requirement: >
+  Applies to controllers conducting business in NJ or targeting NJ residents AND during a calendar year:
+  (a) control/process PD of at least 100,000 NJ consumers (excluding solely-payment-transaction data); OR
+  (b) control/process PD of at least 25,000 NJ consumers AND derive revenue or receive a discount
+  from the sale of PD (ANY revenue — no percentage threshold).
+  The activity-based second tier (any sale revenue with 25k consumers) is broader than states using
+  a 25%-or-50% revenue percentage threshold.
+  18-month grace period before AG enforcement actions except for willful violations, ending July 2026.
+exceptions:
+  - "Financial institutions (entity-level GLBA)"
+  - "HIPAA covered entities/BAs (entity-level)"
+  - "FCRA-covered entities"
+  - "Insurance entities"
+  - "Secured creditors"
+  - "Government entities"
+  - "Employment data and B2B contacts"
+contract_signals:
+  - "New Jersey Data Privacy Act"
+  - "NJDPA"
+  - "New Jersey residents"
+  - "N.J. Stat. § 56:8-166"
+cross_refs:
+  - "ctdpa.applicability.threshold"
+  - "dpdpa.applicability.threshold"
+source_url: "https://www.njleg.state.nj.us/Bills/2022/PL23/266_.PDF"
+git_hash: ""
