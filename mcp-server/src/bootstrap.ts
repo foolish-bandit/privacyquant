@@ -5,6 +5,7 @@ import { registerDraftDpaClauseTool } from "./draft_dpa_clause.js";
 import { registerDSARWorkflowRouterTool } from "./dsar_workflow_router.js";
 import { registerFindPrecedentTool } from "./precedent_finder.js";
 import { registerNodeAwareConflictResolverTool } from "./node_aware_conflict_resolver.js";
+import { registerPrivacyExposureScorerTool } from "./privacy_exposure_scorer.js";
 import { registerWatchLegislationTool } from "./legislation_watcher.js";
 
 const registeredServers = new WeakSet<object>();
@@ -23,6 +24,7 @@ proto.connect = async function patchedConnect(this: object, transport: unknown):
     registerNodeAwareConflictResolverTool(server as Parameters<typeof registerNodeAwareConflictResolverTool>[0]);
     registerDSARWorkflowRouterTool(server as Parameters<typeof registerDSARWorkflowRouterTool>[0]);
     registerCitationAuditorTool(server as Parameters<typeof registerCitationAuditorTool>[0]);
+    registerPrivacyExposureScorerTool(server as Parameters<typeof registerPrivacyExposureScorerTool>[0]);
     registeredServers.add(this);
   }
 
