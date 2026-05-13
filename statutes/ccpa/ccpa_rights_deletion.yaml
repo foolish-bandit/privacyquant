@@ -29,6 +29,11 @@ contract_signals:
   - "data deletion request"
   - "erase personal information"
   - "right to be forgotten"
+nist_controls:
+  - "IP-1"
+  - "IP-3"
+  - "SI-12"
+  - "DM-3"
 cross_refs:
   - "vcdpa.rights.deletion"
   - "cpa.rights.deletion"
