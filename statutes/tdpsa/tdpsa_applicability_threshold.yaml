@@ -1,0 +1,37 @@
+id: "tdpsa.applicability.threshold"
+statute: "TDPSA"
+section: "Tex. Bus. & Com. Code § 541.002"
+title: "Applicability — SBA Size-Based, No Numerical Consumer Threshold"
+effective_date: "2024-07-01"
+supersedes: []
+amended_by: []
+requirement_type: threshold
+obligation_bearer: controller
+trigger: "Person conducting business in Texas or producing products/services consumed by Texas residents"
+requirement: >
+  Applies to persons that: (a) conduct business in Texas or produce products/services consumed
+  by Texas residents; AND (b) process or engage in the sale of PD; AND (c) are NOT a small
+  business as defined by the SBA size standards (which vary by NAICS code — confirm by industry).
+  EXCEPTION: if the entity sells sensitive PD without obtaining consent, the small-business
+  exemption is forfeit and TDPSA applies regardless of size.
+  No numerical consumer threshold — applicability turns on SBA size status.
+exceptions:
+  - "Government entities"
+  - "Non-profits"
+  - "Higher education institutions"
+  - "Financial institutions (GLBA, entity-level)"
+  - "HIPAA covered entities and business associates (entity-level)"
+  - "Electric utilities"
+  - "Non-profit insurer associations"
+  - "Employment data"
+  - "B2B contacts"
+contract_signals:
+  - "Texas Data Privacy and Security Act"
+  - "TDPSA"
+  - "Texas residents"
+  - "Tex. Bus. & Com. Code § 541"
+cross_refs:
+  - "ndpa.applicability.threshold"
+  - "vcdpa.applicability.threshold"
+source_url: "https://capitol.texas.gov/tlodocs/88R/billtext/pdf/HB04.pdf"
+git_hash: ""
