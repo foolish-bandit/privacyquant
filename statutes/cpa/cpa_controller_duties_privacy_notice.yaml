@@ -1,0 +1,32 @@
+id: "cpa.controller_duties.privacy_notice"
+statute: "CPA"
+section: "Colo. Rev. Stat. § 6-1-1308(1); 4 Colo. Code Regs. § 904-3, Rule 6"
+title: "Privacy Notice Requirements"
+effective_date: "2023-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller processes personal data of Colorado consumers"
+requirement: >
+  Controller must provide a reasonably accessible, clear, and meaningful privacy notice.
+  CPA Rules (Rule 6) are highly prescriptive — a CA-targeted privacy notice often misses
+  CPA-Rules-specific items. Required content: categories of PD processed; purposes for
+  processing; categories of PD sold or used for targeted advertising; categories of third
+  parties; consumer rights and how to exercise them; appeal process; how to submit a
+  complaint to the AG; whether the controller sells sensitive data; loyalty program
+  disclosures where applicable; profiling disclosures where profiling with significant
+  effects occurs. Must be updated when material changes occur.
+exceptions: []
+contract_signals:
+  - "privacy notice"
+  - "privacy policy"
+  - "privacy statement"
+  - "data processing disclosure"
+  - "notice of data practices"
+cross_refs:
+  - "ccpa.controller_duties.privacy_notice"
+  - "vcdpa.controller_duties.privacy_notice"
+  - "modpa.controller_duties.privacy_notice"
+source_url: "https://coag.gov/resources/colorado-privacy-act/"
+git_hash: ""
