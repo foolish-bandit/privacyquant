@@ -1,0 +1,27 @@
+id: "ctdpa.uoom.gpc"
+statute: "CTDPA"
+section: "Conn. Gen. Stat. § 42-518"
+title: "Universal Opt-Out Mechanism — GPC Recognition Required"
+effective_date: "2025-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller sells personal data or processes for targeted advertising"
+requirement: >
+  Effective January 1, 2025, controllers must recognize and honor universal opt-out preference
+  signals including Global Privacy Control (GPC). Recognition must apply to known users
+  (logged-in or identified), not only to devices. Cure period sunset January 1, 2025.
+exceptions: []
+contract_signals:
+  - "Global Privacy Control"
+  - "GPC"
+  - "universal opt-out"
+  - "opt-out preference signal"
+  - "UOOM"
+cross_refs:
+  - "cpa.rights.opt_out_sale"
+  - "modpa.uoom.gpc"
+  - "njdpa.uoom.gpc"
+source_url: "https://www.cga.ct.gov/2022/ACT/PA/PDF/2022PA-00015-R00SB-00006-PA.PDF"
+git_hash: ""
