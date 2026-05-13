@@ -1,0 +1,26 @@
+id: "tdpsa.enforcement.parameters"
+statute: "TDPSA"
+section: "Tex. Bus. & Com. Code § 541.155"
+title: "Enforcement — AG Only; 30-Day Cure; No Private Right of Action"
+effective_date: "2024-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller or processor violates TDPSA"
+requirement: >
+  Enforced exclusively by the Texas Attorney General. No private right of action.
+  Civil penalty up to $7,500 per violation. 30-day cure period in effect.
+  AG has been notably active under TDPSA with particular focus on children's privacy,
+  biometric data, and health data practices.
+exceptions: []
+contract_signals:
+  - "Texas Attorney General"
+  - "civil penalty"
+  - "TDPSA violation"
+  - "cure period"
+cross_refs:
+  - "ndpa.enforcement.parameters"
+  - "vcdpa.enforcement.parameters"
+source_url: "https://capitol.texas.gov/tlodocs/88R/billtext/pdf/HB04.pdf"
+git_hash: ""
