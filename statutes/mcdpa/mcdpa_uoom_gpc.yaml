@@ -1,0 +1,26 @@
+id: "mcdpa.uoom.gpc"
+statute: "MCDPA"
+section: "Mont. Code § 30-14-2812"
+title: "Universal Opt-Out Mechanism Required"
+effective_date: "2025-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller sells personal data or processes for targeted advertising"
+requirement: >
+  Effective January 1, 2025, controllers must recognize and honor universal opt-out mechanism
+  signals (including GPC). Cure period sunset April 1, 2026.
+exceptions: []
+contract_signals:
+  - "Global Privacy Control"
+  - "GPC"
+  - "universal opt-out"
+  - "UOOM"
+  - "opt-out signal"
+cross_refs:
+  - "cpa.rights.opt_out_sale"
+  - "ctdpa.uoom.gpc"
+  - "modpa.uoom.gpc"
+source_url: "https://leg.mt.gov/bills/2023/billpdf/SB0384.pdf"
+git_hash: ""
