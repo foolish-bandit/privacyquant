@@ -296,6 +296,8 @@ Node updates, enforcement corpus entries, and new tool PRs are welcome.
 - **Enforcement corpus:** Follow the v2.3 schema in `enforcement_actions.json`; include `violation_theories` from the 48-tag taxonomy.
 - **New tools:** Register in `index.ts`; keep deterministic by default; document in `docs/TOOLS.md`.
 
+Run `npm run validate` from `mcp-server/` before submitting a PR. The script checks node counts, cross-refs, tool registration counts, enforcement corpus integrity, and required field presence. PRs that break validation will fail CI.
+
 ---
 
 ## License

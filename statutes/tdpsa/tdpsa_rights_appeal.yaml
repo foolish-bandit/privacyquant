@@ -22,6 +22,5 @@ contract_signals:
 cross_refs:
   - "vcdpa.rights.appeal"
   - "cpa.rights.appeal"
-  - "ndpa.rights.appeal"
 source_url: "https://capitol.texas.gov/tlodocs/88R/billtext/pdf/HB04.pdf"
 git_hash: ""

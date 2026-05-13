@@ -149,3 +149,18 @@ Do not omit this disclaimer from memos, gap analyses, or DPA review outputs.
 If a user asks about these regimes in combination with US state privacy law, note the
 overlay and handle the state law portion with PrivacyQuant, then flag the sectoral/AI
 layer as requiring a separate resource.
+
+---
+
+## Node and corpus maintenance
+
+Before committing changes to YAML nodes, enforcement corpus entries, or tool registration
+counts, run the validation script from `mcp-server/`:
+
+```
+npm run validate
+```
+
+This checks YAML node counts, cross-ref integrity, tool registration counts, enforcement
+corpus uniqueness and taxonomy coverage, required field presence, and corpus version
+consistency. Fix all failures before opening a PR.

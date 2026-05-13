@@ -6,8 +6,9 @@ import type { StatuteNode, StatuteIndex } from "./types.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// Resolve statutes dir relative to the repo root (two levels up from mcp-server/src/)
+// Resolve paths relative to the repo root (two levels up from mcp-server/src/)
 const STATUTES_DIR = path.resolve(__dirname, "../../statutes");
+const NIST_CROSSWALK_PATH = path.resolve(__dirname, "../../references/nist-controls-mapping.yaml");
 
 function isStatuteNode(obj: unknown): obj is StatuteNode {
   if (typeof obj !== "object" || obj === null) return false;
@@ -15,7 +16,8 @@ function isStatuteNode(obj: unknown): obj is StatuteNode {
   return (
     typeof n.id === "string" &&
     typeof n.statute === "string" &&
-    typeof n.requirement === "string"
+    typeof n.requirement === "string" &&
+    typeof n.section === "string"
   );
 }
 
@@ -90,8 +92,47 @@ export function loadIndex(): StatuteIndex {
     }
   }
 
+  // Merge NIST SP 800-53 crosswalk into nodes that have no inline nist_controls
+  let nistMergeCount = 0;
+  try {
+    const crosswalkRaw = yaml.load(fs.readFileSync(NIST_CROSSWALK_PATH, "utf8"));
+    if (
+      typeof crosswalkRaw === "object" &&
+      crosswalkRaw !== null &&
+      Array.isArray((crosswalkRaw as Record<string, unknown>).mappings)
+    ) {
+      const mappings = (crosswalkRaw as { mappings: unknown[] }).mappings;
+      for (const entry of mappings) {
+        if (
+          typeof entry !== "object" ||
+          entry === null ||
+          typeof (entry as Record<string, unknown>).node_id !== "string" ||
+          !Array.isArray((entry as Record<string, unknown>).nist_800_53)
+        ) {
+          continue;
+        }
+        const { node_id, nist_800_53 } = entry as { node_id: string; nist_800_53: string[] };
+        const node = byId.get(node_id);
+        if (node && !node.nist_controls) {
+          node.nist_controls = nist_800_53;
+          nistMergeCount++;
+        }
+      }
+    } else {
+      process.stderr.write(
+        `PrivacyQuant: NIST crosswalk at ${NIST_CROSSWALK_PATH} is malformed — skipping merge\n`
+      );
+    }
+  } catch (err) {
+    process.stderr.write(
+      `PrivacyQuant: could not load NIST crosswalk (${NIST_CROSSWALK_PATH}): ${err} — skipping merge\n`
+    );
+  }
+
   process.stderr.write(
-    `PrivacyQuant: loaded ${all.length} nodes across ${byStatute.size} statutes\n`
+    `PrivacyQuant: loaded ${all.length} nodes across ${byStatute.size} statutes` +
+    (nistMergeCount > 0 ? `; merged NIST controls into ${nistMergeCount} nodes` : "") +
+    `\n`
   );
 
   return { byId, byStatute, all };

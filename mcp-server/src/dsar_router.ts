@@ -1045,6 +1045,20 @@ const FUTURE_LAW_STATES: Record<string, { statute: string; effective_date: strin
   tn: { statute: "TIPA",    effective_date: "2025-07-01" },
 };
 
+/** Return every node_ref string used in the DSAR router's right-availability data.
+ *  Used by the startup validator to detect stale references after node renames. */
+export function getAllDsarNodeRefs(): string[] {
+  const refs = new Set<string>();
+  for (const statuteRights of Object.values(STATUTE_DATA)) {
+    for (const rightAvailability of Object.values(statuteRights.rights)) {
+      for (const ref of (rightAvailability?.node_refs ?? [])) {
+        refs.add(ref);
+      }
+    }
+  }
+  return [...refs];
+}
+
 export function routeDSAR(
   consumerState: string,
   rightInvoked: RightType

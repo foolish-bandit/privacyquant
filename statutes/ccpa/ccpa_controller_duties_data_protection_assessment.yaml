@@ -47,6 +47,5 @@ cross_refs:
   - "ccpa.controller_duties.cybersecurity_audit"
   - "vcdpa.controller_duties.data_protection_assessment"
   - "cpa.controller_duties.data_protection_assessment"
-  - "modpa.controller_duties.data_protection_assessment"
 source_url: "https://cppa.ca.gov/regulations/ccpa_updates.html"
 git_hash: ""

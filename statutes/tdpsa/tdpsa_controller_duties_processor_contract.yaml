@@ -25,6 +25,5 @@ contract_signals:
 cross_refs:
   - "ccpa.controller_duties.service_provider_contract"
   - "vcdpa.controller_duties.processor_contract"
-  - "ndpa.controller_duties.processor_contract"
 source_url: "https://capitol.texas.gov/tlodocs/88R/billtext/pdf/HB04.pdf"
 git_hash: ""
