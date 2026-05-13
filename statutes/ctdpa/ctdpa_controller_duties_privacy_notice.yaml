@@ -1,0 +1,29 @@
+id: "ctdpa.controller_duties.privacy_notice"
+statute: "CTDPA"
+section: "Conn. Gen. Stat. § 42-520(a)"
+title: "Privacy Notice Requirements"
+effective_date: "2023-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller processes personal data of Connecticut consumers"
+requirement: >
+  Controller must provide a reasonably accessible, clear, and meaningful privacy notice
+  including: categories of PD processed; purposes for processing; how consumers may exercise
+  their rights and appeal denials; categories of PD shared with third parties; categories of
+  third parties; an active contact email address or online mechanism to contact the controller.
+  2023 amendments require specific additional content for known minor consumers and data
+  minimization commitments.
+exceptions: []
+contract_signals:
+  - "privacy notice"
+  - "privacy policy"
+  - "privacy statement"
+  - "data processing disclosure"
+cross_refs:
+  - "ccpa.controller_duties.privacy_notice"
+  - "vcdpa.controller_duties.privacy_notice"
+  - "cpa.controller_duties.privacy_notice"
+source_url: "https://www.cga.ct.gov/2022/ACT/PA/PDF/2022PA-00015-R00SB-00006-PA.PDF"
+git_hash: ""
