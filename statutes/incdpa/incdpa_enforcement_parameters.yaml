@@ -1,0 +1,23 @@
+id: "incdpa.enforcement.parameters"
+statute: "INCDPA"
+section: "Ind. Code § 24-15"
+title: "Enforcement — AG; Civil Penalties"
+effective_date: "2026-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller or processor violates INCDPA"
+requirement: >
+  Enforced by the Indiana AG. No private right of action. Civil penalty up to $7,500 per violation.
+  30-day cure period at enactment — verify current status against AG guidance.
+exceptions: []
+contract_signals:
+  - "Indiana Attorney General"
+  - "civil penalty"
+  - "INCDPA violation"
+cross_refs:
+  - "vcdpa.enforcement.parameters"
+  - "kcdpa.enforcement.parameters"
+source_url: "https://iga.in.gov/legislative/2023/bills/senate/5/details"
+git_hash: ""
