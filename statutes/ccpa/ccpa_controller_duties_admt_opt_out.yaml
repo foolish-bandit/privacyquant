@@ -1,0 +1,52 @@
+id: "ccpa.controller_duties.admt_opt_out"
+statute: "CCPA/CPRA"
+section: "Cal. Code Regs. tit. 11, §§ 7200-7222; Cal. Civ. Code § 1798.185(a)(16)"
+title: "Automated Decision-Making Technology (ADMT) — Notice, Opt-Out, and Access Rights"
+effective_date: "2027-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: business
+trigger: >
+  Business uses ADMT — defined as any technology that processes PI and uses computation to replace
+  or substantially replace individualized human decision-making — to make 'significant decisions'
+  concerning a consumer. Significant decisions are decisions resulting in provision or denial of:
+  financial/lending services, housing, education enrollment/opportunities, employment or independent
+  contracting opportunities or compensation, or healthcare services.
+  Targeted advertising alone does NOT qualify as a 'significant decision.'
+requirement: >
+  Businesses must comply with ADMT consumer rights requirements beginning January 1, 2027.
+  ADMT deployed on or after January 1, 2027 must comply prior to first use.
+  Required obligations:
+  1. Pre-use notice at or before the point of data collection — plain language disclosure of:
+     - That ADMT will be used to make a significant decision about the consumer
+     - How the ADMT made or will make the decision and what effects result
+     - Categories of PI used by the ADMT
+     - The right to opt out and how to exercise it
+     - The right to access information about the ADMT
+  2. Opt-out right: consumers may direct the business not to use ADMT for significant decisions
+     about them; business must honor within response timeline
+  3. Access right (§ 7222): consumers may request access to the ADMT — including information
+     about the logic and likely outcomes of the specific decision made about them
+  Additionally, businesses must conduct a risk assessment before deploying ADMT for significant
+  decisions and upon any material change (see ccpa.controller_duties.data_protection_assessment).
+exceptions:
+  - "Processing that does not replace or substantially replace individualized human decision-making"
+  - "Targeted advertising (not a 'significant decision' under the regulations)"
+  - "Security research and fraud prevention uses (verify current regulatory guidance)"
+contract_signals:
+  - "automated decision-making"
+  - "ADMT"
+  - "automated decision-making technology"
+  - "significant decision"
+  - "algorithmic decision"
+  - "opt out of automated"
+  - "right to access ADMT"
+  - "AI decision-making"
+cross_refs:
+  - "ccpa.controller_duties.data_protection_assessment"
+  - "ccpa.rights.opt_out_sale_sharing"
+  - "cpa.controller_duties.data_protection_assessment"
+  - "mcdpa_mn.rights.question_profiling"
+source_url: "https://cppa.ca.gov/regulations/ccpa_updates.html"
+git_hash: ""
