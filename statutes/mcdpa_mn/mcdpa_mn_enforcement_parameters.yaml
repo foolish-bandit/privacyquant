@@ -1,0 +1,26 @@
+id: "mcdpa_mn.enforcement.parameters"
+statute: "MCDPA-MN"
+section: "Minn. Stat. § 325O"
+title: "Enforcement — AG; 30-Day Cure for Entities with Documented Programs"
+effective_date: "2025-07-31"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller or processor violates MCDPA-MN"
+requirement: >
+  Enforced by the Minnesota AG. No private right of action. Civil penalty up to $7,500 per violation.
+  30-day cure period for entities with documented written privacy programs (incentivizes documentation).
+  The written privacy program must include reasonable administrative, technical, and physical safeguards.
+exceptions: []
+contract_signals:
+  - "Minnesota Attorney General"
+  - "civil penalty"
+  - "MCDPA violation"
+  - "written privacy program"
+  - "documented privacy program"
+cross_refs:
+  - "tipa.affirmative_defense.nist_pf"
+  - "vcdpa.enforcement.parameters"
+source_url: "https://www.revisor.mn.gov/laws/2024/0/Session+Law/Chapter/123/"
+git_hash: ""
