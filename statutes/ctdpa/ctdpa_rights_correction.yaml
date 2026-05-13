@@ -1,0 +1,29 @@
+id: "ctdpa.rights.correction"
+statute: "CTDPA"
+section: "Conn. Gen. Stat. § 42-518(a)(2)"
+title: "Right to Correction"
+effective_date: "2023-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Consumer submits an authenticated request to correct inaccurate personal data"
+requirement: >
+  Controller must correct inaccurate PD about the consumer, taking into account the nature
+  of the PD and the purposes of processing. Response deadline: 45 days (extendable once
+  by 45 days with notice).
+exceptions:
+  - "Request is manifestly unfounded, excessive, or repetitive"
+contract_signals:
+  - "right to rectification"
+  - "right to correction"
+  - "correct inaccurate data"
+  - "rectify personal data"
+  - "data correction request"
+cross_refs:
+  - "ccpa.rights.correction"
+  - "vcdpa.rights.correction"
+  - "cpa.rights.correction"
+  - "modpa.rights.correction"
+source_url: "https://www.cga.ct.gov/2022/ACT/PA/PDF/2022PA-00015-R00SB-00006-PA.PDF"
+git_hash: ""
