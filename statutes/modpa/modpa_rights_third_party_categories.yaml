@@ -1,0 +1,26 @@
+id: "modpa.rights.third_party_categories"
+statute: "MODPA"
+section: "Md. Code Com. Law § 14-4605(a)(6)"
+title: "Right to List of Categories of Third Parties"
+effective_date: "2025-10-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Consumer requests disclosure of third parties to whom controller has disclosed personal data"
+requirement: >
+  Maryland consumers have the right to obtain a list of the categories of third parties to whom
+  the controller has disclosed PD. (Categories, not specific named entities — contrast with
+  Oregon and Minnesota which require specific named third parties.)
+exceptions: []
+contract_signals:
+  - "categories of third parties"
+  - "third-party disclosure"
+  - "data recipients"
+  - "third-party categories"
+cross_refs:
+  - "ocpa.rights.specific_third_parties"
+  - "mcdpa_mn.rights.specific_third_parties"
+  - "dpdpa.rights.third_party_categories"
+source_url: "https://mgaleg.maryland.gov/2024RS/Chapters_noln/CH_182_sb0541e.pdf"
+git_hash: ""
