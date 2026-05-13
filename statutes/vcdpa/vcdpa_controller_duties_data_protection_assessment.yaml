@@ -1,0 +1,26 @@
+id: "vcdpa.controller_duties.data_protection_assessment"
+statute: "VCDPA"
+section: "Va. Code § 59.1-578(C)"
+title: "Data Protection Assessment"
+effective_date: "2023-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller engages in processing activities that present a heightened risk of harm to consumers including sale, targeted advertising, sensitive data processing, profiling with significant effects"
+requirement: >
+  Controller must conduct and document a data protection assessment for each processing activity
+  that presents heightened risk of harm. Assessment must identify and weigh benefits against
+  potential risks. Must be retained and made available to the AG upon request.
+exceptions: []
+contract_signals:
+  - "data protection assessment"
+  - "DPIA"
+  - "risk assessment"
+  - "data protection impact assessment"
+  - "high-risk processing"
+cross_refs:
+  - "ccpa.controller_duties.data_protection_assessment"
+  - "cpa.controller_duties.data_protection_assessment"
+source_url: "https://law.lis.virginia.gov/vacode/title59.1/chapter53/section59.1-578/"
+git_hash: ""
