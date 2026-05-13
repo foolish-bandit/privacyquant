@@ -1,0 +1,26 @@
+id: "nhdpa.uoom.gpc"
+statute: "NHDPA"
+section: "N.H. Rev. Stat. § 507-H"
+title: "Universal Opt-Out Mechanism Required at Effective Date"
+effective_date: "2025-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller sells personal data or processes for targeted advertising"
+requirement: >
+  Controllers must recognize and honor universal opt-out mechanism signals including GPC.
+  Required at the law's effective date (January 1, 2025) — among the earliest UOOM mandates.
+  60-day cure period at enactment.
+exceptions: []
+contract_signals:
+  - "Global Privacy Control"
+  - "GPC"
+  - "universal opt-out"
+  - "UOOM"
+cross_refs:
+  - "dpdpa.uoom.gpc"
+  - "ctdpa.uoom.gpc"
+  - "cpa.rights.opt_out_sale"
+source_url: "https://www.gencourt.state.nh.us/legislation/2024/HB0314.html"
+git_hash: ""
