@@ -1,0 +1,35 @@
+id: "mcdpa.applicability.threshold"
+statute: "MCDPA"
+section: "Mont. Code § 30-14-2802"
+title: "Applicability Threshold — Lowest Primary Tier (50k)"
+effective_date: "2024-10-01"
+supersedes: []
+amended_by: []
+requirement_type: threshold
+obligation_bearer: controller
+trigger: "Person conducting business in Montana or producing products/services targeted to Montana residents"
+requirement: >
+  Applies to persons conducting business in Montana or targeting MT residents AND:
+  (a) controls/processes PD of at least 50,000 MT consumers (excluding solely-payment-transaction data); OR
+  (b) controls/processes PD of at least 25,000 MT consumers AND derives over 25% of gross revenue from sale of PD.
+  Note: 50,000 primary-tier threshold is the lowest 'standard' threshold of any state (reflecting
+  Montana's smaller population). Mid-size businesses that escape 100k thresholds elsewhere may be
+  in scope in Montana.
+exceptions:
+  - "Government entities"
+  - "Non-profits"
+  - "Higher education"
+  - "HIPAA covered entities/BAs (entity-level)"
+  - "GLBA-covered financial institutions (entity-level)"
+  - "Certain insurers"
+  - "Employment data and B2B contacts"
+contract_signals:
+  - "Montana Consumer Data Privacy Act"
+  - "MCDPA"
+  - "Montana residents"
+  - "Mont. Code § 30-14-28"
+cross_refs:
+  - "vcdpa.applicability.threshold"
+  - "dpdpa.applicability.threshold"
+source_url: "https://leg.mt.gov/bills/2023/billpdf/SB0384.pdf"
+git_hash: ""
