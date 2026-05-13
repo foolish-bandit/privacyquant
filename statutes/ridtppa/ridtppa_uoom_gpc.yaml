@@ -1,0 +1,25 @@
+id: "ridtppa.uoom.gpc"
+statute: "RIDTPPA"
+section: "R.I. Gen. Laws § 6-48.1"
+title: "Universal Opt-Out Mechanism Required at Effective Date"
+effective_date: "2026-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller sells personal data or processes for targeted advertising"
+requirement: >
+  Controllers must recognize and honor universal opt-out mechanism signals including GPC.
+  Required at the law's effective date (January 1, 2026).
+exceptions: []
+contract_signals:
+  - "Global Privacy Control"
+  - "GPC"
+  - "universal opt-out"
+  - "UOOM"
+cross_refs:
+  - "dpdpa.uoom.gpc"
+  - "mcdpa_mn.uoom.gpc"
+  - "modpa.uoom.gpc"
+source_url: "https://webserver.rilegislature.gov/BillText/BillText24/HouseText24/H7787A.pdf"
+git_hash: ""
