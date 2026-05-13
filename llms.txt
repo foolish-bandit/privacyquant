@@ -70,7 +70,7 @@ tags. All content is MIT-licensed. Statutory text is public law.
 
 ## MCP integration
 
-PrivacyQuant exposes 16 MCP tools for programmatic access. Install via Claude Code:
+PrivacyQuant exposes 18 MCP tools for programmatic access. Install via Claude Code:
 
 ```
 /plugin marketplace add foolish-bandit/privacyquant
