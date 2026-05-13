@@ -1,0 +1,35 @@
+id: "ccpa.rights.access"
+statute: "CCPA/CPRA"
+section: "Cal. Civ. Code § 1798.110"
+title: "Right to Know / Access"
+effective_date: "2020-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: business
+trigger: "Consumer submits a verifiable consumer request to know categories or specific pieces of PI collected"
+requirement: >
+  Upon a verifiable consumer request, the business must disclose to the consumer:
+  the categories of PI it has collected; the categories of sources; the business or commercial
+  purpose for collecting, selling, or sharing; the categories of third parties to whom PI is
+  disclosed; and the specific pieces of PI collected about the consumer.
+  Response deadline: 45 calendar days (extendable once by 45 days with notice).
+  Must be provided free of charge, twice per 12-month period.
+exceptions:
+  - "PI collected for a single, one-time transaction if not sold or disclosed"
+  - "PI resubmitted as part of a new request within 12 months"
+  - "Impossible or disproportionate effort where PI has been de-identified"
+contract_signals:
+  - "right to know"
+  - "access request"
+  - "right of access"
+  - "data subject access request"
+  - "DSAR"
+  - "verifiable consumer request"
+  - "categories of personal information"
+cross_refs:
+  - "vcdpa.rights.access"
+  - "cpa.rights.access"
+  - "ctdpa.rights.access"
+source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=1798.110.&lawCode=CIV"
+git_hash: ""

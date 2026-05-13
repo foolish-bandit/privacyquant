@@ -1,0 +1,34 @@
+id: "ccpa.rights.limit_sensitive_pi"
+statute: "CCPA/CPRA"
+section: "Cal. Civ. Code § 1798.121; Cal. Code Regs. tit. 11, § 7027"
+title: "Right to Limit Use of Sensitive Personal Information"
+effective_date: "2023-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: business
+trigger: "Business collects or uses sensitive personal information beyond what is necessary to perform requested services"
+requirement: >
+  Consumers may direct a business to limit its use and disclosure of sensitive PI to that necessary
+  to perform the services or provide the goods reasonably expected by an average consumer who
+  requests those goods or services. The business must provide a 'Limit the Use of My Sensitive
+  Personal Information' link on its homepage (or a combined opt-out/limit link). Processing
+  outside the limit requires either the consumer's express consent or an enumerated exception.
+exceptions:
+  - "Providing requested goods or services"
+  - "Preventing, detecting, or investigating security incidents"
+  - "Resisting malicious, deceptive, fraudulent, or illegal actions"
+  - "Ensuring physical safety of natural persons"
+  - "Short-term, transient use not for building consumer profiles"
+  - "Performing services on behalf of the business (e.g., customer service)"
+  - "Verifying or maintaining quality and safety of a product or service"
+contract_signals:
+  - "limit use of sensitive personal information"
+  - "sensitive PI"
+  - "sensitive personal information opt-out"
+  - "right to limit"
+cross_refs:
+  - "vcdpa.sensitive_data.consent"
+  - "cpa.sensitive_data.consent"
+source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=1798.121.&lawCode=CIV"
+git_hash: ""

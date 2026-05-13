@@ -1,0 +1,27 @@
+id: "ccpa.rights.portability"
+statute: "CCPA/CPRA"
+section: "Cal. Civ. Code § 1798.130(a)(2)"
+title: "Right to Data Portability"
+effective_date: "2020-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: business
+trigger: "Consumer submits verifiable request to receive specific pieces of PI the business has collected"
+requirement: >
+  The business must provide the specific pieces of PI the consumer has requested in a portable,
+  readily usable format that allows the consumer to transmit the PI to another entity without
+  hindrance. Format must be machine-readable where technically feasible.
+exceptions:
+  - "Trade secrets need not be disclosed if doing so would reveal trade secret information"
+contract_signals:
+  - "data portability"
+  - "portable format"
+  - "machine-readable"
+  - "transmit to another entity"
+  - "right to data portability"
+cross_refs:
+  - "vcdpa.rights.portability"
+  - "cpa.rights.portability"
+source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=1798.130.&lawCode=CIV"
+git_hash: ""

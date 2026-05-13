@@ -1,0 +1,38 @@
+id: "ccpa.applicability.threshold"
+statute: "CCPA/CPRA"
+section: "Cal. Civ. Code § 1798.140(d)"
+title: "Applicability Threshold"
+effective_date: "2020-01-01"
+supersedes: []
+amended_by: []
+requirement_type: threshold
+obligation_bearer: business
+trigger: "For-profit entity doing business in California"
+requirement: >
+  A for-profit entity is subject if it does business in California, alone or jointly determines
+  purposes and means of processing California consumers' PI, AND meets ANY ONE of:
+  (a) annual gross revenues exceeding $25 million (inflation-adjusted; confirm current figure);
+  (b) annually buys, sells, or shares PI of 100,000 or more consumers or households;
+  (c) derives 50% or more of annual revenues from selling or sharing consumers' PI.
+  Also covers entities controlled by, controlling, or in a joint venture (≥40% common ownership)
+  with a covered business that processes CA PI under shared branding.
+exceptions:
+  - "Most non-profits (verify current amendment activity)"
+  - "HIPAA-covered data (data-level)"
+  - "GLBA-covered data (data-level)"
+  - "FCRA-covered data (data-level)"
+  - "DPPA-covered data (data-level)"
+  - "De-identified or aggregate consumer information"
+contract_signals:
+  - "California Consumer Privacy Act"
+  - "CCPA"
+  - "CPRA"
+  - "California Privacy Rights Act"
+  - "California residents"
+  - "Cal. Civ. Code § 1798"
+cross_refs:
+  - "vcdpa.applicability.threshold"
+  - "cpa.applicability.threshold"
+  - "ctdpa.applicability.threshold"
+source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=1798.140.&lawCode=CIV"
+git_hash: ""

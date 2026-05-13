@@ -1,0 +1,33 @@
+id: "ccpa.controller_duties.service_provider_contract"
+statute: "CCPA/CPRA"
+section: "Cal. Civ. Code § 1798.140(ag); Cal. Code Regs. tit. 11, § 7051"
+title: "Service Provider and Contractor Contract Requirements"
+effective_date: "2023-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: business
+trigger: "Business discloses personal information to a service provider or contractor for a business purpose"
+requirement: >
+  The written contract with a service provider or contractor must specify that the service provider
+  or contractor: processes PI only for the business purposes specified in the contract; retains,
+  uses, or discloses PI only as directed; does not sell or share PI; does not combine PI received
+  with PI received from other sources except as permitted; grants the business the right to audit
+  and monitor compliance; certifies it understands and will comply with the restrictions; and
+  subcontracts only to entities meeting the same obligations. The CCPA contract requirements
+  are the most prescriptive of any US state.
+exceptions: []
+contract_signals:
+  - "service provider agreement"
+  - "data processing agreement"
+  - "DPA"
+  - "subprocessor"
+  - "business purpose"
+  - "processor contract"
+  - "CCPA service provider"
+  - "contractor agreement"
+cross_refs:
+  - "vcdpa.controller_duties.processor_contract"
+  - "cpa.controller_duties.processor_contract"
+source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=1798.140.&lawCode=CIV"
+git_hash: ""

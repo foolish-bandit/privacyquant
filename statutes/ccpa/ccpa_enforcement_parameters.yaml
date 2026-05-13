@@ -1,0 +1,30 @@
+id: "ccpa.enforcement.parameters"
+statute: "CCPA/CPRA"
+section: "Cal. Civ. Code §§ 1798.155, 1798.199.90; Cal. Bus. & Prof. Code § 17206"
+title: "Enforcement — CPPA and AG; Civil Penalties"
+effective_date: "2023-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: business
+trigger: "Business violates CCPA/CPRA or implementing regulations"
+requirement: >
+  The California Privacy Protection Agency (CPPA) and California Attorney General have concurrent
+  enforcement authority. Civil penalties: up to $2,500 per violation; up to $7,500 per intentional
+  violation or violation involving a known minor. No mandatory cure period as of Jan 2023 (CPPA has
+  discretion to provide cure opportunity). Private right of action available under § 1798.150 for
+  data breaches resulting from failure to implement reasonable security — up to $750 per consumer
+  per incident or actual damages, whichever is greater, plus injunctive relief and attorney fees.
+exceptions: []
+contract_signals:
+  - "CPPA"
+  - "California Privacy Protection Agency"
+  - "California Attorney General"
+  - "civil penalty"
+  - "CCPA violation"
+  - "data breach notification"
+cross_refs:
+  - "vcdpa.enforcement.parameters"
+  - "cpa.enforcement.parameters"
+source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=1798.155.&lawCode=CIV"
+git_hash: ""

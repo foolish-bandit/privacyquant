@@ -1,0 +1,44 @@
+id: "ccpa.sensitive_data.categories"
+statute: "CCPA/CPRA"
+section: "Cal. Civ. Code § 1798.140(ae)"
+title: "Sensitive Personal Information — Categories"
+effective_date: "2023-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: business
+trigger: "Business collects, uses, discloses, or otherwise processes any category of sensitive personal information"
+requirement: >
+  The following categories constitute sensitive personal information under CCPA/CPRA and trigger
+  the right to limit (§ 1798.121) and enhanced disclosure obligations:
+  government identifiers (SSN, driver's license, passport, state ID);
+  complete financial account number combined with access credentials;
+  precise geolocation;
+  racial or ethnic origin;
+  religious or philosophical beliefs;
+  union membership;
+  contents of mail, email, or text messages unless the business is the intended recipient;
+  genetic data;
+  biometric data processed for the purpose of uniquely identifying a consumer;
+  PI concerning health;
+  PI concerning sex life or sexual orientation;
+  citizenship or immigration status.
+  Note: unlike most other states, CA uses a 'right to limit' structure — NOT opt-in consent.
+exceptions:
+  - "Aggregate or de-identified information"
+  - "Publicly available information (as defined)"
+contract_signals:
+  - "sensitive personal information"
+  - "sensitive PI"
+  - "biometric data"
+  - "precise geolocation"
+  - "racial or ethnic origin"
+  - "health information"
+  - "genetic data"
+  - "government identifier"
+cross_refs:
+  - "vcdpa.sensitive_data.consent"
+  - "cpa.sensitive_data.consent"
+  - "modpa.sensitive_data.ban_on_sale"
+source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=1798.140.&lawCode=CIV"
+git_hash: ""

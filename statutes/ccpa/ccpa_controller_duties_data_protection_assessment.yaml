@@ -1,0 +1,33 @@
+id: "ccpa.controller_duties.data_protection_assessment"
+statute: "CCPA/CPRA"
+section: "Cal. Civ. Code § 1798.185(a)(15); Cal. Code Regs. tit. 11, §§ 7150-7158"
+title: "Data Protection Assessment (Risk Assessment)"
+effective_date: "2024-03-29"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: business
+trigger: "Business conducts processing activities that present significant risk to consumer privacy including sale, sharing, profiling with significant effects, processing sensitive PI, automated decision-making"
+requirement: >
+  Before initiating high-risk processing, the business must conduct and document a risk assessment
+  (referred to as a 'privacy risk assessment' in CPPA regs) that identifies and weighs the
+  benefits of the processing against the risks to consumers. Assessments must be retained and
+  made available to the CPPA upon request. Automated Decision-making Technology (ADMT) regs
+  impose additional requirements effective March 29, 2025 for profiling, ADM in consequential
+  decisions (employment, housing, credit, health, education, access to services).
+exceptions:
+  - "Processing already subject to a substantially similar assessment under another applicable law"
+contract_signals:
+  - "data protection assessment"
+  - "privacy risk assessment"
+  - "DPIA"
+  - "data protection impact assessment"
+  - "risk assessment"
+  - "automated decision-making"
+  - "ADMT"
+cross_refs:
+  - "vcdpa.controller_duties.data_protection_assessment"
+  - "cpa.controller_duties.data_protection_assessment"
+  - "modpa.controller_duties.data_protection_assessment"
+source_url: "https://cppa.ca.gov/regulations/"
+git_hash: ""

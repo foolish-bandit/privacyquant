@@ -1,0 +1,29 @@
+id: "ccpa.controller_duties.privacy_notice"
+statute: "CCPA/CPRA"
+section: "Cal. Civ. Code § 1798.130(a)(5); Cal. Code Regs. tit. 11, § 7011"
+title: "Privacy Policy / Privacy Notice Requirements"
+effective_date: "2023-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: business
+trigger: "Business processes personal information of California consumers"
+requirement: >
+  The business must maintain a comprehensive privacy policy that includes at minimum:
+  categories of PI collected and the purposes; categories of PI sold, shared, or disclosed and
+  the categories of third parties; consumer rights and how to exercise them (including two
+  designated methods for submitting requests); how to submit an appeal; the effective date and
+  how the business will notify consumers of material changes; categories of sources; retention
+  period or criteria for each category of PI; and whether any financial incentives are offered.
+  The policy must be updated at least every 12 months.
+exceptions: []
+contract_signals:
+  - "privacy policy"
+  - "privacy notice"
+  - "privacy statement"
+  - "data processing notice"
+cross_refs:
+  - "vcdpa.controller_duties.privacy_notice"
+  - "cpa.controller_duties.privacy_notice"
+source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=1798.130.&lawCode=CIV"
+git_hash: ""

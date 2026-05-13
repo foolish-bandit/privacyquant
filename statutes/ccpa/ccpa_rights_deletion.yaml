@@ -1,0 +1,38 @@
+id: "ccpa.rights.deletion"
+statute: "CCPA/CPRA"
+section: "Cal. Civ. Code § 1798.105"
+title: "Right to Deletion"
+effective_date: "2020-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: business
+trigger: "Consumer submits a verifiable consumer request to delete their personal information"
+requirement: >
+  Upon a verifiable consumer request, the business must delete the consumer's PI from its records
+  and direct service providers and contractors to delete the PI from their records.
+  Response deadline: 45 calendar days (extendable once by 45 days with notice).
+exceptions:
+  - "Complete the transaction for which PI was collected"
+  - "Detect security incidents; protect against malicious, deceptive, fraudulent, or illegal activity"
+  - "Debug products to identify and repair errors"
+  - "Exercise free speech or another legal right"
+  - "Comply with California Electronic Communications Privacy Act"
+  - "Engage in public or peer-reviewed scientific, historical, or statistical research in the public interest"
+  - "Enable solely internal uses reasonably aligned with consumer expectations"
+  - "Comply with a legal obligation"
+  - "Otherwise use PI internally in a lawful manner compatible with the context in which the consumer provided it"
+contract_signals:
+  - "right to erasure"
+  - "right to deletion"
+  - "delete personal data"
+  - "data deletion request"
+  - "erase personal information"
+  - "right to be forgotten"
+cross_refs:
+  - "vcdpa.rights.deletion"
+  - "cpa.rights.deletion"
+  - "ctdpa.rights.deletion"
+  - "modpa.rights.deletion"
+source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=1798.105.&lawCode=CIV"
+git_hash: ""

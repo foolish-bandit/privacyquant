@@ -1,0 +1,36 @@
+id: "ccpa.sale_sharing.distinction"
+statute: "CCPA/CPRA"
+section: "Cal. Civ. Code §§ 1798.140(ad), 1798.140(ah)"
+title: "Sale vs. Sharing Distinction"
+effective_date: "2023-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: business
+trigger: "Business transfers personal information to a third party for monetary consideration or for cross-context behavioral advertising"
+requirement: >
+  'Sale' (§ 1798.140(ad)): selling, renting, releasing, disclosing, disseminating, making available,
+  transferring, or otherwise communicating PI to a third party for monetary or other valuable
+  consideration. 'Sharing' (§ 1798.140(ah)): disclosing PI to a third party for cross-context
+  behavioral advertising, whether or not for monetary or other valuable consideration.
+  A transfer to a third party via Meta/Google/TikTok pixels for retargeting constitutes 'sharing'
+  and likely also 'sale.' Both sale and sharing trigger the opt-out obligation and required disclosures.
+  Service providers and contractors receiving PI under a compliant contract are neither sale nor sharing.
+exceptions:
+  - "Transfers to service providers/contractors acting under compliant written contract"
+  - "Consumers directing transfer to a third party intentionally"
+  - "Disclosures to third parties as part of a merger/acquisition where recipient is bound"
+contract_signals:
+  - "sale of personal information"
+  - "sharing for cross-context behavioral advertising"
+  - "cross-context behavioral advertising"
+  - "third-party advertising"
+  - "retargeting"
+  - "Meta Pixel"
+  - "advertising pixel"
+  - "valuable consideration"
+cross_refs:
+  - "vcdpa.sale_targeted_advertising.distinction"
+  - "cpa.sale_targeted_advertising.distinction"
+source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=1798.140.&lawCode=CIV"
+git_hash: ""

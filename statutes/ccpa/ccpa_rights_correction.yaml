@@ -1,0 +1,29 @@
+id: "ccpa.rights.correction"
+statute: "CCPA/CPRA"
+section: "Cal. Civ. Code § 1798.106"
+title: "Right to Correction"
+effective_date: "2023-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: business
+trigger: "Consumer submits a verifiable consumer request to correct inaccurate personal information"
+requirement: >
+  Upon a verifiable consumer request, the business must use commercially reasonable efforts to
+  correct inaccurate PI held about the consumer. The business must also direct service providers
+  and contractors to correct the inaccurate PI. Response deadline: 45 calendar days.
+exceptions:
+  - "Business determines, with supporting documentation, that the consumer's request is fraudulent"
+  - "Keeping original version necessary for legal, audit, or tax purposes"
+contract_signals:
+  - "right to rectification"
+  - "right to correction"
+  - "correct inaccurate data"
+  - "rectify personal information"
+  - "data correction request"
+cross_refs:
+  - "vcdpa.rights.correction"
+  - "cpa.rights.correction"
+  - "ctdpa.rights.correction"
+source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=1798.106.&lawCode=CIV"
+git_hash: ""

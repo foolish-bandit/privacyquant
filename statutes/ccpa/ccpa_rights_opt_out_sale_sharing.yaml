@@ -1,0 +1,35 @@
+id: "ccpa.rights.opt_out_sale_sharing"
+statute: "CCPA/CPRA"
+section: "Cal. Civ. Code § 1798.120"
+title: "Right to Opt Out of Sale or Sharing"
+effective_date: "2020-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: business
+trigger: "Business sells or shares consumers' personal information"
+requirement: >
+  Consumers have the right to direct a business not to sell or share their PI.
+  The business must provide a clear and conspicuous 'Do Not Sell or Share My Personal Information'
+  link on its homepage and honor opt-out requests. The business must also recognize opt-out
+  preference signals (e.g., Global Privacy Control) as a valid opt-out (CCPA Regs § 7025).
+  Once opted out, the business may not sell or share the PI unless the consumer subsequently
+  provides express authorization.
+exceptions:
+  - "Transfers to service providers or contractors acting under a written contract limiting processing"
+  - "PI disclosed or transferred as part of a merger, acquisition, or similar transaction where recipient is bound by the same obligations"
+contract_signals:
+  - "do not sell"
+  - "do not sell or share"
+  - "opt-out of sale"
+  - "opt out of sharing"
+  - "Global Privacy Control"
+  - "GPC"
+  - "sale of personal information"
+  - "sharing for cross-context behavioral advertising"
+cross_refs:
+  - "vcdpa.rights.opt_out_sale"
+  - "cpa.rights.opt_out_sale"
+  - "ctdpa.rights.opt_out_sale"
+source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=1798.120.&lawCode=CIV"
+git_hash: ""

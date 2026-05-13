@@ -1,0 +1,30 @@
+id: "ccpa.controller_duties.notice_at_collection"
+statute: "CCPA/CPRA"
+section: "Cal. Code Regs. tit. 11, § 7012"
+title: "Notice at Collection"
+effective_date: "2023-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: business
+trigger: "Business collects personal information from a California consumer"
+requirement: >
+  At or before the point of collection, the business must provide a notice that includes:
+  the categories of PI to be collected and the purposes for which each category will be used;
+  whether PI is sold or shared; a link to the privacy policy; and, if applicable, a link to
+  the Do Not Sell or Share page. The notice must be accessible from the page where collection
+  occurs, be written in plain language, and be available in each language in which the business
+  provides services.
+exceptions:
+  - "PI collected in the course of employment (limited carve-outs apply)"
+  - "PI collected from employees for HR purposes subject to separate notice"
+contract_signals:
+  - "notice at collection"
+  - "notice at point of collection"
+  - "collection notice"
+  - "privacy notice at collection"
+cross_refs:
+  - "cpa.controller_duties.privacy_notice"
+  - "vcdpa.controller_duties.privacy_notice"
+source_url: "https://govt.westlaw.com/calregs/Document/I5E4ED6507A6711EDB3C9A1C0CF44ED9D"
+git_hash: ""
