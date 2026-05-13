@@ -1,0 +1,30 @@
+id: "njdpa.sensitive_data.expanded_categories"
+statute: "NJDPA"
+section: "N.J. Stat. § 56:8-166.4"
+title: "Sensitive Data — Expanded Categories Including Financial Information and Trans/NB Status"
+effective_date: "2025-01-15"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller intends to process sensitive data including NJ-specific categories"
+requirement: >
+  Opt-in consent required before processing sensitive data.
+  NJ-specific additions to standard sensitive categories:
+  (1) financial information: account number, credit/debit card number combined with security/access code
+  or password; (2) status as transgender or non-binary.
+  Controllers whose sensitive-data consent programs are built for other states must audit their
+  definitions to ensure NJ's expanded categories are covered.
+exceptions: []
+contract_signals:
+  - "sensitive data"
+  - "financial account information"
+  - "transgender"
+  - "non-binary"
+  - "opt-in consent"
+  - "sensitive personal data"
+cross_refs:
+  - "ocpa.sensitive_data.expanded_categories"
+  - "vcdpa.sensitive_data.consent"
+source_url: "https://www.njleg.state.nj.us/Bills/2022/PL23/266_.PDF"
+git_hash: ""
