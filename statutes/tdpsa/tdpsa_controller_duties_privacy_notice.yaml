@@ -1,0 +1,29 @@
+id: "tdpsa.controller_duties.privacy_notice"
+statute: "TDPSA"
+section: "Tex. Bus. & Com. Code § 541.052(a)"
+title: "Privacy Notice Requirements"
+effective_date: "2024-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller processes personal data of Texas consumers"
+requirement: >
+  Controller must provide a reasonably accessible, clear, and meaningful privacy notice
+  including: categories of PD processed; purposes for processing; how consumers may exercise
+  their rights; categories of PD sold or used for targeted advertising; categories of third
+  parties to whom PD is disclosed; an active contact email or online mechanism.
+  If the controller sells sensitive PD, specific verbatim notice language is required
+  (see tdpsa.controller_duties.sensitive_data_notice).
+exceptions: []
+contract_signals:
+  - "privacy notice"
+  - "privacy policy"
+  - "privacy statement"
+  - "data processing disclosure"
+cross_refs:
+  - "ccpa.controller_duties.privacy_notice"
+  - "vcdpa.controller_duties.privacy_notice"
+  - "tdpsa.controller_duties.sensitive_data_notice"
+source_url: "https://capitol.texas.gov/tlodocs/88R/billtext/pdf/HB04.pdf"
+git_hash: ""
