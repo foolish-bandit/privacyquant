@@ -1,0 +1,26 @@
+id: "njdpa.uoom.gpc"
+statute: "NJDPA"
+section: "N.J. Stat. § 56:8-166.8"
+title: "Universal Opt-Out Mechanism Required"
+effective_date: "2025-07-15"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller sells personal data or processes for targeted advertising"
+requirement: >
+  Effective July 15, 2025 (six months after effective date), controllers must recognize and honor
+  universal opt-out preference signals including GPC.
+exceptions: []
+contract_signals:
+  - "Global Privacy Control"
+  - "GPC"
+  - "universal opt-out"
+  - "UOOM"
+  - "opt-out preference signal"
+cross_refs:
+  - "ctdpa.uoom.gpc"
+  - "modpa.uoom.gpc"
+  - "cpa.rights.opt_out_sale"
+source_url: "https://www.njleg.state.nj.us/Bills/2022/PL23/266_.PDF"
+git_hash: ""
