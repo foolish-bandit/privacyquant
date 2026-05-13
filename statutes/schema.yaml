@@ -25,8 +25,9 @@ contract_signals:             # keywords/phrases appearing in DPAs/contracts tha
 data_categories:              # optional: IAB/Fideslang data category keys that trigger this node
   - string                    # dot-notation IAB taxonomy key, e.g. "user.biometric", "user.health_and_medical"
                               # see references/fideslang-mapping.yaml for full cross-reference
-nist_controls:                # optional: NIST SP 800-53 Rev. 5 control IDs relevant to this node
-  - string                    # e.g. "IP-2", "DM-2", "PT-2"; crosswalk aid, not proof of compliance
+nist_controls:                # optional: NIST SP 800-53 Rev. 5 / NIST Privacy Framework control IDs
+  - string                    # from the CCPA-to-NIST crosswalk and SCF; e.g. "IP-1", "IP-2", "AC-21"
+                              # see references/nist-controls-mapping.yaml for full crosswalk
 cross_refs:                   # IDs of related requirements in other statutes
   - string
 source_url: string            # official legislative source URL
