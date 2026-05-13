@@ -133,21 +133,21 @@ export async function evaluateClause(
   try {
     parsed = JSON.parse(cleaned);
   } catch {
-    // Fallback: return a single error assessment rather than crashing the tool
+    process.stderr.write(`[clause_evaluator] JSON parse failed. Raw response:\n${rawText}\n`);
     return {
       clause_excerpt: clauseText.slice(0, 200),
       assessments: nodes.map((n) => ({
         node_id: n.id,
         statute: n.statute,
         title: n.title,
-        verdict: "YELLOW" as Verdict,
-        satisfied: "Unable to parse evaluation response",
-        gap: "Evaluation failed — review manually against this node",
+        verdict: "RED" as Verdict,
+        satisfied: "Nothing",
+        gap: `Evaluation failed — JSON parse error. Raw response (first 500 chars): ${rawText.slice(0, 500)}`,
         suggested_redline: "",
         requirement_summary: n.requirement.slice(0, 200),
       })),
-      overall_verdict: "YELLOW",
-      top_priority: "Manual review required — automated evaluation failed",
+      overall_verdict: "RED",
+      top_priority: "Automated evaluation failed (JSON parse error) — manual review required for all nodes",
     };
   }
 

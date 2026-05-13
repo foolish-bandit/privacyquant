@@ -150,15 +150,16 @@ export async function draftDpaClause(
   try {
     parsed = JSON.parse(cleaned);
   } catch {
+    process.stderr.write(`[dpa_clause_drafter] JSON parse failed. Raw response:\n${rawText}\n`);
     return {
-      clause_text: "Drafting failed — could not parse response. Try again or draft manually.",
+      clause_text: `Drafting failed — JSON parse error. Raw response excerpt: ${rawText.slice(0, 500)}`,
       coverage: nodes.map((n) => ({
         node_id: n.id,
         requirement_summary: n.requirement.slice(0, 80),
         clause_sentence: "[not generated]",
       })),
-      gaps: ["Full drafting failed — review nodes manually"],
-      notes: ["Retry pq_draft_dpa_clause; if persistent, check ANTHROPIC_API_KEY"],
+      gaps: ["Full drafting failed — JSON parse error"],
+      notes: ["Retry pq_draft_dpa_clause; if persistent, check ANTHROPIC_API_KEY and model availability"],
     };
   }
 
@@ -168,4 +169,41 @@ export async function draftDpaClause(
     gaps: parsed.gaps ?? [],
     notes: parsed.notes ?? [],
   };
+}
+
+export function formatResult(
+  result: DraftedClause,
+  missingNodeIds: string[],
+  coveredNodeIds: string[]
+): string {
+  const lines = [
+    `# Drafted DPA Clause`,
+    missingNodeIds.length ? `**Missing nodes** (not found): ${missingNodeIds.join(", ")}` : "",
+    `**Nodes covered**: ${coveredNodeIds.join(", ")}`,
+    ``,
+    `## Clause`,
+    `\`\`\``,
+    result.clause_text,
+    `\`\`\``,
+    ``,
+  ];
+  if (result.coverage.length) {
+    lines.push(`## Coverage`);
+    for (const c of result.coverage) {
+      lines.push(`- \`${c.node_id}\`: ${c.requirement_summary} → _"${c.clause_sentence}"_`);
+    }
+    lines.push("");
+  }
+  if (result.gaps.length) {
+    lines.push(`## Gaps`);
+    result.gaps.forEach((g) => lines.push(`- ${g}`));
+    lines.push("");
+  }
+  if (result.notes.length) {
+    lines.push(`## Practitioner Notes`);
+    result.notes.forEach((n) => lines.push(`- ${n}`));
+    lines.push("");
+  }
+  lines.push(`_Run pq_check_clause against the final edited text to verify coverage before execution._`);
+  return lines.join("\n");
 }

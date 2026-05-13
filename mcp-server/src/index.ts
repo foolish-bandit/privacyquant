@@ -11,14 +11,14 @@ import type { RightType } from "./dsar_router.js";
 import { rankActions, textQuery, allTags } from "./precedent_matcher.js";
 import { BM25Index, hybridMerge } from "./semantic_search.js";
 // ─── Additional tool modules ────────────────────────────────────────────────
-import { checkApplicability } from "./applicability_checker.js";
-import { draftDpaClause } from "./dpa_clause_drafter.js";
-import { resolveConflictWithNodes } from "./node_aware_conflict_resolver.js";
-import { buildDSARWorkflow } from "./dsar_workflow_router.js";
-import { auditCitations } from "./citation_auditor.js";
-import { draftNoticeClause } from "./notice_clause_drafter.js";
-import { scorePrivacyExposure } from "./privacy_exposure_scorer.js";
-import { watchLegislation } from "./legislation_watcher.js";
+import { checkApplicability, formatResult as formatApplicability } from "./applicability_checker.js";
+import { draftDpaClause, formatResult as formatDpaDraft } from "./dpa_clause_drafter.js";
+import { resolveConflictWithNodes, formatResult as formatConflictNodes } from "./node_aware_conflict_resolver.js";
+import { buildDSARWorkflow, formatResult as formatDSARWorkflow } from "./dsar_workflow_router.js";
+import { auditCitations, formatResult as formatCitationAudit } from "./citation_auditor.js";
+import { draftNoticeClause, formatResult as formatNoticeDraft } from "./notice_clause_drafter.js";
+import { scorePrivacyExposure, formatResult as formatExposureScore } from "./privacy_exposure_scorer.js";
+import { watchLegislation, formatResult as formatLegislation } from "./legislation_watcher.js";
 import { registerDraftDpaClauseTool } from "./draft_dpa_clause.js";
 import type { StatuteNode, StatuteIndex } from "./types.js";
 
@@ -163,6 +163,18 @@ Args:
   - statute (string, optional): Filter to a specific statute, e.g. "CCPA", "MODPA", "VCDPA"
   - requirement_type (string, optional): Filter by type — "hard", "threshold", or "soft"
   - limit (number, optional): Max results to return (default 5, max 20)
+  - effective_after (string, optional): ISO date (YYYY-MM-DD). Only return nodes whose
+      effective_date is on or after this date. Useful for finding requirements that take
+      effect in the future, e.g. "2026-01-01" to find CT AI training disclosure.
+  - effective_before (string, optional): ISO date (YYYY-MM-DD). Only return nodes whose
+      effective_date is on or before this date. Useful for point-in-time compliance
+      analysis — "what was in effect as of date X".
+  - bearer (string, optional): Filter by obligation bearer — one of "business",
+      "service_provider", "third_party", "processor", "controller", "all". Useful for
+      finding only processor obligations or only controller obligations.
+
+Filters (effective_after, effective_before, bearer) are applied post-search, after the
+hybrid BM25 + keyword merge, before slicing to the result limit.
 
 Returns ranked results with matched signals and full node details.
 If no results found, try broader terms or use pq_list_statutes to browse by statute.`,
@@ -189,6 +201,16 @@ If no results found, try broader terms or use pq_list_statutes to browse by stat
         .max(20)
         .default(5)
         .describe("Maximum results to return (default 5)"),
+      effective_after: z.string()
+        .optional()
+        .describe('ISO date (YYYY-MM-DD). Only return nodes effective on or after this date, e.g. "2026-01-01" for future requirements'),
+      effective_before: z.string()
+        .optional()
+        .describe('ISO date (YYYY-MM-DD). Only return nodes effective on or before this date — for point-in-time compliance analysis'),
+      bearer: z
+        .enum(["business", "service_provider", "third_party", "processor", "controller", "all"])
+        .optional()
+        .describe("Filter by obligation bearer — e.g. \"processor\" for processor-only obligations"),
     },
     annotations: {
       readOnlyHint: true,
@@ -197,7 +219,7 @@ If no results found, try broader terms or use pq_list_statutes to browse by stat
       openWorldHint: false,
     },
   },
-  async ({ query, clause_text, statute, requirement_type, limit }) => {
+  async ({ query, clause_text, statute, requirement_type, limit, effective_after, effective_before, bearer }) => {
     // Build effective query: keyword query + extracted clause signals
     let effectiveQuery = query;
     let clauseSignals: string | null = null;
@@ -225,10 +247,20 @@ If no results found, try broader terms or use pq_list_statutes to browse by stat
     // Merge keyword and semantic results, boosting nodes that appear in both
     const hybridResults = hybridMerge(bm25Results, results, limit);
 
-    // Apply requirement_type filter post-merge if specified
-    const filtered = requirement_type
+    // Apply post-merge filters
+    let filtered = requirement_type
       ? hybridResults.filter((r) => r.node.requirement_type === requirement_type)
       : hybridResults;
+
+    if (effective_after) {
+      filtered = filtered.filter((r) => r.node.effective_date >= effective_after);
+    }
+    if (effective_before) {
+      filtered = filtered.filter((r) => r.node.effective_date <= effective_before);
+    }
+    if (bearer) {
+      filtered = filtered.filter((r) => r.node.obligation_bearer === bearer);
+    }
 
     const finalResults = filtered.slice(0, limit);
 
@@ -1176,24 +1208,7 @@ server.registerTool("pq_check_applicability", {
   },
 }, async (input) => {
   const result = checkApplicability(input);
-  const lines = [
-    `# Applicability Check`,
-    `**Summary**: ${result.summary}`,
-    result.any_applies ? `**Applicable statutes**: ${result.applicable_statutes.join(", ")}` : "",
-    result.needed_inputs.length > 0 ? `**Missing inputs**: ${result.needed_inputs.join(", ")}` : "",
-    ``,
-  ];
-  for (const r of result.results) {
-    const icon = r.verdict === "Applies" ? "✅" : r.verdict === "Likely Applies" ? "⚠️" : r.verdict === "Does Not Apply" ? "❌" : "❓";
-    lines.push(`## ${icon} ${r.statute} (${r.state}) — ${r.verdict}`);
-    lines.push(r.reason);
-    if (r.threshold_met.length) lines.push(`Met: ${r.threshold_met.join("; ")}`);
-    if (r.threshold_not_met.length) lines.push(`Not met: ${r.threshold_not_met.join("; ")}`);
-    if (r.needed_inputs.length) lines.push(`Needs: ${r.needed_inputs.join(", ")}`);
-    lines.push("");
-  }
-  lines.push(`_${result.disclaimer}_`);
-  return { content: [{ type: "text", text: lines.join("\n") }] };
+  return { content: [{ type: "text", text: formatApplicability(result) }] };
 });
 
 // ─── Tool 9: pq_resolve_conflict_nodes ──────────────────────────────────────
@@ -1210,22 +1225,7 @@ server.registerTool("pq_resolve_conflict_nodes", {
   type Dimension = import("./conflict_resolver.js").Dimension;
   const dims = (dimensions?.length ? dimensions : ALL_DIMENSIONS) as Dimension[];
   const result = resolveConflictWithNodes(index, statutes, dims, evidence_limit_per_position);
-  const lines = [`# Conflict Resolution with Node Evidence`, `**Statutes**: ${statutes.join(", ")}`, ``];
-  for (const dim of result.enriched) {
-    lines.push(`## ${dim.dimension}`);
-    lines.push(`**Binding rule**: ${dim.binding_rule}`);
-    lines.push(`**Controlling statute**: ${dim.controlling_statute}`);
-    lines.push(`**Implementation baseline**: ${dim.implementation_baseline}`);
-    if (dim.node_evidence.length) {
-      lines.push(`**Supporting nodes**:`);
-      for (const ev of dim.node_evidence) {
-        lines.push(`- \`${ev.node_id}\` (${ev.statute} ${ev.section}): ${ev.requirement_excerpt}`);
-      }
-    }
-    lines.push("");
-  }
-  lines.push(`_${result.disclaimer}_`);
-  return { content: [{ type: "text", text: lines.join("\n") }] };
+  return { content: [{ type: "text", text: formatConflictNodes(result) }] };
 });
 
 // ─── Tool 10: pq_draft_dpa_clause ───────────────────────────────────────────
@@ -1248,26 +1248,7 @@ server.registerTool("pq_draft_dpa_clause", {
     return { content: [{ type: "text", text: `No nodes found for IDs: ${node_ids.join(", ")}. Use pq_search_requirements to find valid node IDs.` }] };
   }
   const result = await draftDpaClause(nodes, role, style, context);
-  const lines = [
-    `# Drafted DPA Clause`,
-    missing.length ? `**Missing nodes** (not found): ${missing.join(", ")}` : "",
-    `**Nodes covered**: ${nodes.map((n) => n.id).join(", ")}`,
-    ``,
-    `## Clause`,
-    `\`\`\``,
-    result.clause_text,
-    `\`\`\``,
-    ``,
-  ];
-  if (result.coverage.length) {
-    lines.push(`## Coverage`);
-    for (const c of result.coverage) lines.push(`- \`${c.node_id}\`: ${c.requirement_summary} → _"${c.clause_sentence}"_`);
-    lines.push("");
-  }
-  if (result.gaps.length) { lines.push(`## Gaps`); result.gaps.forEach((g) => lines.push(`- ${g}`)); lines.push(""); }
-  if (result.notes.length) { lines.push(`## Practitioner Notes`); result.notes.forEach((n) => lines.push(`- ${n}`)); lines.push(""); }
-  lines.push(`_Run pq_check_clause against the final edited text to verify coverage before execution._`);
-  return { content: [{ type: "text", text: lines.join("\n") }] };
+  return { content: [{ type: "text", text: formatDpaDraft(result, missing, nodes.map((n) => n.id)) }] };
 });
 
 // ─── Tool 11: pq_route_dsar_workflow ────────────────────────────────────────
@@ -1288,28 +1269,7 @@ server.registerTool("pq_route_dsar_workflow", {
   },
 }, async (input) => {
   const result = buildDSARWorkflow(input as Parameters<typeof buildDSARWorkflow>[0]);
-  const lines = [
-    `# DSAR Workflow: ${result.right_label}`,
-    `**State**: ${result.consumer_state} | **Statute**: ${result.statute ?? "None"} | **Must respond**: ${result.must_respond ? "Yes" : "No"}`,
-    result.calculated_due_date ? `**Initial deadline**: ${result.calculated_due_date} (${result.initial_deadline_days} days)` : result.initial_deadline_days ? `**Initial deadline**: ${result.initial_deadline_days} calendar days from receipt` : "",
-    result.calculated_max_date && result.max_deadline_days !== result.initial_deadline_days ? `**Max with extension**: ${result.calculated_max_date}` : "",
-    result.appeal_right ? `**Appeal right**: Yes — ${result.appeal_deadline_days} days` : "**Appeal right**: No",
-    ``,
-  ];
-  if (result.escalation_flags.length) {
-    lines.push(`## ⚠️ Escalation Flags`);
-    result.escalation_flags.forEach((f) => lines.push(`- ${f}`));
-    lines.push("");
-  }
-  lines.push(`## Workflow Steps`);
-  for (const step of result.steps) {
-    lines.push(`### Step ${step.step}: ${step.action}`);
-    if (step.deadline) lines.push(`**Deadline**: ${step.deadline}`);
-    if (step.notes?.length) step.notes.forEach((n) => lines.push(`- ${n}`));
-    lines.push("");
-  }
-  lines.push(`_${result.disclaimer}_`);
-  return { content: [{ type: "text", text: lines.join("\n") }] };
+  return { content: [{ type: "text", text: formatDSARWorkflow(result) }] };
 });
 
 // ─── Tool 12: pq_draft_notice_clause ────────────────────────────────────────
@@ -1334,20 +1294,7 @@ server.registerTool("pq_draft_notice_clause", {
   },
 }, async (input) => {
   const result = draftNoticeClause(input as Parameters<typeof draftNoticeClause>[0]);
-  const lines = [
-    `# ${result.notice_type.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())} Draft`,
-    result.missing_facts.length ? `**Missing facts** (add before publishing): ${result.missing_facts.join(", ")}` : "",
-    ``,
-    `## Draft Text`,
-    `\`\`\``,
-    result.clause_text,
-    `\`\`\``,
-    ``,
-  ];
-  if (result.drafting_notes.length) { lines.push(`## Drafting Notes`); result.drafting_notes.forEach((n) => lines.push(`- ${n}`)); lines.push(""); }
-  if (result.supporting_nodes.length) lines.push(`**Supporting nodes**: ${result.supporting_nodes.map((n) => `\`${n}\``).join(", ")}`);
-  lines.push(`_Run pq_audit_citations on the final text before publishing._`);
-  return { content: [{ type: "text", text: lines.join("\n") }] };
+  return { content: [{ type: "text", text: formatNoticeDraft(result) }] };
 });
 
 // ─── Tool 13: pq_score_privacy_risk ─────────────────────────────────────────
@@ -1376,36 +1323,7 @@ server.registerTool("pq_score_privacy_risk", {
   },
 }, async (input) => {
   const result = scorePrivacyExposure(input);
-  const lines = [
-    `# Privacy Exposure Score`,
-    `**Score**: ${result.score}/100 — **${result.band}**`,
-    ``,
-    `## Score Breakdown`,
-  ];
-  for (const c of result.components) {
-    lines.push(`- **${c.label}**: ${c.points}/${c.max} — ${c.note}`);
-  }
-  lines.push("");
-  if (result.regulator_interest_notes.length) {
-    lines.push(`## Regulator Interest`);
-    result.regulator_interest_notes.forEach((n) => lines.push(`- ${n}`));
-    lines.push("");
-  }
-  if (result.remediation_priorities.length) {
-    lines.push(`## Remediation Priorities`);
-    result.remediation_priorities.forEach((p) => lines.push(p));
-    lines.push("");
-  }
-  if (result.analogous_precedents.length) {
-    lines.push(`## Analogous Enforcement Precedents`);
-    for (const p of result.analogous_precedents) {
-      lines.push(`### ${p.case_name} (${p.year}) — ${p.monetary_amount_usd ? `$${p.monetary_amount_usd.toLocaleString()}` : "Injunctive"}`);
-      lines.push(p.factual_pattern);
-      lines.push("");
-    }
-  }
-  lines.push(`_${result.disclaimer}_`);
-  return { content: [{ type: "text", text: lines.join("\n") }] };
+  return { content: [{ type: "text", text: formatExposureScore(result) }] };
 });
 
 // ─── Tool 14: pq_audit_citations ────────────────────────────────────────────
@@ -1419,26 +1337,7 @@ server.registerTool("pq_audit_citations", {
   },
 }, async ({ text, strict, include_passed_claims }) => {
   const result = auditCitations(text, index, strict, include_passed_claims);
-  const lines = [
-    `# Citation Audit`,
-    `**Summary**: ${result.summary}`,
-    result.error_count > 0 ? `**Errors**: ${result.error_count}` : "",
-    result.warning_count > 0 ? `**Warnings**: ${result.warning_count}` : "",
-    result.info_count > 0 ? `**Info**: ${result.info_count}` : "",
-    ``,
-  ];
-  if (result.flags.length) {
-    lines.push(`## Flags`);
-    for (const f of result.flags) {
-      const icon = f.severity === "error" ? "🔴" : f.severity === "warning" ? "⚠️" : "ℹ️";
-      lines.push(`${icon} **${f.type}**: ${f.message}`);
-      lines.push(`  _Excerpt_: "${f.excerpt}"`);
-      if (f.suggestion) lines.push(`  _Suggestion_: ${f.suggestion}`);
-      lines.push("");
-    }
-  }
-  lines.push(`_${result.disclaimer}_`);
-  return { content: [{ type: "text", text: lines.join("\n") }] };
+  return { content: [{ type: "text", text: formatCitationAudit(result) }] };
 });
 
 // ─── Tool 15: pq_watch_legislation ──────────────────────────────────────────
@@ -1458,36 +1357,7 @@ server.registerTool("pq_watch_legislation", {
     updated_since,
     per_state_limit
   );
-  const lines = [
-    `# Legislative Watch`,
-    `**States searched**: ${result.states_searched.join(", ")}`,
-    `**Keywords**: ${result.keywords_used.join(", ")}`,
-    `**Status**: ${result.api_status}${result.error_message ? ` — ${result.error_message}` : ""}`,
-    `**Bills found**: ${result.total_bills_found}`,
-    ``,
-  ];
-  if (result.api_status === "no_key") {
-    lines.push(result.error_message ?? "API key required.");
-  } else {
-    for (const [state, leads] of Object.entries(result.results_by_state)) {
-      lines.push(`## ${state}`);
-      for (const lead of leads) {
-        lines.push(`### ${lead.identifier}: ${lead.title}`);
-        lines.push(`**Latest action**: ${lead.latest_action} (${lead.latest_action_date})`);
-        lines.push(`**Status**: ${lead.status}`);
-        if (lead.sources.length) lines.push(`**Source**: ${lead.sources[0].url}`);
-        lines.push(`**Open States**: ${lead.openstates_url}`);
-        lines.push(`_${lead.verify_marker}_`);
-        lines.push("");
-      }
-    }
-    if (result.total_bills_found === 0) lines.push("No active bills found matching the search criteria.");
-    lines.push(`## Review Workflow`);
-    result.review_workflow.forEach((s) => lines.push(s));
-    lines.push("");
-  }
-  lines.push(`_${result.disclaimer}_`);
-  return { content: [{ type: "text", text: lines.join("\n") }] };
+  return { content: [{ type: "text", text: formatLegislation(result) }] };
 });
 
 // ─── Tool 16: pq_draft_dpa_clause_deterministic ──────────────────────────────

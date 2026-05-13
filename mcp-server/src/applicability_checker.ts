@@ -51,6 +51,30 @@ const DISCLAIMER =
   "exemptions require fact-specific analysis by qualified counsel. This output is not " +
   "legal advice.";
 
+export function formatResult(result: ApplicabilityCheckResult): string {
+  const lines = [
+    `# Applicability Check`,
+    `**Summary**: ${result.summary}`,
+    result.any_applies ? `**Applicable statutes**: ${result.applicable_statutes.join(", ")}` : "",
+    result.needed_inputs.length > 0 ? `**Missing inputs**: ${result.needed_inputs.join(", ")}` : "",
+    ``,
+  ];
+  for (const r of result.results) {
+    const icon =
+      r.verdict === "Applies" ? "✅" :
+      r.verdict === "Likely Applies" ? "⚠️" :
+      r.verdict === "Does Not Apply" ? "❌" : "❓";
+    lines.push(`## ${icon} ${r.statute} (${r.state}) — ${r.verdict}`);
+    lines.push(r.reason);
+    if (r.threshold_met.length) lines.push(`Met: ${r.threshold_met.join("; ")}`);
+    if (r.threshold_not_met.length) lines.push(`Not met: ${r.threshold_not_met.join("; ")}`);
+    if (r.needed_inputs.length) lines.push(`Needs: ${r.needed_inputs.join(", ")}`);
+    lines.push("");
+  }
+  lines.push(`_${result.disclaimer}_`);
+  return lines.join("\n");
+}
+
 function missingAll(inputs: ApplicabilityInput): boolean {
   return (
     inputs.annual_revenue_usd === undefined &&
