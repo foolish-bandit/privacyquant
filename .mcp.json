@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "privacyquant": {
+      "command": "npx",
+      "args": ["tsx", "mcp-server/src/index.ts"],
+      "cwd": "."
+    }
+  }
+}
