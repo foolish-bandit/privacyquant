@@ -1,0 +1,30 @@
+id: "njdpa.minors.teen_protections"
+statute: "NJDPA"
+section: "N.J. Stat. § 56:8-166.9"
+title: "Minor Protections — Opt-In for Ages 13 to 16"
+effective_date: "2025-01-15"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller knows or has reason to believe consumer is at least 13 and less than 17 years old"
+requirement: >
+  For consumers known to be between 13 and under 17 years of age, opt-in consent is required
+  before processing PD for targeted advertising, sale, or profiling with legal/significant effects.
+  NJ's 'under 17' standard is one year broader than Connecticut's 'under 16' standard.
+  Only Maryland (under 18 flat ban) is stricter.
+exceptions: []
+contract_signals:
+  - "minor"
+  - "known minor"
+  - "teen"
+  - "13 to 17"
+  - "children's privacy"
+  - "age verification"
+  - "COPPA"
+cross_refs:
+  - "ctdpa.minors.teen_protections"
+  - "modpa.minors.flat_ban"
+  - "ccpa.sensitive_data.categories"
+source_url: "https://www.njleg.state.nj.us/Bills/2022/PL23/266_.PDF"
+git_hash: ""
