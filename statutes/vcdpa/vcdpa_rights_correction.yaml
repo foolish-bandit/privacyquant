@@ -1,0 +1,26 @@
+id: "vcdpa.rights.correction"
+statute: "VCDPA"
+section: "Va. Code § 59.1-577(A)(2)"
+title: "Right to Correction"
+effective_date: "2023-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Consumer submits authenticated request to correct inaccurate personal data"
+requirement: >
+  Controller must correct inaccurate personal data about the consumer, taking into account the
+  nature of the PD and the purposes of processing.
+  Response deadline: 45 days (extendable once by 45 days with notice).
+exceptions:
+  - "Keeping original version necessary for legal compliance"
+contract_signals:
+  - "right to rectification"
+  - "right to correction"
+  - "correct inaccurate"
+  - "rectify personal data"
+cross_refs:
+  - "ccpa.rights.correction"
+  - "cpa.rights.correction"
+source_url: "https://law.lis.virginia.gov/vacode/title59.1/chapter53/section59.1-577/"
+git_hash: ""
