@@ -6,9 +6,9 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178c6)
 ![MCP](https://img.shields.io/badge/MCP-compatible-8b5cf6)
 ![Nodes](https://img.shields.io/badge/statutory_nodes-146-16a34a)
-![Tools](https://img.shields.io/badge/MCP_tools-16-0891b2)
+![Tools](https://img.shields.io/badge/MCP_tools-18-0891b2)
 ![Statutes](https://img.shields.io/badge/statutes-20-dc2626)
-![Deterministic](https://img.shields.io/badge/deterministic_by_default-14_of_16_tools-15803d)
+![Deterministic](https://img.shields.io/badge/deterministic_by_default-16_of_18_tools-15803d)
 
 `US State Privacy` `MCP` `CCPA/CPRA` `DSAR` `DPA Drafting` `Privacy Notices` `Enforcement Research` `Legislative Monitoring` `Citation QA` `Risk Scoring`
 
@@ -20,7 +20,7 @@ PrivacyQuant is a structured, versioned, auditable legal workflow system built a
 
 Every statutory requirement, consumer right, deadline, and threshold is stored as an individually citable node with a Git hash. When you cite a PrivacyQuant node, you are citing a specific version of the law — not a model's recollection of it.
 
-The 16 MCP tools expose deterministic workflows for applicability analysis, DPA clause review and drafting, privacy notice drafting, DSAR routing, multi-state conflict resolution, enforcement precedent research, legislative monitoring, citation auditing, and risk scoring. Fourteen of the sixteen tools require no LLM and no external API.
+The 18 MCP tools expose deterministic workflows for applicability analysis, DPA clause review and drafting, privacy notice drafting, DSAR routing, multi-state conflict resolution, enforcement precedent research, legislative monitoring, citation auditing, risk scoring, and DOCX deliverable generation. Sixteen of the eighteen tools require no LLM and no external API.
 
 **What PrivacyQuant is not:**
 - Legal advice or a substitute for qualified counsel
@@ -35,8 +35,8 @@ The 16 MCP tools expose deterministic workflows for applicability analysis, DPA 
 | | |
 |---|---|
 | Statutory nodes | 146 across 20 statutes |
-| MCP tools | 16 |
-| Deterministic tools | 14 (no LLM, no external API) |
+| MCP tools | 18 |
+| Deterministic tools | 16 (no LLM, no external API) |
 | LLM-dependent tools | `pq_check_clause`, `pq_draft_dpa_clause` (require `ANTHROPIC_API_KEY`) |
 | Live API tools | `pq_watch_legislation` (requires `OPENSTATES_API_KEY`) |
 | Enforcement corpus | 84 actions, v2.3, 48 violation-theory tags |
@@ -101,6 +101,13 @@ The 16 MCP tools expose deterministic workflows for applicability analysis, DPA 
 | Tool | Purpose |
 |---|---|
 | `pq_audit_citations` | Flag citation-discipline issues in privacy-law work product: uncited claims, unresolved placeholders, suspicious section numbers, and unresolvable node references. Deterministic. |
+
+### Deliverables
+
+| Tool | Purpose |
+|---|---|
+| `pq_generate_memo` | Generate a formal client-ready DOCX privacy compliance memorandum from structured inputs. Includes cover, disclaimer, TOC, entity profile, applicability, status determination, gap analysis, remediation roadmap, cross-cutting recommendations, limitations, next steps, and appendix stubs. Deterministic. |
+| `pq_memo_from_analysis` | Convenience generator that runs `pq_check_applicability` internally and auto-populates the memo's entity profile and applicability sections. Other sections accept optional structured inputs or render as placeholders. Deterministic. |
 
 ---
 
@@ -188,6 +195,26 @@ The 16 MCP tools expose deterministic workflows for applicability analysis, DPA 
 2. Manual review against bill text
 
 3. PR: update YAML node with amended effective date and source URL
+```
+
+### Memo deliverable from applicability analysis
+
+```
+1. pq_memo_from_analysis(client_name: "Acme SaaS Corp.",
+                         annual_revenue_usd: 40000000,
+                         consumers_processed: 150000,
+                         revenue_pct_from_sale: 5,
+                         states_operating: ["CA","VA","CO","TX","MD"],
+                         executive_summary: "Acme SaaS Corp. ...",
+                         next_steps: ["Implement GPC ...", "Update contracts ..."])
+   -> writes privacyquant-memo-acme-saas-corp-YYYYMMDD.docx with cover,
+      disclaimer, TOC, entity profile, applicability (auto-populated from
+      pq_check_applicability), placeholder status/gaps/remediation, defaults
+      for limitations, and the provided next steps
+
+2. [Attorney review and complete placeholder sections]
+
+3. pq_generate_memo(...)  # re-run with full sections populated for final delivery
 ```
 
 ---

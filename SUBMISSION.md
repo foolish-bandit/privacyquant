@@ -16,7 +16,7 @@
 {
   "name": "privacyquant",
   "version": "0.1.0",
-  "description": "Versioned statutory knowledge graph for US state consumer privacy laws. 16 MCP tools covering applicability analysis, DPA clause review and drafting, privacy notice drafting, DSAR routing, multi-state conflict resolution, enforcement precedent research, legislative monitoring, citation auditing, and risk scoring. Covers CCPA/CPRA, VCDPA, CPA, CTDPA, UCPA, TDPSA, OCPA, MCDPA, ICDPA, INCDPA, TIPA, DPDPA, NJDPA, NHDPA, NDPA, KCDPA, MODPA, MCDPA-MN, RIDTPPA, and FDBR across 146 atomic requirement nodes.",
+  "description": "Versioned statutory knowledge graph for US state consumer privacy laws. 18 MCP tools covering applicability analysis, DPA clause review and drafting, privacy notice drafting, DSAR routing, multi-state conflict resolution, enforcement precedent research, legislative monitoring, citation auditing, risk scoring, and DOCX memo deliverable generation. Covers CCPA/CPRA, VCDPA, CPA, CTDPA, UCPA, TDPSA, OCPA, MCDPA, ICDPA, INCDPA, TIPA, DPDPA, NJDPA, NHDPA, NDPA, KCDPA, MODPA, MCDPA-MN, RIDTPPA, and FDBR across 146 atomic requirement nodes.",
   "author": {
     "name": "Zachary Brenner",
     "url": "https://github.com/foolish-bandit"
@@ -47,15 +47,15 @@ For inclusion in the `claude-for-legal` legal-builder-hub registry
   "repository": "https://github.com/foolish-bandit/privacyquant",
   "license": "MIT",
   "practice_areas": ["privacy-legal", "compliance", "regulatory-legal"],
-  "description": "Versioned statutory knowledge graph for US state consumer privacy laws — the missing data layer for Anthropic's privacy-legal plugin. 16 MCP tools including DPA clause review with GREEN/YELLOW/RED verdicts, multi-state compliance ceiling synthesis, enforcement precedent matching (84 actions, 48 violation theory tags), DSAR routing with Iowa/UT/KY edge cases, legislative monitoring via OpenStates API, and BM25 semantic search over 146 atomic requirement nodes across 20 states.",
+  "description": "Versioned statutory knowledge graph for US state consumer privacy laws — the missing data layer for Anthropic's privacy-legal plugin. 18 MCP tools including DPA clause review with GREEN/YELLOW/RED verdicts, multi-state compliance ceiling synthesis, enforcement precedent matching (84 actions, 48 violation theory tags), DSAR routing with Iowa/UT/KY edge cases, legislative monitoring via OpenStates API, BM25 semantic search over 146 atomic requirement nodes across 20 states, and DOCX memo deliverable generation.",
   "complements": ["privacy-legal"],
   "install": "/plugin marketplace add foolish-bandit/privacyquant",
   "requires_api_key": {
     "ANTHROPIC_API_KEY": "Required for pq_check_clause and pq_draft_dpa_clause",
     "OPENSTATES_API_KEY": "Optional — enables pq_watch_legislation (free at open.pluralpolicy.com)"
   },
-  "tools": 16,
-  "deterministic_tools": 14,
+  "tools": 18,
+  "deterministic_tools": 16,
   "node_count": 146,
   "statutes_covered": 20,
   "last_verified": "2026-05-13"
@@ -69,7 +69,7 @@ For inclusion in the `claude-for-legal` legal-builder-hub registry
 | Parameter | Status |
 |-----------|--------|
 | Citation discipline | ✅ Every output cites node IDs and statutory sections |
-| Hallucination surface | ✅ 14/16 tools are fully deterministic — no LLM in the path |
+| Hallucination surface | ✅ 16/18 tools are fully deterministic — no LLM in the path |
 | Jurisdiction specificity | ✅ 20 covered states, explicit no-law routing for ~30 states |
 | Disclaimer coverage | ✅ Every output includes attorney-review disclaimer per CLAUDE.md |
 | Trust surface | ✅ YAML nodes are version-controlled with git_hash field |

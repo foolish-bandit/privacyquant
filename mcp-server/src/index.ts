@@ -20,8 +20,12 @@ import { draftNoticeClause, formatResult as formatNoticeDraft } from "./notice_c
 import { scorePrivacyExposure, formatResult as formatExposureScore } from "./privacy_exposure_scorer.js";
 import { watchLegislation, formatResult as formatLegislation } from "./legislation_watcher.js";
 import { registerDraftDpaClauseTool } from "./draft_dpa_clause.js";
+import { generateMemo, formatMemoDate, type MemoInput } from "./memo_generator.js";
 import { validateIndex } from "./validate.js";
 import type { StatuteNode, StatuteIndex } from "./types.js";
+import fs from "fs";
+import path from "path";
+import os from "os";
 
 // ─── Load the knowledge graph once at startup ──────────────────────────────
 let index: StatuteIndex;
@@ -1379,6 +1383,464 @@ server.registerTool("pq_watch_legislation", {
 
 // ─── Tool 16: pq_draft_dpa_clause_deterministic ──────────────────────────────
 registerDraftDpaClauseTool(server, index);
+
+// ─── Memo deliverable helpers ───────────────────────────────────────────────
+
+const MEMO_DISCLAIMER =
+  "This output is based on the PrivacyQuant statutory knowledge graph as of the " +
+  "node version dates. Laws change; statutory graph nodes may not reflect the most " +
+  "recent amendments or regulatory guidance. This is a DRAFT for review by qualified " +
+  "counsel admitted in the relevant jurisdiction — it is not legal advice and does not " +
+  "constitute the practice of law.";
+
+function slugify(s: string): string {
+  return (
+    s
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 60) || "client"
+  );
+}
+
+function dateStamp(d: Date = new Date()): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}${m}${day}`;
+}
+
+function memoOutputPath(clientName: string): string {
+  const filename = `privacyquant-memo-${slugify(clientName)}-${dateStamp()}.docx`;
+  // Prefer the current working directory; fall back to os.tmpdir() if not writable.
+  try {
+    const cwd = process.cwd();
+    const probe = path.join(cwd, ".pq-write-probe");
+    fs.writeFileSync(probe, "");
+    fs.unlinkSync(probe);
+    return path.join(cwd, filename);
+  } catch {
+    return path.join(os.tmpdir(), filename);
+  }
+}
+
+function describePopulatedSections(memo: MemoInput): string[] {
+  const lines: string[] = [];
+  const mark = (label: string, populated: boolean): string =>
+    `- ${populated ? "✅" : "⬜"} ${label}${populated ? "" : " (placeholder)"}`;
+  lines.push(mark("Cover, disclaimer, table of contents", true));
+  lines.push(mark("1. Executive Summary", !!memo.executive_summary?.trim()));
+  lines.push(mark("2. Scope and Methodology (default if omitted)", true));
+  lines.push(
+    mark("3. Entity Profile and Threshold Inputs", !!memo.entity_profile?.length)
+  );
+  lines.push(mark("4. Applicability Analysis", !!memo.applicability?.length));
+  lines.push(
+    mark("5. Status Determination", !!memo.status_determination?.length)
+  );
+  lines.push(mark("6. Gap Analysis", !!memo.gaps?.length));
+  const rem = memo.remediation;
+  const remPopulated = !!(
+    rem &&
+    (rem.immediate?.length ||
+      rem.thirty_day?.length ||
+      rem.ninety_day?.length ||
+      rem.strategic?.length)
+  );
+  lines.push(mark("7. Remediation Roadmap", remPopulated));
+  lines.push(
+    mark("8. Cross-Cutting Recommendations", !!memo.cross_cutting?.length)
+  );
+  lines.push(
+    mark(
+      "9. Limitations and Assumptions (defaults if omitted)",
+      true
+    )
+  );
+  lines.push(mark("10. Recommended Next Steps", !!memo.next_steps?.length));
+  return lines;
+}
+
+const memoEntityProfileSchema = z.object({
+  label: z.string(),
+  value: z.string(),
+  source: z.string(),
+});
+
+const memoApplicabilitySchema = z.object({
+  state: z.string(),
+  statute: z.string(),
+  verdict: z.string(),
+  reasoning: z.string(),
+});
+
+const memoStatusSchema = z.object({
+  data_flow: z.string(),
+  ca_status: z.string(),
+  other_states_status: z.string(),
+  notes: z.string(),
+});
+
+const memoGapSchema = z.object({
+  id: z.string(),
+  states: z.string(),
+  section: z.string(),
+  gap: z.string(),
+  current: z.string(),
+  required: z.string(),
+  severity: z.number(),
+  likelihood: z.number(),
+  score: z.number(),
+  lane: z.string(),
+  dependencies: z.string(),
+});
+
+const memoRemediationSchema = z.object({
+  immediate: z.array(z.string()),
+  thirty_day: z.array(z.string()),
+  ninety_day: z.array(z.string()),
+  strategic: z.array(z.string()),
+});
+
+// ─── Tool 17: pq_generate_memo ──────────────────────────────────────────────
+server.registerTool(
+  "pq_generate_memo",
+  {
+    title: "Generate Client-Ready Privacy Compliance Memorandum (DOCX)",
+    description: `Generate a formal client-ready DOCX privacy compliance memorandum from structured inputs.
+
+Produces a multi-section deliverable including: cover page, disclaimer, table of contents,
+executive summary, scope and methodology, entity profile table, applicability analysis table
+with verdict coloring, status determination table, gap analysis table with severity/lane
+coloring, remediation roadmap with four time-banded lanes, cross-cutting recommendations,
+limitations and assumptions, recommended next steps, and appendix stubs.
+
+Any section omitted from input is rendered with a clear placeholder for attorney completion.
+The output is a DRAFT — every deliverable must be reviewed by qualified counsel admitted in
+the relevant jurisdiction before delivery to the client.
+
+Args:
+  - client_name (string, required): Name of the client entity
+  - memo_date (string, optional): "Month Day, AD YYYY" — defaults to today
+  - prepared_by (string, optional): Author name for the cover page
+  - executive_summary (string, optional): Multi-paragraph (\\n\\n separated)
+  - scope_and_methodology (string, optional): Section 2 narrative
+  - entity_profile (array, optional): {label, value, source} rows
+  - applicability (array, optional): {state, statute, verdict, reasoning} rows
+  - status_determination (array, optional): {data_flow, ca_status, other_states_status, notes}
+  - gaps (array, optional): full gap log with severity/likelihood/score/lane
+  - remediation (object, optional): {immediate, thirty_day, ninety_day, strategic} arrays
+  - cross_cutting (array, optional): cross-cutting recommendations
+  - limitations (array, optional): limitations and assumptions (defaults provided)
+  - next_steps (array, optional): recommended next steps
+
+Returns: path to the generated .docx file, a populated/placeholder section summary, and the
+standard PrivacyQuant disclaimer.`,
+    inputSchema: {
+      client_name: z.string().min(1).describe("Client entity name"),
+      memo_date: z
+        .string()
+        .optional()
+        .describe('"Month Day, AD YYYY" — defaults to today'),
+      prepared_by: z.string().optional().describe("Author name for the cover page"),
+      executive_summary: z
+        .string()
+        .optional()
+        .describe("Multi-paragraph executive summary (\\n\\n separated)"),
+      scope_and_methodology: z
+        .string()
+        .optional()
+        .describe("Section 2 narrative — defaults to a generic scope statement"),
+      entity_profile: z
+        .array(memoEntityProfileSchema)
+        .optional()
+        .describe("Entity profile rows for Section 3"),
+      applicability: z
+        .array(memoApplicabilitySchema)
+        .optional()
+        .describe("Applicability analysis rows for Section 4"),
+      status_determination: z
+        .array(memoStatusSchema)
+        .optional()
+        .describe("Status determination rows for Section 5"),
+      gaps: z
+        .array(memoGapSchema)
+        .optional()
+        .describe("Gap log rows for Section 6"),
+      remediation: memoRemediationSchema
+        .optional()
+        .describe("Remediation roadmap lanes for Section 7"),
+      cross_cutting: z
+        .array(z.string())
+        .optional()
+        .describe("Cross-cutting recommendation bullets for Section 8"),
+      limitations: z
+        .array(z.string())
+        .optional()
+        .describe("Section 9 limitations — defaults provided when omitted"),
+      next_steps: z
+        .array(z.string())
+        .optional()
+        .describe("Section 10 recommended next steps"),
+    },
+    annotations: {
+      readOnlyHint: false,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
+  },
+  async (input) => {
+    const memo: MemoInput = {
+      client_name: input.client_name,
+      memo_date: input.memo_date ?? formatMemoDate(),
+      prepared_by: input.prepared_by,
+      executive_summary: input.executive_summary,
+      scope_and_methodology: input.scope_and_methodology,
+      entity_profile: input.entity_profile,
+      applicability: input.applicability,
+      status_determination: input.status_determination,
+      gaps: input.gaps,
+      remediation: input.remediation,
+      cross_cutting: input.cross_cutting,
+      limitations: input.limitations,
+      next_steps: input.next_steps,
+    };
+
+    const buf = await generateMemo(memo);
+    const outPath = memoOutputPath(input.client_name);
+    fs.writeFileSync(outPath, buf);
+
+    const sectionSummary = describePopulatedSections(memo).join("\n");
+    const text = [
+      `# Memo generated`,
+      `**Client**: ${input.client_name}`,
+      `**Date**: ${memo.memo_date}`,
+      `**Output**: ${outPath} (${buf.length.toLocaleString()} bytes)`,
+      ``,
+      `## Sections`,
+      sectionSummary,
+      ``,
+      `## Limitations`,
+      `_${MEMO_DISCLAIMER}_`,
+    ].join("\n");
+
+    return { content: [{ type: "text", text }] };
+  }
+);
+
+// ─── Tool 18: pq_memo_from_analysis ─────────────────────────────────────────
+server.registerTool(
+  "pq_memo_from_analysis",
+  {
+    title: "Generate Memo with Auto-Populated Applicability",
+    description: `Convenience tool that produces a DRAFT client-ready DOCX privacy compliance memo with
+the applicability section auto-populated from the PrivacyQuant deterministic applicability
+checker. Sections that cannot be auto-populated from the inputs (status determination,
+gap analysis, remediation unless provided) render with placeholder text for attorney
+completion.
+
+The handler:
+  1. Runs checkApplicability() on the threshold inputs
+  2. Builds an entity profile table from the company facts (revenue, consumer count,
+     sale percentage, nonprofit/HIPAA/GLBA flags)
+  3. Maps each statute result into the memo applicability table with reasoning
+  4. Calls the memo generator and writes the .docx to the working directory
+
+All threshold inputs match pq_check_applicability. Gap log, remediation roadmap, and
+next steps are optional pass-throughs to the memo generator.
+
+The output is a DRAFT — every deliverable must be reviewed by qualified counsel admitted
+in the relevant jurisdiction before delivery to the client.`,
+    inputSchema: {
+      client_name: z.string().min(1).describe("Client entity name"),
+      prepared_by: z.string().optional().describe("Author name for the cover page"),
+      annual_revenue_usd: z
+        .number()
+        .optional()
+        .describe("Annual gross revenue in USD"),
+      consumers_processed: z
+        .number()
+        .int()
+        .optional()
+        .describe("Number of consumers' PI processed annually"),
+      households_processed: z
+        .number()
+        .int()
+        .optional()
+        .describe("Number of households' PI processed annually"),
+      revenue_pct_from_sale: z
+        .number()
+        .min(0)
+        .max(100)
+        .optional()
+        .describe("% of annual revenue from sale of PI"),
+      states_operating: z
+        .array(z.string())
+        .optional()
+        .describe("States where business operates — omit to evaluate all 20"),
+      is_nonprofit: z.boolean().optional().describe("Non-profit entity"),
+      is_government: z.boolean().optional().describe("Government entity"),
+      is_hipaa_covered_entity: z
+        .boolean()
+        .optional()
+        .describe("HIPAA-covered entity"),
+      is_glba_covered: z
+        .boolean()
+        .optional()
+        .describe("GLBA-covered financial institution"),
+      executive_summary: z
+        .string()
+        .optional()
+        .describe("Executive summary narrative — strongly recommended"),
+      gaps: z
+        .array(memoGapSchema)
+        .optional()
+        .describe("Optional gap log to include in Section 6"),
+      remediation: memoRemediationSchema
+        .optional()
+        .describe("Optional remediation roadmap for Section 7"),
+      next_steps: z
+        .array(z.string())
+        .optional()
+        .describe("Optional recommended next steps for Section 10"),
+    },
+    annotations: {
+      readOnlyHint: false,
+      destructiveHint: false,
+      idempotentHint: false,
+      openWorldHint: false,
+    },
+  },
+  async (input) => {
+    const applicabilityResult = checkApplicability({
+      annual_revenue_usd: input.annual_revenue_usd,
+      consumers_processed: input.consumers_processed,
+      households_processed: input.households_processed,
+      revenue_pct_from_sale: input.revenue_pct_from_sale,
+      states_operating: input.states_operating,
+      is_nonprofit: input.is_nonprofit,
+      is_government: input.is_government,
+      is_hipaa_covered_entity: input.is_hipaa_covered_entity,
+      is_glba_covered: input.is_glba_covered,
+    });
+
+    const applicability = applicabilityResult.results.map((r) => ({
+      state: r.state,
+      statute: r.statute,
+      verdict: r.verdict,
+      reasoning: r.reason,
+    }));
+
+    const entityProfile: { label: string; value: string; source: string }[] = [];
+    if (input.annual_revenue_usd !== undefined) {
+      entityProfile.push({
+        label: "Annual gross revenue (preceding calendar year)",
+        value: `$${input.annual_revenue_usd.toLocaleString()}`,
+        source: "User-provided",
+      });
+    }
+    if (input.consumers_processed !== undefined) {
+      entityProfile.push({
+        label: "Consumers (PI processed in calendar year)",
+        value: input.consumers_processed.toLocaleString(),
+        source: "User-provided",
+      });
+    }
+    if (input.households_processed !== undefined) {
+      entityProfile.push({
+        label: "Households (PI processed in calendar year)",
+        value: input.households_processed.toLocaleString(),
+        source: "User-provided",
+      });
+    }
+    if (input.revenue_pct_from_sale !== undefined) {
+      entityProfile.push({
+        label: "% of revenue from sale of PI",
+        value: `${input.revenue_pct_from_sale}%`,
+        source: "User-provided",
+      });
+    }
+    if (input.states_operating?.length) {
+      entityProfile.push({
+        label: "States of operation",
+        value: input.states_operating.join(", "),
+        source: "User-provided",
+      });
+    }
+    if (input.is_nonprofit !== undefined) {
+      entityProfile.push({
+        label: "Non-profit entity",
+        value: input.is_nonprofit ? "Yes" : "No",
+        source: "User-provided",
+      });
+    }
+    if (input.is_government !== undefined) {
+      entityProfile.push({
+        label: "Government entity",
+        value: input.is_government ? "Yes" : "No",
+        source: "User-provided",
+      });
+    }
+    if (input.is_hipaa_covered_entity !== undefined) {
+      entityProfile.push({
+        label: "HIPAA covered entity",
+        value: input.is_hipaa_covered_entity ? "Yes" : "No",
+        source: "User-provided",
+      });
+    }
+    if (input.is_glba_covered !== undefined) {
+      entityProfile.push({
+        label: "GLBA covered financial institution",
+        value: input.is_glba_covered ? "Yes" : "No",
+        source: "User-provided",
+      });
+    }
+
+    const memo: MemoInput = {
+      client_name: input.client_name,
+      memo_date: formatMemoDate(),
+      prepared_by: input.prepared_by,
+      executive_summary: input.executive_summary,
+      entity_profile: entityProfile,
+      applicability,
+      gaps: input.gaps,
+      remediation: input.remediation,
+      next_steps: input.next_steps,
+    };
+
+    const buf = await generateMemo(memo);
+    const outPath = memoOutputPath(input.client_name);
+    fs.writeFileSync(outPath, buf);
+
+    const sectionSummary = describePopulatedSections(memo).join("\n");
+    const text = [
+      `# Memo generated from applicability analysis`,
+      `**Client**: ${input.client_name}`,
+      `**Date**: ${memo.memo_date}`,
+      `**Output**: ${outPath} (${buf.length.toLocaleString()} bytes)`,
+      ``,
+      `## Applicability snapshot`,
+      applicabilityResult.summary,
+      applicabilityResult.applicable_statutes.length
+        ? `**Applicable statutes**: ${applicabilityResult.applicable_statutes.join(", ")}`
+        : "",
+      applicabilityResult.needed_inputs.length
+        ? `**Missing threshold inputs**: ${applicabilityResult.needed_inputs.join(", ")}`
+        : "",
+      ``,
+      `## Sections`,
+      sectionSummary,
+      ``,
+      `## Limitations`,
+      `_${MEMO_DISCLAIMER}_`,
+    ]
+      .filter((line) => line !== "")
+      .join("\n");
+
+    return { content: [{ type: "text", text }] };
+  }
+);
 
 // ─── Start ─────────────────────────────────────────────────────────────────
 async function main(): Promise<void> {

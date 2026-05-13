@@ -1,7 +1,7 @@
 # PrivacyQuant — Practice Profile
 
 This file is read automatically when PrivacyQuant tools are active. It governs how
-Claude uses the sixteen PrivacyQuant MCP tools and how it presents output to legal practitioners.
+Claude uses the eighteen PrivacyQuant MCP tools and how it presents output to legal practitioners.
 
 ---
 
@@ -36,6 +36,8 @@ The tools are a data layer, not a law firm. Every output is a draft for attorney
 | `pq_score_privacy_risk` | You want a deterministic 0-100 privacy exposure triage score with component breakdown and remediation priorities |
 | `pq_watch_legislation` | You want to monitor active privacy bills in covered states for node update leads (requires OPENSTATES_API_KEY) |
 | `pq_audit_citations` | You have completed work product and want to flag uncited claims, unresolved placeholders, and suspicious section numbers |
+| `pq_generate_memo` | You have structured memo inputs (entity profile, applicability, gaps, remediation, etc.) and want to produce the formal client-ready DOCX deliverable — cover, disclaimer, TOC, all ten sections, and appendix stubs |
+| `pq_memo_from_analysis` | You want a DRAFT DOCX memo with the entity profile and applicability sections auto-populated from threshold inputs (runs `pq_check_applicability` internally) — other sections render as placeholders for attorney completion |
 
 ---
 
