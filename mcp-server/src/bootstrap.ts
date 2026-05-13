@@ -1,4 +1,5 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { registerApplicabilityCheckerTool } from "./applicability_checker.js";
 import { registerDraftDpaClauseTool } from "./draft_dpa_clause.js";
 import { registerWatchLegislationTool } from "./legislation_watcher.js";
 
@@ -13,6 +14,7 @@ proto.connect = async function patchedConnect(this: object, transport: unknown):
     const server = this as Parameters<typeof registerDraftDpaClauseTool>[0];
     registerDraftDpaClauseTool(server);
     registerWatchLegislationTool(server as Parameters<typeof registerWatchLegislationTool>[0]);
+    registerApplicabilityCheckerTool(server as Parameters<typeof registerApplicabilityCheckerTool>[0]);
     registeredServers.add(this);
   }
 
