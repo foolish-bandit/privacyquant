@@ -1,6 +1,6 @@
 # PrivacyQuant
 
-**A versioned statutory knowledge graph and MCP workflow layer for US state consumer privacy law.**
+**Research, draft, and cite US state consumer privacy law — inside Claude or any compatible AI assistant.**
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178c6)
@@ -17,23 +17,77 @@
 
 ---
 
+## For attorneys: what this is and how to use it
+
+PrivacyQuant gives your AI assistant accurate, citable knowledge of US state consumer privacy laws — all 20 statutes, from CCPA/CPRA to the newest state laws. Instead of relying on the AI's general training (which may be out of date or imprecise), every answer pulls from a curated library of law that is locked to a specific version and carries a traceable citation.
+
+**In plain terms:** you ask Claude a privacy law question, and PrivacyQuant supplies the answer from the actual statutory text — with the statute name, section number, and version reference included. The output is a draft for your review, not legal advice.
+
+### What you can do with it
+
+| Task | What to ask Claude |
+|---|---|
+| **Check if a law applies** | "Does California privacy law apply to my client? Their revenue is $45M and they process data for 90,000 California residents." |
+| **Multi-state compliance** | "My client operates in CA, VA, TX, and CO. What is the strictest rule on sensitive data consent across those states?" |
+| **Review a contract clause** | "Review this data processing agreement clause against CCPA and Virginia law." (Paste the clause.) |
+| **Draft contract language** | "Draft a deletion-right provision for a DPA covering California and Maryland." |
+| **Draft a privacy notice** | "Draft a notice at collection for a California and Colorado consumer-facing website that sells user data." |
+| **Respond to a consumer request** | "A California resident submitted a deletion request today. What are the deadlines and steps?" |
+| **Research enforcement** | "Find enforcement actions involving GPC non-compliance and dark-pattern opt-outs in California." |
+| **Assess risk exposure** | "Score the privacy risk for a company selling consumer data in CA, VA, and TX without honoring opt-out signals." |
+| **Generate a client memo** | "Generate a compliance memo for Acme Corp operating in CA, VA, CO, TX, and MD with $40M revenue." |
+
+Every response includes the statute name, section number, and version identifier so you can verify the source. Claims that come from general reasoning rather than the library are flagged `[verify — not from graph]`.
+
+All output is a **draft for review by qualified counsel**. PrivacyQuant is a research and drafting aid, not a substitute for legal judgment or an attorney admitted in the relevant jurisdiction.
+
+---
+
+## How to load PrivacyQuant
+
+### Option 1 — Claude (recommended for most attorneys)
+
+If you use **Claude for Work** or **Claude Desktop**, install the plugin with two commands in Claude Code:
+
+```
+/plugin marketplace add foolish-bandit/privacyquant
+/plugin install privacyquant@privacyquant
+```
+
+That's it. Claude will load the PrivacyQuant tools automatically in every session. No server setup required.
+
+### Option 2 — Claude Code (advanced / self-hosted)
+
+If you want to run PrivacyQuant locally from your own machine:
+
+```bash
+git clone https://github.com/foolish-bandit/privacyquant
+cd privacyquant/mcp-server && npm install && npm run build
+```
+
+Claude Code will detect the configuration file in the repository and connect automatically.
+
+### Option 3 — Codex or another AI assistant
+
+See the [Installation](#installation) section below for Codex setup and instructions for any other MCP-compatible AI assistant.
+
+---
+
 ## Works with
 
 | Client | How |
 |---|---|
-| **Claude Code / Claude Desktop** | `.claude-plugin/plugin.json` marketplace manifest + `.mcp.json` auto-loaded by Claude Code |
+| **Claude Code / Claude Desktop** | Plugin marketplace (two commands above) or `.mcp.json` auto-loaded by Claude Code |
 | **Codex** | `.codex-plugin/plugin.json` plugin manifest + `.codex-mcp.json` MCP config + `skills/` instructions |
-| **Any MCP-compatible client** | Launch the STDIO MCP server directly: `npx tsx mcp-server/src/index.ts` |
+| **Any MCP-compatible client** | Run the server directly: `npx tsx mcp-server/src/index.ts` |
 
 ---
 
-## What PrivacyQuant does
+## What PrivacyQuant does (technical overview)
 
-PrivacyQuant is a structured, versioned, auditable legal workflow system built around atomic YAML statutory nodes and curated reference datasets.
+PrivacyQuant is a structured, versioned legal workflow system. Every statutory requirement, consumer right, deadline, and threshold is stored as an individually citable entry locked to a specific version of the law. When you cite a PrivacyQuant node, you are citing a specific version of the statute — not a model's recollection of it.
 
-Every statutory requirement, consumer right, deadline, and threshold is stored as an individually citable node with a Git hash. When you cite a PrivacyQuant node, you are citing a specific version of the law — not a model's recollection of it.
-
-The 18 MCP tools expose deterministic workflows across these areas:
+The 18 tools expose deterministic workflows across these areas:
 
 | Workflow | Tools |
 |---|---|
@@ -286,14 +340,14 @@ Washington MHMDA · Colorado AI Act · NYC Local Law 144 · standalone state AI 
 
 ## Installation
 
-### Claude Code (plugin — recommended)
+### Claude — plugin (recommended)
 
-```bash
+```
 /plugin marketplace add foolish-bandit/privacyquant
 /plugin install privacyquant@privacyquant
 ```
 
-### Claude Code (manual MCP)
+### Claude Code — manual / self-hosted
 
 ```bash
 git clone https://github.com/foolish-bandit/privacyquant
