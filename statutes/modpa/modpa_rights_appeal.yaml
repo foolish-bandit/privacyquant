@@ -1,0 +1,27 @@
+id: "modpa.rights.appeal"
+statute: "MODPA"
+section: "Md. Code Com. Law § 14-4605(c)"
+title: "Right to Appeal Denied Request"
+effective_date: "2025-10-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller declines to take action on a consumer rights request"
+requirement: >
+  If the controller declines to act, it must inform the consumer within 45 days with reasons
+  and instructions for how to appeal. The controller must complete the appeal within 60 days
+  of receipt. If the appeal is denied, the controller must provide the consumer with a method
+  to contact the Maryland AG to submit a complaint.
+exceptions: []
+contract_signals:
+  - "right to appeal"
+  - "appeal denied request"
+  - "appeal process"
+  - "consumer appeal"
+cross_refs:
+  - "vcdpa.rights.appeal"
+  - "cpa.rights.appeal"
+  - "ocpa.rights.appeal"
+source_url: "https://mgaleg.maryland.gov/2024RS/Chapters_noln/CH_182_sb0541e.pdf"
+git_hash: ""
