@@ -2,7 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 import { loadIndex } from "./loader.js";
-import { searchNodes } from "./search.js";
+import { searchNodes, extractClauseSignals } from "./search.js";
 import { resolveConflict, ALL_DIMENSIONS } from "./conflict_resolver.js";
 import type { Dimension } from "./conflict_resolver.js";
 import { evaluateClause } from "./clause_evaluator.js";
@@ -131,13 +131,21 @@ Use this to find relevant statutory nodes before analyzing a contract clause or 
 a DPA provision. The search matches against contract_signals (phrases that appear in real
 DPA/contract language), node titles, and statute names.
 
+Two modes:
+  1. Keyword search: provide a short query string
+  2. Clause search: paste a raw DPA clause into clause_text — the tool extracts signal
+     terms automatically. Use this when you have the actual contract language.
+
 Args:
-  - query (string): Freetext query or pasted contract clause text. Examples:
+  - query (string): Freetext keyword query. Examples:
       "right to deletion"
       "do not sell or share my personal information"
       "sensitive data consent"
       "universal opt-out GPC"
-      "CCPA deletion right"
+  - clause_text (string, optional): Raw DPA or contract clause text. When provided,
+      the tool extracts privacy-law signal terms from the clause and uses them as the
+      search query — you do not need to identify keywords yourself. If both query and
+      clause_text are provided, clause_text signals are appended to the query.
   - statute (string, optional): Filter to a specific statute, e.g. "CCPA", "MODPA", "VCDPA"
   - requirement_type (string, optional): Filter by type — "hard", "threshold", or "soft"
   - limit (number, optional): Max results to return (default 5, max 20)
@@ -148,7 +156,12 @@ If no results found, try broader terms or use pq_list_statutes to browse by stat
       query: z.string()
         .min(2)
         .max(2000)
-        .describe("Freetext query or contract clause text to match against"),
+        .describe("Freetext keyword query"),
+      clause_text: z.string()
+        .min(20)
+        .max(10000)
+        .optional()
+        .describe("Raw DPA or contract clause — signal terms are extracted automatically"),
       statute: z.string()
         .optional()
         .describe('Filter to a specific statute, e.g. "CCPA", "MODPA"'),
@@ -170,34 +183,52 @@ If no results found, try broader terms or use pq_list_statutes to browse by stat
       openWorldHint: false,
     },
   },
-  async ({ query, statute, requirement_type, limit }) => {
+  async ({ query, clause_text, statute, requirement_type, limit }) => {
+    // Build effective query: keyword query + extracted clause signals
+    let effectiveQuery = query;
+    let clauseSignals: string | null = null;
+
+    if (clause_text) {
+      clauseSignals = extractClauseSignals(clause_text);
+      // Append clause signals to the query; deduplicate by using a Set of tokens
+      const combined = new Set([
+        ...query.toLowerCase().split(/\s+/),
+        ...clauseSignals.toLowerCase().split(/\s+/),
+      ]);
+      effectiveQuery = [...combined].join(" ");
+    }
+
     const results = searchNodes(index, {
-      query,
+      query: effectiveQuery,
       statute,
       requirement_type,
       limit,
     });
 
     if (results.length === 0) {
+      const noMatchLines = [
+        `No nodes matched${clause_text ? " the clause" : ` "${query}"`}${statute ? ` in ${statute}` : ""}.`,
+        ``,
+        `Suggestions:`,
+        `- Try broader terms (e.g. "deletion" instead of "right to erasure")`,
+        `- Remove the statute filter to search across all statutes`,
+        `- Use pq_list_statutes to see what statutes and nodes are available`,
+      ];
+      if (clause_text && clauseSignals) {
+        noMatchLines.push(`- Extracted signals from clause: "${clauseSignals}"`);
+        noMatchLines.push(`- Try passing the clause directly to pq_check_clause for full evaluation`);
+      }
       return {
-        content: [
-          {
-            type: "text",
-            text: [
-              `No nodes matched "${query}"${statute ? ` in ${statute}` : ""}.`,
-              ``,
-              `Suggestions:`,
-              `- Try broader terms (e.g. "deletion" instead of "right to erasure")`,
-              `- Remove the statute filter to search across all statutes`,
-              `- Use pq_list_statutes to see what statutes and nodes are available`,
-            ].join("\n"),
-          },
-        ],
+        content: [{ type: "text", text: noMatchLines.join("\n") }],
       };
     }
 
+    const displayQuery = clause_text
+      ? `clause (signals: ${clauseSignals})`
+      : `"${query}"`;
+
     const lines: string[] = [
-      `Found ${results.length} result${results.length !== 1 ? "s" : ""} for "${query}"`,
+      `Found ${results.length} result${results.length !== 1 ? "s" : ""} for ${displayQuery}`,
       ``,
     ];
 
@@ -210,7 +241,6 @@ If no results found, try broader terms or use pq_list_statutes to browse by stat
       lines.push(`**Section**: ${r.node.section}`);
       lines.push(`**Trigger**: ${r.node.trigger}`);
       lines.push(``);
-      // Truncate requirement for search results — full text via pq_fetch_requirement
       const req = r.node.requirement.trim();
       lines.push(req.length > 400 ? req.slice(0, 400) + "…" : req);
       lines.push(``);
@@ -221,6 +251,12 @@ If no results found, try broader terms or use pq_list_statutes to browse by stat
     lines.push(
       `Use pq_fetch_requirement with a node ID for the full text, exceptions, and cross-references.`
     );
+
+    if (clause_text) {
+      lines.push(
+        `Use pq_check_clause with the same clause text for GREEN/YELLOW/RED verdicts and redlines.`
+      );
+    }
 
     return {
       content: [{ type: "text", text: lines.join("\n") }],
