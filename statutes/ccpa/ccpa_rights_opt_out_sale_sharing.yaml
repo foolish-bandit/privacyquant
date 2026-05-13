@@ -27,6 +27,11 @@ contract_signals:
   - "GPC"
   - "sale of personal information"
   - "sharing for cross-context behavioral advertising"
+nist_controls:
+  - "IP-1"
+  - "UL-1"
+  - "UL-2"
+  - "PT-2"
 cross_refs:
   - "vcdpa.rights.opt_out_sale"
   - "cpa.rights.opt_out_sale"
