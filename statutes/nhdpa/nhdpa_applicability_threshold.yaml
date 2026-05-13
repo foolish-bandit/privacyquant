@@ -1,0 +1,27 @@
+id: "nhdpa.applicability.threshold"
+statute: "NHDPA"
+section: "N.H. Rev. Stat. § 507-H:2"
+title: "Applicability Threshold — Tied for Lowest (10k/35k)"
+effective_date: "2025-01-01"
+supersedes: []
+amended_by: []
+requirement_type: threshold
+obligation_bearer: controller
+trigger: "Person conducting business in New Hampshire or producing products/services targeted to New Hampshire residents"
+requirement: >
+  Applies to persons conducting business in NH or targeting NH residents AND during a calendar year:
+  (a) control/process PD of at least 35,000 NH consumers (excluding solely-payment-transaction data); OR
+  (b) control/process PD of at least 10,000 NH consumers AND derive over 25% of gross revenue from sale of PD.
+  Tied with Delaware for lowest thresholds (10k secondary / 35k primary).
+exceptions:
+  - "Standard exemptions"
+contract_signals:
+  - "New Hampshire Data Privacy Act"
+  - "NHDPA"
+  - "New Hampshire residents"
+  - "N.H. Rev. Stat. ch. 507-H"
+cross_refs:
+  - "dpdpa.applicability.threshold"
+  - "ridtppa.applicability.threshold"
+source_url: "https://www.gencourt.state.nh.us/legislation/2024/HB0314.html"
+git_hash: ""
