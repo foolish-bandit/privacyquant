@@ -1,0 +1,38 @@
+id: "cpa.applicability.threshold"
+statute: "CPA"
+section: "Colo. Rev. Stat. § 6-1-1304"
+title: "Applicability Threshold"
+effective_date: "2023-07-01"
+supersedes: []
+amended_by: []
+requirement_type: threshold
+obligation_bearer: controller
+trigger: "Person conducting business in Colorado or producing/delivering products/services intentionally targeted to Colorado residents"
+requirement: >
+  Applies to controllers conducting business in Colorado or intentionally targeting products/services
+  to Colorado residents AND either:
+  (a) controlling or processing PD of at least 100,000 consumers in a calendar year; OR
+  (b) deriving revenue or receiving a discount from the sale of PD AND controlling or processing
+  PD of at least 25,000 consumers.
+  Note: no minimum revenue threshold — purely activity-based.
+exceptions:
+  - "GLBA-covered data (data-level)"
+  - "HIPAA-covered data (data-level)"
+  - "FCRA-covered data (data-level)"
+  - "DPPA-covered data (data-level)"
+  - "FERPA-covered data (data-level)"
+  - "COPPA-covered data (data-level)"
+  - "Employment data"
+  - "Air carriers"
+  - "Certain state institutions"
+contract_signals:
+  - "Colorado Privacy Act"
+  - "CPA"
+  - "Colorado residents"
+  - "Colo. Rev. Stat. § 6-1-13"
+cross_refs:
+  - "ccpa.applicability.threshold"
+  - "vcdpa.applicability.threshold"
+  - "ctdpa.applicability.threshold"
+source_url: "https://leg.colorado.gov/sites/default/files/documents/2021A/bills/2021a_190_enr.pdf"
+git_hash: ""
