@@ -1,0 +1,31 @@
+id: "ctdpa.rights.access"
+statute: "CTDPA"
+section: "Conn. Gen. Stat. § 42-518(a)(1)"
+title: "Right to Access"
+effective_date: "2023-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Consumer submits an authenticated request to confirm processing or obtain a copy of personal data"
+requirement: >
+  Controller must confirm whether it is processing the consumer's PD and provide access to
+  that PD. Response deadline: 45 days (extendable once by 45 days with notice). Must be
+  provided free of charge twice per 12-month period.
+exceptions:
+  - "Request is manifestly unfounded, excessive, or repetitive"
+  - "Compliance would require revealing a trade secret"
+contract_signals:
+  - "right of access"
+  - "right to access"
+  - "confirm processing"
+  - "data subject access request"
+  - "DSAR"
+  - "access to personal data"
+cross_refs:
+  - "ccpa.rights.access"
+  - "vcdpa.rights.access"
+  - "cpa.rights.access"
+  - "modpa.rights.access"
+source_url: "https://www.cga.ct.gov/2022/ACT/PA/PDF/2022PA-00015-R00SB-00006-PA.PDF"
+git_hash: ""
