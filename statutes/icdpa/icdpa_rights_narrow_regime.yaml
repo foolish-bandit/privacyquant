@@ -1,0 +1,29 @@
+id: "icdpa.rights.narrow_regime"
+statute: "ICDPA"
+section: "Iowa Code § 715D.3"
+title: "Consumer Rights — Second-Narrowest Regime"
+effective_date: "2025-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Consumer submits authenticated request under ICDPA"
+requirement: >
+  Iowa provides the second-narrowest consumer rights regime after UCPA:
+  Right to access; right to delete; right to portability; right to opt out of SALE only.
+  NO correction right; NO right to opt out of targeted advertising; NO profiling opt-out;
+  NO right to appeal; NO UOOM recognition required.
+  Sensitive data uses opt-out (not opt-in) — Iowa and Utah are the only two states in this posture.
+  Response deadline: 90 days (longest of any state).
+exceptions:
+  - "Requests that are manifestly unfounded or excessive"
+contract_signals:
+  - "opt-out of sale"
+  - "access request"
+  - "deletion request"
+  - "Iowa privacy rights"
+cross_refs:
+  - "ucpa.rights.narrow_regime"
+  - "vcdpa.rights.opt_out_sale"
+source_url: "https://www.legis.iowa.gov/docs/acts/2023/ACT0006.pdf"
+git_hash: ""
