@@ -1,60 +1,116 @@
-# Connector Pairings
+# PrivacyQuant Connectors
 
-PrivacyQuant is designed to stay small and focused: it maps statutory privacy requirements, contract signals, DSAR routing, clause checks, and enforcement-action precedent metadata. It should not try to become a full court-record database.
+PrivacyQuant's five built-in MCP tools cover statutory lookup, multi-state synthesis,
+DPA clause checking, DSAR routing, and enforcement precedent matching. The tools below
+extend that capability with live primary source data.
 
-This document tracks external MCP connectors that pair well with PrivacyQuant.
+---
 
-## CourtListener MCP
+## CourtListener (Free Law Project)
 
-**Status:** Recommended companion connector.
+**What it adds:** Live access to 18+ million US court records, dockets, PACER filings,
+and citation networks. Free API — create an account at courtlistener.com to get a key.
 
-Free Law Project announced on May 12, 2026 that CourtListener is available as an MCP connector inside Claude. CourtListener's connector gives Claude access to case law, PACER/RECAP dockets and filings, citation analysis, oral argument transcripts, judge data, alerts, search, and citation verification.
+**Why it pairs with PrivacyQuant:** `pq_find_precedent` returns enforcement action
+records from the PrivacyQuant corpus (84 actions, updated periodically). CourtListener
+lets you verify those citations against primary court records, pull full opinion text,
+see subsequent citations, and check docket status for pending matters.
 
-CourtListener is not a replacement for PrivacyQuant. It fills a lookup gap after PrivacyQuant identifies a relevant enforcement action, citation, or precedent candidate.
+**Install (Claude Code):**
 
-### Why pair it with PrivacyQuant?
+```bash
+/plugin marketplace add freelawproject/courtlistener-mcp
+/plugin install courtlistener@courtlistener-mcp
+```
 
-PrivacyQuant's enforcement-action tooling is intentionally narrow: it points users toward relevant privacy enforcement actions from the local `references/enforcement_actions.json` corpus. That corpus is useful for deterministic precedent matching, but it does not provide a full court-record workflow.
+Set your API key:
 
-CourtListener covers the next step:
+```bash
+export COURTLISTENER_API_KEY=your_key_here
+```
 
-1. Use PrivacyQuant to identify the relevant statutory node, clause gap, or enforcement action.
-2. Use the CourtListener MCP connector to verify the citation, pull the full record, inspect docket history, and review citing or cited authority.
-3. Return to PrivacyQuant to connect the researched precedent back to the statutory requirement or DPA drafting task.
+Get a free key: https://www.courtlistener.com/api/
 
-### Recommended user instruction
+**Workflow example:**
 
-When doing enforcement-action or precedent research in Claude Code, install CourtListener MCP alongside PrivacyQuant:
+```
+# 1. Find enforcement precedents in PrivacyQuant corpus
+pq_find_precedent(tags: ["gpc_not_honored", "dark_pattern_optout"], states: ["CA"])
+→ returns ca-ag-disney-streaming-2026, ca-sephora-2022, ca-cppa-tractor-supply-2025
 
-> Install CourtListener MCP alongside PrivacyQuant to verify citations and expand enforcement-action research.
+# 2. Pull the full docket for any matter via CourtListener
+courtlistener:search_cases(query: "Disney streaming CCPA opt-out")
+→ returns full court record, opinion text, citation network
 
-### Practical examples
+# 3. Check for subsequent developments, related cases, or pending appeals
+courtlistener:find_similar_precedents(reference_case_id: "...")
+```
 
-- If PrivacyQuant returns an enforcement action with a citation, use CourtListener to verify the citation and retrieve the underlying record.
-- If PrivacyQuant flags a privacy-law clause gap, use CourtListener to look for litigation, docket activity, or citing authority around related enforcement theories.
-- If PrivacyQuant returns a regulator action URL but not a docket trail, use CourtListener to determine whether there are related court filings, opinions, or subsequent citations.
+**Notes:**
+- CourtListener has strong coverage of federal courts and select state courts.
+  CPPA administrative enforcement orders (Honda, Todd Snyder, Tractor Supply) are
+  not federal court records — use cppa.ca.gov directly for those.
+- CourtListener's free tier provides 5,000 API requests/hour.
+- CA AG settlements (Sephora, DoorDash, Disney) may appear as filed stipulated
+  judgments in CA Superior Court; search by case caption.
 
-### Setup
+---
 
-1. Create or log in to a CourtListener account.
-2. In Claude, open **Customize** → **Connectors** → **Browse Connectors**.
-3. Add **CourtListener**.
-4. Authorize Claude to access your CourtListener account.
-5. Use CourtListener for primary-source expansion after PrivacyQuant identifies the relevant privacy issue.
+## Ansvar Systems US-law-mcp
 
-### Sources
+**What it adds:** Verified text of 130+ US federal statutes and regulations from
+official eCFR and US Code sources. Zero LLM summarization — regulation text only.
+Covers HIPAA, CCPA, SOX, GLBA, FERPA, COPPA, FISMA, FTC HBNR, and more.
 
-- Free Law Project announcement: https://free.law/2026/05/12/courtlistener-is-now-available-inside-claude/
-- CourtListener MCP help page: https://www.courtlistener.com/help/mcp/
-- CourtListener project overview: https://free.law/projects/courtlistener/
+**Why it pairs with PrivacyQuant:** PrivacyQuant covers state comprehensive privacy
+laws. US-law-mcp covers the federal sectoral overlay — HIPAA, GLBA, COPPA, FTC Act
+§ 5, Health Breach Notification Rule — that modify or preempt state obligations in
+specific contexts. The `references/federal-overlays.md` file documents these
+interactions; US-law-mcp lets you query the underlying federal text directly.
 
-## Design rule for future connector pairings
+**Install:**
 
-A connector pairing should be documented here when it expands PrivacyQuant's workflow without duplicating PrivacyQuant's core purpose.
+```bash
+git clone https://github.com/Ansvar-Systems/US-law-mcp
+```
 
-Good connector pairings should:
+Follow their README for setup and API key configuration.
 
-- verify or enrich a PrivacyQuant result;
-- avoid adding fragile network dependencies to core deterministic tools;
-- keep statutory-node matching and schema logic local to this repo;
-- make the user better at legal research without pretending PrivacyQuant is a complete legal-research platform.
+**Workflow example:**
+
+```
+# Check HIPAA preemption question when PrivacyQuant flags a state deletion obligation
+pq_fetch_requirement(id: "ccpa.rights.deletion")
+→ notes HIPAA-covered data is exempt at data level
+
+# Verify the HIPAA preemption boundary via federal text
+us_law_mcp:search(query: "HIPAA preemption state privacy law", statute: "HIPAA")
+→ returns 45 CFR § 160.203 preemption analysis
+```
+
+---
+
+## Open States / Plural (Legislative Tracking)
+
+**What it adds:** Real-time bill tracking across all 50 state legislatures via the
+Plural Policy API. Search active privacy bills, get amendment text, track committee
+actions and effective dates.
+
+**Why it pairs with PrivacyQuant:** PrivacyQuant nodes are versioned snapshots.
+Open States tells you when a node is about to go stale — when a state has an active
+amendment bill that would change a deadline, penalty figure, or right.
+
+**API key:** https://open.pluralpolicy.com (free tier available)
+
+**PrivacyQuant has a built-in tool for this:** `pq_watch_legislation` queries the
+Plural API for active privacy bills in covered states. Set `OPENSTATES_API_KEY` to
+enable it.
+
+---
+
+## Adding a Connector
+
+See the Anthropic [CONNECTORS.md](https://github.com/anthropics/claude-for-legal/blob/main/CONNECTORS.md)
+guide for what a good legal MCP server looks like. PrivacyQuant follows the same
+plugin conventions as `claude-for-legal`. If you build a connector that pairs well
+with PrivacyQuant, open a PR adding it here.
