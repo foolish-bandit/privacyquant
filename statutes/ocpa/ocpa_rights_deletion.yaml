@@ -1,0 +1,33 @@
+id: "ocpa.rights.deletion"
+statute: "OCPA"
+section: "ORS § 646A.574(1)(c)"
+title: "Right to Deletion"
+effective_date: "2024-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Consumer submits an authenticated request to delete personal data"
+requirement: >
+  Controller must delete PD provided by or obtained about the consumer. Response deadline:
+  45 days (extendable once by 45 days with notice). Controller must also direct processors
+  to delete the PD. Cure period sunset January 1, 2026.
+exceptions:
+  - "Processing necessary to complete a transaction or perform a contract"
+  - "Processing necessary to detect or protect against security incidents"
+  - "Processing required to comply with a legal obligation"
+  - "Processing necessary for certain public interest research or public health activities"
+contract_signals:
+  - "right to erasure"
+  - "right to deletion"
+  - "delete personal data"
+  - "data deletion request"
+  - "erase personal data"
+  - "right to be forgotten"
+cross_refs:
+  - "ccpa.rights.deletion"
+  - "vcdpa.rights.deletion"
+  - "cpa.rights.deletion"
+  - "modpa.rights.deletion"
+source_url: "https://www.oregonlegislature.gov/bills_laws/ors/ors646A.html"
+git_hash: ""
