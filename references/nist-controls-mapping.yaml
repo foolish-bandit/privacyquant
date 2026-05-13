@@ -1,0 +1,227 @@
+# PrivacyQuant × NIST SP 800-53 Rev. 5 / NIST Privacy Framework Control Crosswalk
+#
+# Maps PrivacyQuant statutory node IDs to NIST SP 800-53 Rev. 5 control identifiers
+# and NIST Privacy Framework v1.0 subcategory outcomes.
+#
+# Primary sources:
+#   - NIST CCPA Regulations Crosswalk (usnistgov/PrivacyFrmwkResources, CC-BY)
+#   - NIST Privacy Framework v1.0 (public domain)
+#   - Secure Controls Framework (SCF) CCPA 2025 and VA CDPA 2025 mappings (CC-BY-ND 4.0)
+#
+# How to use:
+#   For any PrivacyQuant node, find the corresponding NIST controls here.
+#   This enables security and GRC teams to bridge between statutory privacy obligations
+#   (what the law requires) and NIST-based control implementations (how to satisfy them).
+#   Import into any OSCAL-compatible GRC platform using these control IDs.
+#
+# NIST SP 800-53 Rev. 5 control families referenced:
+#   AC  = Access Control
+#   AT  = Awareness and Training
+#   AU  = Audit and Accountability
+#   IP  = Individual Participation (Privacy)
+#   PA  = Privacy Authorization
+#   PT  = Processing Transparency (Privacy)
+#   RA  = Risk Assessment
+#   SA  = System and Services Acquisition
+#   SC  = System and Communications Protection
+#   SI  = System and Information Integrity
+#   TR  = Transparency (Privacy)
+#   UL  = Use Limitation (Privacy)
+#
+# NIST Privacy Framework v1.0 functions: IDENTIFY-P, GOVERN-P, CONTROL-P, COMMUNICATE-P, PROTECT-P
+
+schema_version: "1.0"
+last_updated: "2026-05-13"
+nist_version: "SP 800-53 Rev. 5"
+privacy_framework_version: "1.0"
+scf_version: "2025.3"
+
+mappings:
+
+  # ── Consumer Rights ────────────────────────────────────────────────────────
+
+  - node_id: "ccpa.rights.access"
+    node_title: "Right to Access / Know"
+    nist_800_53:
+      - "IP-1"    # Individual Access — right to review and request amendment
+      - "IP-2"    # Individual Access Enforcement — organization responds to requests
+      - "TR-1"    # Transparency Policy — notice of data practices
+    privacy_framework:
+      - "CONTROL-P.1.1"   # Data subject rights: access
+    notes: "IP-1 and IP-2 are the primary NIST anchors for all consumer access rights across states."
+
+  - node_id: "ccpa.rights.deletion"
+    node_title: "Right to Deletion"
+    nist_800_53:
+      - "IP-1"    # Individual Access — includes request for deletion
+      - "IP-3"    # Redress — mechanism to contest, correct, delete
+      - "SI-12"   # Information Management and Retention
+      - "DM-3"    # Data Retention and Disposal (Privacy Appendix)
+    privacy_framework:
+      - "CONTROL-P.1.2"   # Data subject rights: deletion/erasure
+
+  - node_id: "ccpa.rights.correction"
+    node_title: "Right to Correction"
+    nist_800_53:
+      - "IP-1"    # Individual Access
+      - "IP-3"    # Redress — mechanism to contest, correct
+      - "SI-7"    # Software, Firmware, and Information Integrity
+    privacy_framework:
+      - "CONTROL-P.1.3"   # Data subject rights: correction
+
+  - node_id: "ccpa.rights.opt_out_sale_sharing"
+    node_title: "Right to Opt Out of Sale/Sharing"
+    nist_800_53:
+      - "IP-1"    # Individual Access / Choice
+      - "UL-1"    # Internal Use — limits secondary use of PI
+      - "UL-2"    # Information Sharing with Third Parties
+      - "PT-2"    # Purpose Specification
+    privacy_framework:
+      - "CONTROL-P.2.1"   # Data subject rights: opt-out
+      - "CONTROL-P.2.2"   # Opt-out preference signals honored
+
+  - node_id: "ccpa.rights.limit_sensitive_pi"
+    node_title: "Right to Limit Use of Sensitive PI"
+    nist_800_53:
+      - "IP-1"    # Individual Access / Choice
+      - "UL-1"    # Internal Use Limitation
+      - "AC-21"   # Information Sharing — conditional access based on consent
+    privacy_framework:
+      - "CONTROL-P.2.1"   # Data subject rights: opt-out/limit
+
+  # ── Controller Duties ──────────────────────────────────────────────────────
+
+  - node_id: "ccpa.controller_duties.notice_at_collection"
+    node_title: "Notice at Collection"
+    nist_800_53:
+      - "TR-1"    # Transparency Policy
+      - "TR-2"    # System of Records Notices
+      - "PT-1"    # Privacy Policy, Notices, and Records
+      - "PT-2"    # Purpose Specification
+    privacy_framework:
+      - "COMMUNICATE-P.1.1"   # Privacy notices provided at point of collection
+      - "GOVERN-P.1"          # Organizational privacy values and policies
+
+  - node_id: "ccpa.controller_duties.privacy_notice"
+    node_title: "Privacy Notice / Privacy Policy"
+    nist_800_53:
+      - "TR-1"    # Transparency Policy
+      - "PT-1"    # Privacy Policy, Notices, and Records
+    privacy_framework:
+      - "COMMUNICATE-P.1"     # Privacy notices provided and understood
+
+  - node_id: "ccpa.controller_duties.service_provider_contract"
+    node_title: "Service Provider / Processor Contract Requirements"
+    nist_800_53:
+      - "SA-4"    # Acquisition Process — privacy requirements in contracts
+      - "SA-9"    # External Information System Services — privacy in vendor agreements
+      - "UL-2"    # Information Sharing with Third Parties
+      - "CA-3"    # System Interconnections — data sharing agreements
+    privacy_framework:
+      - "GOVERN-P.7"   # Privacy requirements in contracts with third parties
+
+  - node_id: "ccpa.controller_duties.data_protection_assessment"
+    node_title: "Privacy Risk Assessment"
+    nist_800_53:
+      - "RA-3"    # Risk Assessment
+      - "RA-8"    # Privacy Impact Assessments
+      - "PT-5"    # Privacy Impact Assessment — published and available
+    privacy_framework:
+      - "IDENTIFY-P.1.2"   # Privacy risk assessment conducted
+      - "GOVERN-P.4"        # Risk management strategy
+
+  - node_id: "ccpa.controller_duties.cybersecurity_audit"
+    node_title: "Cybersecurity Audit"
+    nist_800_53:
+      - "CA-2"    # Security Assessments
+      - "CA-7"    # Continuous Monitoring
+      - "AU-2"    # Audit Events
+      - "RA-5"    # Vulnerability Monitoring and Scanning
+    privacy_framework:
+      - "PROTECT-P.1"    # Data protection processes and controls reviewed
+
+  - node_id: "ccpa.controller_duties.admt_opt_out"
+    node_title: "ADMT Opt-Out and Access Rights"
+    nist_800_53:
+      - "IP-1"    # Individual Access
+      - "IP-3"    # Redress — contest automated decisions
+      - "PT-7"    # Specific Categories of Personally Identifiable Information
+      - "RA-8"    # Privacy Impact Assessments — required before ADMT deployment
+    privacy_framework:
+      - "CONTROL-P.2.1"   # Data subject rights: opt-out of automated processing
+      - "COMMUNICATE-P.1.1" # Pre-use notice required
+
+  # ── Sensitive Data ─────────────────────────────────────────────────────────
+
+  - node_id: "ccpa.sensitive_data.categories"
+    node_title: "Sensitive Personal Information Categories"
+    nist_800_53:
+      - "PT-7"    # Specific Categories of PII — heightened protection
+      - "AC-21"   # Information Sharing — restricted for sensitive categories
+      - "SA-4"    # Acquisition Process — sensitive data requirements in procurement
+      - "RA-8"    # Privacy Impact Assessments — required for sensitive data processing
+    privacy_framework:
+      - "IDENTIFY-P.2.1"   # Sensitive data categories identified
+      - "PROTECT-P.3"      # Enhanced protections for sensitive data
+
+  - node_id: "modpa.sensitive_data.ban_on_sale"
+    node_title: "Maryland Flat Ban on Sensitive Data Sale"
+    nist_800_53:
+      - "UL-2"    # Information Sharing with Third Parties — prohibited
+      - "PT-7"    # Specific Categories of PII
+    privacy_framework:
+      - "CONTROL-P.4"    # Data collection and use limits enforced
+
+  # ── Enforcement ────────────────────────────────────────────────────────────
+
+  - node_id: "ccpa.enforcement.parameters"
+    node_title: "CCPA Civil Penalties"
+    nist_800_53:
+      - "PM-10"   # Security Authorization Process — accountability
+      - "CA-5"    # Plan of Action and Milestones — remediation tracking
+    privacy_framework:
+      - "GOVERN-P.6"   # Legal liability and accountability established
+
+  # ── Multi-state synthesis ──────────────────────────────────────────────────
+
+  - node_id: "vcdpa.rights.opt_out_sale"
+    node_title: "VCDPA Opt-Out Rights (Sale, Targeted Advertising, Profiling)"
+    nist_800_53:
+      - "IP-1"
+      - "UL-1"
+      - "UL-2"
+    privacy_framework:
+      - "CONTROL-P.2.1"
+
+  - node_id: "cpa.rights.opt_out_sale"
+    node_title: "CPA Opt-Out Rights + GPC Requirement"
+    nist_800_53:
+      - "IP-1"
+      - "UL-1"
+      - "UL-2"
+      - "PT-6"    # System of Records — covers GPC signal as privacy preference record
+    privacy_framework:
+      - "CONTROL-P.2.1"
+      - "CONTROL-P.2.2"   # Universal opt-out signals (GPC) honored
+
+  - node_id: "cpa.controller_duties.data_protection_assessment"
+    node_title: "CPA Data Protection Assessment (Most Prescriptive Rules)"
+    nist_800_53:
+      - "RA-3"
+      - "RA-8"
+      - "PT-5"
+      - "SA-15"   # Development Process, Standards, and Tools — privacy by design
+    privacy_framework:
+      - "IDENTIFY-P.1.2"
+      - "GOVERN-P.4"
+
+  - node_id: "cpa.controller_duties.biometric"
+    node_title: "CPA Biometric-Specific Obligations"
+    nist_800_53:
+      - "PT-7"    # Specific Categories of PII — biometric
+      - "RA-8"    # Privacy Impact Assessment required for biometric
+      - "AC-21"   # Biometric sharing restrictions
+      - "IA-3"    # Device Identification and Authentication — biometric auth context
+    privacy_framework:
+      - "IDENTIFY-P.2.1"
+      - "PROTECT-P.3"
