@@ -1,0 +1,35 @@
+id: "cpa.rights.deletion"
+statute: "CPA"
+section: "Colo. Rev. Stat. § 6-1-1306(1)(a)(III)"
+title: "Right to Deletion"
+effective_date: "2023-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Consumer submits an authenticated request to delete personal data the consumer has provided or that the controller has obtained about the consumer"
+requirement: >
+  Controller must delete PD provided by or obtained about the consumer.
+  Response deadline: 45 days (extendable once by 45 days with notice).
+  Controller must also direct processors to delete the PD.
+exceptions:
+  - "Processing necessary to complete a transaction or perform a contract"
+  - "Processing necessary to protect against security incidents or fraudulent activity"
+  - "Processing necessary for certain public interest research"
+  - "Processing required to comply with a legal obligation"
+  - "Processing necessary to exercise or defend legal claims"
+  - "Processing necessary for certain public health activities"
+contract_signals:
+  - "right to erasure"
+  - "right to deletion"
+  - "delete personal data"
+  - "data deletion request"
+  - "erase personal data"
+  - "right to be forgotten"
+cross_refs:
+  - "ccpa.rights.deletion"
+  - "vcdpa.rights.deletion"
+  - "ctdpa.rights.deletion"
+  - "modpa.rights.deletion"
+source_url: "https://leg.colorado.gov/sites/default/files/documents/2021A/bills/2021a_190_enr.pdf"
+git_hash: ""
