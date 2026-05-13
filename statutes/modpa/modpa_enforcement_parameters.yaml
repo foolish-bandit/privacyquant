@@ -1,0 +1,25 @@
+id: "modpa.enforcement.parameters"
+statute: "MODPA"
+section: "Md. Code Com. Law § 14-4611"
+title: "Enforcement — AG; 60-Day Cure"
+effective_date: "2025-10-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller or processor violates MODPA"
+requirement: >
+  Enforced by the Maryland AG (Consumer Protection Division). No private right of action.
+  Civil penalties under Maryland Consumer Protection Act / CFA framework.
+  60-day cure period at enactment.
+exceptions: []
+contract_signals:
+  - "Maryland Attorney General"
+  - "civil penalty"
+  - "MODPA violation"
+  - "Maryland Consumer Protection"
+cross_refs:
+  - "dpdpa.enforcement.parameters"
+  - "vcdpa.enforcement.parameters"
+source_url: "https://mgaleg.maryland.gov/2024RS/Chapters_noln/CH_182_sb0541e.pdf"
+git_hash: ""
