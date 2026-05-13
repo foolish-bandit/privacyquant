@@ -16,7 +16,8 @@ statutes/          ← 93 YAML nodes across 20 state privacy laws
   ... (17 more statutes)
 
 mcp-server/        ← TypeScript MCP server
-  src/index.ts     ← server entry point
+  src/bootstrap.ts ← MCP bootstrap entry point
+  src/index.ts     ← core server and existing tool registrations
   src/loader.ts    ← reads YAML nodes at startup
   src/search.ts    ← keyword matching against contract_signals
   src/types.ts     ← TypeScript interfaces
@@ -35,6 +36,23 @@ CONNECTORS.md      ← recommended companion MCP connectors
 | `pq_fetch_requirement` | Fetch a node by exact ID (e.g. `ccpa.rights.deletion`) |
 | `pq_search_requirements` | Search by keyword or pasted contract clause text |
 | `pq_list_statutes` | List all statutes and browse node IDs |
+| `pq_draft_dpa_clause` | Draft a ready-to-review DPA clause from a statutory node ID |
+
+### Draft a DPA clause
+
+Use `pq_draft_dpa_clause` when you know the statutory node you want to satisfy and need first-draft contract language.
+
+Example:
+
+```json
+{
+  "id": "ccpa.rights.deletion",
+  "role": "business_service_provider",
+  "style": "standard"
+}
+```
+
+The tool is deterministic and does not call an LLM. It should be treated as a drafting aid, not legal advice. Run `pq_check_clause` against the final edited clause before relying on it.
 
 ## Companion connectors
 
@@ -76,8 +94,7 @@ Open the repo root in Claude Code — it reads `.mcp.json` automatically.
 
 Install from the Cowork plugin browser — search for **privacyquant**.
 
-Once installed, Claude has five tools: `pq_fetch_requirement`, `pq_search_requirements`,
-`pq_list_statutes`, `pq_resolve_conflict`, and `pq_check_clause`.
+Once installed, Claude has PrivacyQuant tools for fetching/searching statutory nodes, resolving multi-state constraints, checking clauses, and drafting DPA clauses.
 
 ## Contributing
 
