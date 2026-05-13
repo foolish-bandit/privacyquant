@@ -1,0 +1,32 @@
+id: "ctdpa.controller_duties.llm_training_disclosure"
+statute: "CTDPA"
+section: "Conn. Gen. Stat. § 42-520, as amended by 2025 Conn. Pub. Acts 25-113"
+title: "Privacy Notice — Personal Data Used to Train Large Language Models"
+effective_date: "2026-07-01"
+supersedes: []
+amended_by:
+  - "2025 Conn. Pub. Acts 25-113"
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller uses, processes, or collects personal data in connection with training a large language model"
+requirement: >
+  Beginning July 1, 2026, a controller's privacy notice must disclose the manner in which the
+  controller uses, processes, or collects personal data in connection with the training of a
+  large language model, if applicable. This creates a notice obligation specific to LLM training
+  uses of personal data.
+exceptions: []
+contract_signals:
+  - "large language model"
+  - "LLM"
+  - "model training"
+  - "training data"
+  - "AI training"
+  - "artificial intelligence training"
+  - "privacy notice"
+  - "personal data used for training"
+cross_refs:
+  - "ctdpa.controller_duties.privacy_notice"
+  - "ctdpa.controller_duties.data_protection_assessment"
+  - "ccpa.controller_duties.privacy_notice"
+source_url: "https://www.cga.ct.gov/2025/ACT/PA/PDF/2025PA-00113-R00HB-07154-PA.PDF"
+git_hash: ""
