@@ -1,0 +1,32 @@
+id: "tdpsa.rights.deletion"
+statute: "TDPSA"
+section: "Tex. Bus. & Com. Code § 541.051(a)(3)"
+title: "Right to Deletion"
+effective_date: "2024-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Consumer submits an authenticated request to delete personal data provided by or obtained about the consumer"
+requirement: >
+  Controller must delete PD provided by or obtained about the consumer. Response deadline:
+  45 days (extendable once by 45 days with notice). Controller must also direct processors
+  to delete the PD.
+exceptions:
+  - "Processing necessary to complete a transaction or perform a contract"
+  - "Processing necessary to detect or protect against security incidents"
+  - "Processing required to comply with a legal obligation"
+  - "Processing necessary to exercise or defend legal claims"
+contract_signals:
+  - "right to erasure"
+  - "right to deletion"
+  - "delete personal data"
+  - "data deletion request"
+  - "erase personal data"
+  - "right to be forgotten"
+cross_refs:
+  - "ccpa.rights.deletion"
+  - "vcdpa.rights.deletion"
+  - "ndpa.rights.deletion"
+source_url: "https://capitol.texas.gov/tlodocs/88R/billtext/pdf/HB04.pdf"
+git_hash: ""
