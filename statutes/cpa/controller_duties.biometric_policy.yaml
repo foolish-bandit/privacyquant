@@ -30,4 +30,4 @@ cross_refs:
   - "ccpa.sensitive_data.categories"
   - "vcdpa.sensitive_data.consent"
 source_url: "https://coag.gov/app/uploads/2025/07/Consumer-Data-Privacy-Laws-Enacted-by-the-Colorado-General-Assembly.pdf"
-git_hash: ""
+git_hash: "b5cef5e10e8f90efefb04306aad49942e0e69e32"

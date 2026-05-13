@@ -25,4 +25,4 @@ cross_refs:
   - "vcdpa.enforcement.parameters"
   - "cpa.enforcement.parameters"
 source_url: "https://www.doj.state.or.us/consumer-protection/id-theft-data-breaches/privacy/businesses-and-non-profits/"
-git_hash: ""
+git_hash: "b5cef5e10e8f90efefb04306aad49942e0e69e32"

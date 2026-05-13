@@ -35,4 +35,4 @@ cross_refs:
   - "vcdpa.enforcement.parameters"
   - "cpa.enforcement.parameters"
 source_url: "https://cppa.ca.gov/regulations/cpi_adjustment.html"
-git_hash: ""
+git_hash: "b5cef5e10e8f90efefb04306aad49942e0e69e32"

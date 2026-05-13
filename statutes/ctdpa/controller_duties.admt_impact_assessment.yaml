@@ -28,4 +28,4 @@ cross_refs:
   - "ccpa.controller_duties.data_protection_assessment"
   - "cpa.controller_duties.data_protection_assessment"
 source_url: "https://www.cga.ct.gov/2025/ACT/PA/PDF/2025PA-00113-R00HB-07154-PA.PDF"
-git_hash: ""
+git_hash: "b5cef5e10e8f90efefb04306aad49942e0e69e32"

@@ -20,4 +20,4 @@ cross_refs:
   - "tdpsa.enforcement.parameters"
   - "vcdpa.enforcement.parameters"
 source_url: "https://nebraskalegislature.gov/bills/view_bill.php?DocumentID=53455"
-git_hash: ""
+git_hash: "b5cef5e10e8f90efefb04306aad49942e0e69e32"

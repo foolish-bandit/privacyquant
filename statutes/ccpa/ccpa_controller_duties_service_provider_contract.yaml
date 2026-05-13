@@ -35,4 +35,4 @@ cross_refs:
   - "vcdpa.controller_duties.processor_contract"
   - "cpa.controller_duties.processor_contract"
 source_url: "https://leginfo.legislature.ca.gov/faces/codes_displaySection.xhtml?sectionNum=1798.140.&lawCode=CIV"
-git_hash: ""
+git_hash: "f86f6e4bd08ea32b63003bf6d29138c533b6c702"

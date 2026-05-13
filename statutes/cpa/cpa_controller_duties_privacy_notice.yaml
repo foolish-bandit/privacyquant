@@ -29,4 +29,4 @@ cross_refs:
   - "vcdpa.controller_duties.privacy_notice"
   - "modpa.controller_duties.privacy_notice"
 source_url: "https://coag.gov/resources/colorado-privacy-act/"
-git_hash: ""
+git_hash: "b5cef5e10e8f90efefb04306aad49942e0e69e32"

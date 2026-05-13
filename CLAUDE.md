@@ -139,6 +139,36 @@ Do not omit this disclaimer from memos, gap analyses, or DPA review outputs.
 
 ---
 
+## Reference files
+
+The `references/` directory contains human-readable reference material that supplements
+the tool outputs. Read these files when the question calls for context that the tools
+alone don't provide.
+
+| File | When to consult |
+|------|----------------|
+| `references/defense-arguments.md` | User is responding to an AG enforcement action or drafting a litigation defense; pairs with `pq_find_precedent` output |
+| `references/federal-overlays.md` | Question involves HIPAA, GLBA, COPPA, FERPA, or FCRA interaction with state law; also use when Ansvar Systems US-law-mcp is active |
+| `references/applicability-matrix.md` | Quick threshold lookup across all 20 states; use before running `pq_check_applicability` to frame the question |
+| `references/rights-comparison.md` | Cross-state consumer rights question; confirms which rights exist (or don't) in each state before running `pq_dsar_router` |
+| `references/controller-duties.md` | DPA drafting or controller audit spanning multiple states; reference alongside `pq_resolve_conflict` and `pq_draft_dpa_clause` |
+| `references/sensitive-data.md` | Sensitive data consent or sale question; confirms category coverage and consent mechanism differences before `pq_resolve_conflict` on `sensitive_data_treatment` |
+| `references/kids-and-teens.md` | Any question involving minors, COPPA, or teen-data protections; read before citing minor-data obligations |
+| `references/universal-opt-out.md` | GPC/UOOM compliance question; confirms which states require signal recognition and effective dates |
+| `references/enforcement.md` | Penalty exposure, cure period strategy, or private right of action analysis; use alongside `pq_score_privacy_risk` and `pq_find_precedent` |
+| `references/states/<st>.md` | Deep dive on a single state (e.g., `references/states/ca.md`); read when answering state-specific questions that need more context than a node provides |
+| `references/workflows/dsar-routing.md` | Operational DSAR intake and routing; use when setting up a DSAR workflow or handling a specific consumer request |
+| `references/workflows/gap-analysis-method.md` | Structured methodology for a multi-state compliance gap analysis engagement |
+| `references/workflows/intake-questionnaire.md` | Client intake questionnaire; use at the start of any new privacy law matter |
+| `references/workflows/status-determination.md` | Step-by-step guide for applicability determination; use when threshold analysis is ambiguous |
+| `assets/memo-template.md` | Template for a multi-state privacy compliance memo; fill in bracketed sections with tool output |
+| `assets/notice-clauses/notice-at-collection.md` | Notice-at-collection template; use with `pq_draft_notice_clause` output |
+| `assets/notice-clauses/full-privacy-notice.md` | Full privacy policy template covering all 20 states |
+| `assets/notice-clauses/opt-out-disclosure.md` | Opt-out / "Do Not Sell" page template; multi-state compliant |
+| `assets/notice-clauses/sensitive-data-notice.md` | Sensitive data notice and consent form template |
+
+---
+
 ## What this profile does not cover
 
 - GDPR / UK GDPR / non-US privacy regimes — use a dedicated skill for those.

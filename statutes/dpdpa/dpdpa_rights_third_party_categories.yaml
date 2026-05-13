@@ -22,4 +22,4 @@ cross_refs:
   - "ocpa.rights.specific_third_parties"
   - "mcdpa_mn.rights.specific_third_parties"
 source_url: "https://legis.delaware.gov/BillDetail?LegislationId=140388"
-git_hash: ""
+git_hash: "b5cef5e10e8f90efefb04306aad49942e0e69e32"
