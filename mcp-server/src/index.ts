@@ -6,6 +6,8 @@ import { searchNodes } from "./search.js";
 import { resolveConflict, ALL_DIMENSIONS } from "./conflict_resolver.js";
 import type { Dimension } from "./conflict_resolver.js";
 import { evaluateClause } from "./clause_evaluator.js";
+import { routeDSAR, RIGHT_LABELS } from "./dsar_router.js";
+import type { RightType } from "./dsar_router.js";
 import type { StatuteNode, StatuteIndex } from "./types.js";
 
 // ─── Load the knowledge graph once at startup ──────────────────────────────
@@ -695,6 +697,192 @@ ANTHROPIC_API_KEY to be set in the environment. Response time is typically 10-20
         `Use \`pq_resolve_conflict\` to check for multi-state binding constraints on the dimensions flagged above.`
       );
     }
+
+    return {
+      content: [{ type: "text", text: lines.join("\n") }],
+    };
+  }
+);
+
+// ─── Tool 6: pq_dsar_router ────────────────────────────────────────────────
+server.registerTool(
+  "pq_dsar_router",
+  {
+    title: "Route a DSAR to the Applicable Statute and Deadline",
+    description: `Determine the statutory obligations for responding to a consumer rights request
+based on the consumer's state of residence and the right invoked.
+
+Use this when:
+- A consumer submits a deletion, access, correction, portability, or opt-out request
+- You need to know the response deadline, appeal requirements, and whether the right even
+  exists under the applicable state law
+- You are advising on multi-state DSAR workflows and need per-state routing
+
+Key gotchas this tool surfaces automatically:
+- Iowa has a 90-day initial response window — the longest of any state
+- Utah, Iowa, and Kentucky have NO correction right
+- Iowa has NO opt-out of targeted advertising — sale only
+- Utah and Iowa have NO right to appeal
+- Maryland has a flat ban on sale of known-minor data — opt-out is irrelevant
+- Florida FDBR has narrow applicability (≥$1B revenue + specific activities)
+- Many states (AK, AL, AR, AZ, GA, etc.) have no comprehensive privacy law
+
+Args:
+  - consumer_state (string): Two-letter state abbreviation of the consumer's residence,
+    e.g. "CA", "VA", "IA", "MD"
+  - right_invoked (string): The right the consumer is asserting. One of:
+      access                       — right to know / confirm processing
+      deletion                     — right to delete / erasure
+      correction                   — right to correct inaccurate data
+      portability                  — right to data portability
+      opt_out_sale                 — right to opt out of sale
+      opt_out_targeted_advertising — right to opt out of targeted advertising
+      opt_out_profiling            — right to opt out of profiling / ADM
+      limit_sensitive_pi           — right to limit use of sensitive PI (CA only)
+      appeal                       — right to appeal a denied request
+  - controller_statutes (array, optional): The statutes the controller is subject to.
+    Used to generate multi-state notes when the controller operates in multiple states.
+    E.g. ["CCPA", "CPA", "MODPA", "VCDPA"]. Omit for single-state routing.
+
+Returns:
+  - Whether the right exists under the applicable statute
+  - Response deadline (initial + max with extension)
+  - Appeal requirement and deadline
+  - Specific limitations and practitioner notes
+  - Node IDs for tracing back to full statutory text`,
+    inputSchema: {
+      consumer_state: z
+        .string()
+        .min(2)
+        .max(2)
+        .describe("Two-letter state abbreviation, e.g. 'CA', 'IA', 'MD'"),
+      right_invoked: z
+        .enum([
+          "access",
+          "deletion",
+          "correction",
+          "portability",
+          "opt_out_sale",
+          "opt_out_targeted_advertising",
+          "opt_out_profiling",
+          "limit_sensitive_pi",
+          "appeal",
+        ])
+        .describe("The right the consumer is asserting"),
+      controller_statutes: z
+        .array(z.string())
+        .optional()
+        .describe("Statutes the controller is subject to, for multi-state notes"),
+    },
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
+  },
+  async ({ consumer_state, right_invoked, controller_statutes }) => {
+    const result = routeDSAR(consumer_state, right_invoked as RightType);
+
+    const lines: string[] = [
+      `# DSAR Routing: ${result.right_label}`,
+      `**Consumer state**: ${result.consumer_state}`,
+      `**Right invoked**: ${result.right_label}`,
+      `**Statute**: ${result.applicable_statute?.statute ?? "None applicable"}`,
+      ``,
+    ];
+
+    // Directive — the top-line answer
+    lines.push(`## Directive`);
+    lines.push(result.directive);
+    lines.push(``);
+
+    if (result.applicable_statute && result.must_respond) {
+      const right = result.applicable_statute.rights[right_invoked as RightType];
+      if (right?.exists) {
+        lines.push(`## Response requirements`);
+        lines.push(`**Initial deadline**: ${right.initial_deadline_days} calendar days`);
+        if (right.max_deadline_days && right.max_deadline_days > (right.initial_deadline_days ?? 45)) {
+          lines.push(`**Maximum with extension**: ${right.max_deadline_days} calendar days`);
+          lines.push(`**Extension notice**: Required — must notify consumer before deadline expires`);
+        }
+        lines.push(``);
+
+        lines.push(`**Appeal right**: ${right.appeal_right ? `Yes — ${right.appeal_deadline_days} days to complete appeal` : "No"}`);
+
+        if (result.applicable_statute.cure_period) {
+          lines.push(`**Cure period**: ${result.applicable_statute.cure_period}`);
+        }
+        lines.push(``);
+
+        if (right.limitations.length > 0) {
+          lines.push(`## Limitations and conditions`);
+          right.limitations.forEach((l) => lines.push(`- ${l}`));
+          lines.push(``);
+        }
+
+        if (right.notes.length > 0) {
+          lines.push(`## Practitioner notes`);
+          right.notes.forEach((n) => lines.push(`- ${n}`));
+          lines.push(``);
+        }
+
+        if (right.node_refs.length > 0) {
+          lines.push(`## Node references`);
+          lines.push(`_Use \`pq_fetch_requirement\` with any of these IDs for full statutory text:_`);
+          right.node_refs.forEach((ref) => lines.push(`- \`${ref}\``));
+          lines.push(``);
+        }
+      }
+    } else if (!result.must_respond && result.applicable_statute) {
+      // Right doesn't exist — show all available rights for this state
+      const available = Object.entries(result.applicable_statute.rights)
+        .filter(([, v]) => v?.exists)
+        .map(([k]) => RIGHT_LABELS[k as RightType])
+        .join(", ");
+
+      lines.push(`## Rights available under ${result.applicable_statute.statute}`);
+      lines.push(available || "None in graph — verify manually");
+      lines.push(``);
+    }
+
+    // Multi-state notes if controller_statutes provided
+    if (controller_statutes && controller_statutes.length > 0 && result.must_respond) {
+      lines.push(`## Multi-state context`);
+      lines.push(
+        `This request is routed to **${result.applicable_statute?.statute}** because the consumer ` +
+        `resides in **${result.consumer_state}**. The controller is also subject to: ` +
+        `${controller_statutes.join(", ")}.`
+      );
+      lines.push(``);
+      lines.push(
+        `The applicable statute for this DSAR is determined by the consumer's state of residence, ` +
+        `not the controller's full list of applicable laws. Respond under **${result.applicable_statute?.statute}** ` +
+        `requirements above.`
+      );
+      lines.push(``);
+
+      // Iowa-specific multi-state warning
+      if (consumer_state.toLowerCase() === "ia") {
+        lines.push(
+          `⚠️ **Iowa 90-day window**: Even if the controller's program is built to a 45-day ` +
+          `standard for CA/VA/CO, Iowa DSARs require a 90-day initial response. Do not apply ` +
+          `the standard 45-day workflow to this request.`
+        );
+        lines.push(``);
+      }
+    }
+
+    if (result.multi_state_notes.length > 0) {
+      lines.push(`## Additional notes`);
+      result.multi_state_notes.forEach((n) => lines.push(`- ${n}`));
+      lines.push(``);
+    }
+
+    lines.push(
+      `_Output is a draft for attorney review — not legal advice. ` +
+      `Verify node data reflects current law before relying on deadlines._`
+    );
 
     return {
       content: [{ type: "text", text: lines.join("\n") }],
