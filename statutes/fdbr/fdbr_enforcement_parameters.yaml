@@ -1,0 +1,30 @@
+id: "fdbr.enforcement.parameters"
+statute: "FDBR"
+section: "Fla. Stat. § 501.714"
+title: "Enforcement — Highest Per-Violation Penalties; Trebled for Minor Violations"
+effective_date: "2024-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller or processor violates FDBR"
+requirement: >
+  Enforced by the Florida Department of Legal Affairs (AG). No private right of action.
+  Civil penalty up to $50,000 per violation — the highest base penalty of any US state.
+  Trebled to $150,000 per violation for: violations involving processing of a known minor's data;
+  deletion of data without consent; or use of dark patterns to obtain consent.
+  45-day cure period.
+exceptions: []
+contract_signals:
+  - "Florida Attorney General"
+  - "Department of Legal Affairs"
+  - "civil penalty"
+  - "FDBR violation"
+  - "dark patterns"
+  - "minor data processing"
+cross_refs:
+  - "njdpa.enforcement.parameters"
+  - "tipa.enforcement.parameters"
+  - "ccpa.enforcement.parameters"
+source_url: "https://www.flsenate.gov/Session/Bill/2023/262/BillText/er/PDF"
+git_hash: ""
