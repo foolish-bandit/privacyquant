@@ -3,6 +3,8 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import { loadIndex } from "./loader.js";
 import { searchNodes } from "./search.js";
+import { resolveConflict, ALL_DIMENSIONS } from "./conflict_resolver.js";
+import type { Dimension } from "./conflict_resolver.js";
 import type { StatuteNode, StatuteIndex } from "./types.js";
 
 // ─── Load the knowledge graph once at startup ──────────────────────────────
@@ -324,6 +326,148 @@ is requested — the full list of node IDs and titles.`,
     );
 
     return { content: [{ type: "text", text: lines.join("\n") }] };
+  }
+);
+
+// ─── Tool 4: pq_resolve_conflict ───────────────────────────────────────────
+server.registerTool(
+  "pq_resolve_conflict",
+  {
+    title: "Resolve Multi-State Compliance Conflicts",
+    description: `For a set of applicable state privacy laws and one or more compliance dimensions,
+returns the binding constraint — the strictest rule a controller must design to in order
+to be compliant across all applicable states simultaneously.
+
+Use this when advising on a multi-state privacy program, drafting a DPA that must satisfy
+multiple jurisdictions, or determining which state's requirement controls implementation.
+
+Args:
+  - statutes (array of strings): The applicable state privacy laws to compare.
+    Use statute acronyms: CCPA, CPRA, CCPA/CPRA, VCDPA, CPA, CTDPA, UCPA, TDPSA,
+    OCPA, MCDPA, ICDPA, INCDPA, TIPA, DPDPA, NJDPA, NHDPA, NDPA, KCDPA, MODPA,
+    MCDPA-MN, RIDTPPA, FDBR.
+  - dimensions (array of strings, optional): Which compliance dimensions to analyse.
+    If omitted, all dimensions are returned.
+    Available dimensions:
+      - sensitive_data_treatment   : Opt-in vs opt-out for sensitive data processing
+      - sensitive_data_sale        : Whether sale of sensitive data is prohibited
+      - minor_treatment            : Minor and teen data protections
+      - uoom_recognition           : GPC / universal opt-out signal recognition
+      - response_time              : Consumer rights request response deadlines
+      - appeal_right               : Right to appeal denied requests
+      - cure_period                : Enforcement cure period status
+      - penalty_max                : Maximum civil penalty per violation
+      - data_minimization          : Data minimization standard strictness
+      - processor_contract         : Processor / service provider contract requirements
+      - right_to_correction        : Whether correction right exists
+      - right_to_profiling_optout  : Right to opt out of profiling / ADM
+
+Returns for each dimension:
+  - The binding rule and which statute controls it
+  - Each state's position with the node IDs backing it
+  - Whether a true conflict exists (rare)
+  - A concrete implementation note for how to satisfy all states simultaneously
+
+Example use: "I'm drafting a DPA for a controller subject to CCPA, CPA, CTDPA, and MODPA.
+What's the binding constraint on processor contract requirements and sensitive data treatment?"`,
+    inputSchema: {
+      statutes: z
+        .array(z.string().min(2))
+        .min(1)
+        .max(20)
+        .describe("List of applicable statute acronyms, e.g. [\"CCPA\", \"CPA\", \"MODPA\"]"),
+      dimensions: z
+        .array(
+          z.enum([
+            "sensitive_data_treatment",
+            "sensitive_data_sale",
+            "minor_treatment",
+            "uoom_recognition",
+            "response_time",
+            "appeal_right",
+            "cure_period",
+            "penalty_max",
+            "data_minimization",
+            "processor_contract",
+            "right_to_correction",
+            "right_to_profiling_optout",
+          ])
+        )
+        .optional()
+        .describe("Dimensions to analyse. Omit to return all dimensions."),
+    },
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
+  },
+  async ({ statutes, dimensions }) => {
+    const dimsToRun: Dimension[] = dimensions ?? ALL_DIMENSIONS;
+    const results = resolveConflict(statutes, dimsToRun);
+
+    if (results.length === 0) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: [
+              `No conflict data found for the requested statutes and dimensions.`,
+              `Statutes requested: ${statutes.join(", ")}`,
+              `Dimensions requested: ${dimsToRun.join(", ")}`,
+              ``,
+              `Try using standard statute acronyms: CCPA, VCDPA, CPA, CTDPA, UCPA, TDPSA, OCPA,`,
+              `MCDPA, ICDPA, INCDPA, TIPA, DPDPA, NJDPA, NHDPA, NDPA, KCDPA, MODPA, MCDPA-MN, RIDTPPA, FDBR`,
+            ].join("\n"),
+          },
+        ],
+      };
+    }
+
+    const lines: string[] = [
+      `# Compliance Ceiling Analysis`,
+      `**Statutes**: ${statutes.join(", ")}`,
+      `**Dimensions analysed**: ${results.length}`,
+      ``,
+    ];
+
+    for (const r of results) {
+      lines.push(`## ${r.dimension_label}`);
+      lines.push(`**Binding rule** (controlled by **${r.controlling_statute}**):`)
+      lines.push(r.binding_rule);
+      lines.push(``);
+
+      if (r.is_true_conflict) {
+        lines.push(`⚠️ **True conflict detected**: ${r.conflict_note}`);
+        lines.push(``);
+      }
+
+      lines.push(`**Implementation**: ${r.implementation_note}`);
+      lines.push(``);
+
+      lines.push(`**Per-state positions**:`);
+      // Sort: binding first, then by strictness desc
+      const sorted = [...r.positions].sort((a, b) => b.strictness_rank - a.strictness_rank);
+      for (const p of sorted) {
+        const marker = p.statute === r.controlling_statute ? "▶ " : "  ";
+        lines.push(`${marker}**${p.statute}**: ${p.position}`);
+        if (p.node_refs.length > 0) {
+          lines.push(`   _Nodes: ${p.node_refs.join(", ")}_`);
+        }
+      }
+      lines.push(``);
+      lines.push(`---`);
+      lines.push(``);
+    }
+
+    lines.push(
+      `Use pq_fetch_requirement with a node ID to retrieve the full statutory text behind any position.`
+    );
+
+    return {
+      content: [{ type: "text", text: lines.join("\n") }],
+    };
   }
 );
 
