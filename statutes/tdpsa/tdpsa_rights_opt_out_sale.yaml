@@ -1,0 +1,31 @@
+id: "tdpsa.rights.opt_out_sale"
+statute: "TDPSA"
+section: "Tex. Bus. & Com. Code § 541.051(a)(5)"
+title: "Right to Opt Out of Sale, Targeted Advertising, and Profiling"
+effective_date: "2024-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller sells personal data, processes for targeted advertising, or profiles consumers for legal or similarly significant decisions"
+requirement: >
+  Consumers have the right to opt out of: (1) sale of PD; (2) targeted advertising;
+  (3) profiling that produces a legal or similarly significant effect.
+  Controller must provide a clear and conspicuous opt-out mechanism.
+  Note: TDPSA does not currently mandate UOOM (e.g. GPC) recognition by name —
+  confirm against current AG guidance.
+  30-day cure period in effect.
+exceptions: []
+contract_signals:
+  - "opt-out of sale"
+  - "opt out of targeted advertising"
+  - "opt out of profiling"
+  - "right to opt out"
+  - "sale of personal data"
+  - "do not sell"
+cross_refs:
+  - "ccpa.rights.opt_out_sale_sharing"
+  - "vcdpa.rights.opt_out_sale"
+  - "ndpa.rights.opt_out_sale"
+source_url: "https://capitol.texas.gov/tlodocs/88R/billtext/pdf/HB04.pdf"
+git_hash: ""
