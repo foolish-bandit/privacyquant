@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { registerDraftDpaClauseTool } from "./draft_dpa_clause.js";
+import { registerWatchLegislationTool } from "./legislation_watcher.js";
 
 const registeredServers = new WeakSet<object>();
 const proto = McpServer.prototype as unknown as {
@@ -9,7 +10,9 @@ const originalConnect = proto.connect;
 
 proto.connect = async function patchedConnect(this: object, transport: unknown): Promise<void> {
   if (!registeredServers.has(this)) {
-    registerDraftDpaClauseTool(this as Parameters<typeof registerDraftDpaClauseTool>[0]);
+    const server = this as Parameters<typeof registerDraftDpaClauseTool>[0];
+    registerDraftDpaClauseTool(server);
+    registerWatchLegislationTool(server as Parameters<typeof registerWatchLegislationTool>[0]);
     registeredServers.add(this);
   }
 
