@@ -27,4 +27,4 @@ cross_refs:
   - "modpa.minors.flat_ban"
   - "ccpa.sensitive_data.categories"
 source_url: "https://www.njleg.state.nj.us/Bills/2022/PL23/266_.PDF"
-git_hash: ""
+git_hash: "b5cef5e10e8f90efefb04306aad49942e0e69e32"

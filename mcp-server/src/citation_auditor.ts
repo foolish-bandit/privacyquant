@@ -231,3 +231,26 @@ export function auditCitations(
       "actually supports the claim. Always verify citations against source material.",
   };
 }
+
+export function formatResult(result: CitationAuditResult): string {
+  const lines = [
+    `# Citation Audit`,
+    `**Summary**: ${result.summary}`,
+    result.error_count > 0 ? `**Errors**: ${result.error_count}` : "",
+    result.warning_count > 0 ? `**Warnings**: ${result.warning_count}` : "",
+    result.info_count > 0 ? `**Info**: ${result.info_count}` : "",
+    ``,
+  ];
+  if (result.flags.length) {
+    lines.push(`## Flags`);
+    for (const f of result.flags) {
+      const icon = f.severity === "error" ? "🔴" : f.severity === "warning" ? "⚠️" : "ℹ️";
+      lines.push(`${icon} **${f.type}**: ${f.message}`);
+      lines.push(`  _Excerpt_: "${f.excerpt}"`);
+      if (f.suggestion) lines.push(`  _Suggestion_: ${f.suggestion}`);
+      lines.push("");
+    }
+  }
+  lines.push(`_${result.disclaimer}_`);
+  return lines.join("\n");
+}

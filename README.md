@@ -239,7 +239,37 @@ privacyquant/
 │   ├── enforcement_actions.json  84 enforcement actions, v2.3, 48 tags
 │   ├── fideslang-mapping.yaml    IAB/Fideslang data category crosswalk
 │   ├── nist-controls-mapping.yaml  NIST SP 800-53 Rev. 5 crosswalk
-│   └── ag-priorities.md          Regulator priority weighting
+│   ├── ag-priorities.md          Regulator priority weighting
+│   ├── defense-arguments.md      Litigation defense framing (pairs with pq_find_precedent)
+│   ├── federal-overlays.md       HIPAA/GLBA/COPPA/FERPA/FCRA intersection with state law
+│   ├── applicability-matrix.md   Master threshold matrix for all 20 states
+│   ├── rights-comparison.md      Cross-state consumer rights comparison table
+│   ├── controller-duties.md      Cross-state controller obligation comparison
+│   ├── sensitive-data.md         Sensitive data categories and treatment by state
+│   ├── kids-and-teens.md         Minor/teen provisions and COPPA interaction
+│   ├── universal-opt-out.md      GPC/UOOM recognition by state and effective dates
+│   ├── enforcement.md            Penalties, cure periods, and enforcement mechanisms
+│   ├── states/                   Per-state deep-dive reference files
+│   │   ├── ca.md  va.md  co.md   One file per statute (20 total)
+│   │   └── ...
+│   └── workflows/                Operational workflow guides
+│       ├── dsar-routing.md       DSAR intake, routing, and response workflow
+│       ├── gap-analysis-method.md  Multi-state compliance gap analysis methodology
+│       ├── intake-questionnaire.md  Client intake questionnaire
+│       └── status-determination.md  Applicability determination guide
+├── assets/
+│   ├── memo-template.md          Multi-state privacy compliance memo template
+│   ├── applicability-questions.json  Structured intake questions for pq_check_applicability
+│   └── notice-clauses/           Privacy notice and consent templates
+│       ├── notice-at-collection.md
+│       ├── full-privacy-notice.md
+│       ├── opt-out-disclosure.md
+│       └── sensitive-data-notice.md
+├── scripts/
+│   ├── generate_nodes.py         Node generation utility (see dev notes before use)
+│   └── populate_git_hashes.sh    Backfills git_hash fields in all statutes/ YAML nodes
+├── .githooks/
+│   └── pre-commit                Auto-populates git_hash on commit (requires core.hooksPath)
 ├── mcp-server/
 │   ├── src/index.ts              Entrypoint — all 16 tools registered here
 │   └── src/*.ts                  Tool modules
@@ -269,6 +299,14 @@ See [CONNECTORS.md](CONNECTORS.md) for setup instructions and workflow examples.
 
 ## Development notes
 
+**git_hash population:** Each YAML node in `statutes/` carries a `git_hash` field that
+records the commit hash of the last change to that file, enabling downstream consumers
+to verify the exact law version they are citing. Run `git config core.hooksPath .githooks`
+after cloning to enable automatic population on every commit via the pre-commit hook in
+`.githooks/pre-commit`. To backfill all existing nodes manually, run
+`bash scripts/populate_git_hashes.sh`. The script is idempotent — re-running it twice
+produces no changes if nothing was modified.
+
 **Tool registration:** All 16 tools are registered in `mcp-server/src/index.ts` before
 `server.connect(...)`. Do not reintroduce bootstrap monkey-patching. The `bootstrap.ts`
 entrypoint has been permanently removed.
@@ -297,6 +335,8 @@ Node updates, enforcement corpus entries, and new tool PRs are welcome.
 - **Node updates:** Include the bill number, effective date, and source URL in the PR description.
 - **Enforcement corpus:** Follow the v2.3 schema in `enforcement_actions.json`; include `violation_theories` from the 48-tag taxonomy.
 - **New tools:** Register in `index.ts`; keep deterministic by default; document in `docs/TOOLS.md`.
+
+Run `npm run validate` from `mcp-server/` before submitting a PR. The script checks node counts, cross-refs, tool registration counts, enforcement corpus integrity, and required field presence. PRs that break validation will fail CI.
 
 ---
 

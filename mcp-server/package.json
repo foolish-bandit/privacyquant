@@ -8,10 +8,10 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
-    "test": "vitest run"
+    "validate": "tsx ../scripts/validate.ts"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.95.2",
+    "@anthropic-ai/sdk": "~0.95.2",
     "@modelcontextprotocol/sdk": "^1.10.0",
     "js-yaml": "^4.1.0",
     "zod": "^3.23.0"

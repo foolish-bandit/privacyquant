@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Pre-commit hook: populate git_hash fields in any staged statutes/ YAML nodes.
+# The updated files are re-staged automatically so the correct hashes land in
+# the commit.
+#
+# Install:
+#   git config core.hooksPath .githooks
+#
+# This hook is idempotent — if all staged nodes already carry the correct hash
+# (from a previous run) it exits without modifying anything.
+
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+# Collect staged YAML files in statutes/ (excluding schema.yaml)
+mapfile -t STAGED < <(
+  git diff --cached --name-only --diff-filter=ACM |
+  grep -E '^statutes/.*\.yaml$' |
+  grep -v 'schema\.yaml' || true
+)
+
+if [ "${#STAGED[@]}" -eq 0 ]; then
+  exit 0
+fi
+
+echo "[pre-commit] Populating git_hash for ${#STAGED[@]} staged node(s)..."
+
+# Run the populate script for just the staged files
+bash "$REPO_ROOT/scripts/populate_git_hashes.sh" "${STAGED[@]}"
+
+# Re-stage any files the script modified so hashes land in this commit
+for file in "${STAGED[@]}"; do
+  git add "$file"
+done
+
+echo "[pre-commit] git_hash population complete."

@@ -463,3 +463,28 @@ export function draftNoticeClause(input: NoticeDraftInput): NoticeDraftResult {
       return privacyNotice(input);
   }
 }
+
+export function formatResult(result: NoticeDraftResult): string {
+  const lines = [
+    `# ${result.notice_type.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())} Draft`,
+    result.missing_facts.length
+      ? `**Missing facts** (add before publishing): ${result.missing_facts.join(", ")}`
+      : "",
+    ``,
+    `## Draft Text`,
+    `\`\`\``,
+    result.clause_text,
+    `\`\`\``,
+    ``,
+  ];
+  if (result.drafting_notes.length) {
+    lines.push(`## Drafting Notes`);
+    result.drafting_notes.forEach((n) => lines.push(`- ${n}`));
+    lines.push("");
+  }
+  if (result.supporting_nodes.length) {
+    lines.push(`**Supporting nodes**: ${result.supporting_nodes.map((n) => `\`${n}\``).join(", ")}`);
+  }
+  lines.push(`_Run pq_audit_citations on the final text before publishing._`);
+  return lines.join("\n");
+}

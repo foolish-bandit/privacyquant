@@ -284,6 +284,37 @@ export function buildDSARWorkflow(
   };
 }
 
+export function formatResult(result: DSARWorkflowResult): string {
+  const lines = [
+    `# DSAR Workflow: ${result.right_label}`,
+    `**State**: ${result.consumer_state} | **Statute**: ${result.statute ?? "None"} | **Must respond**: ${result.must_respond ? "Yes" : "No"}`,
+    result.calculated_due_date
+      ? `**Initial deadline**: ${result.calculated_due_date} (${result.initial_deadline_days} days)`
+      : result.initial_deadline_days
+      ? `**Initial deadline**: ${result.initial_deadline_days} calendar days from receipt`
+      : "",
+    result.calculated_max_date && result.max_deadline_days !== result.initial_deadline_days
+      ? `**Max with extension**: ${result.calculated_max_date}`
+      : "",
+    result.appeal_right ? `**Appeal right**: Yes — ${result.appeal_deadline_days} days` : "**Appeal right**: No",
+    ``,
+  ];
+  if (result.escalation_flags.length) {
+    lines.push(`## ⚠️ Escalation Flags`);
+    result.escalation_flags.forEach((f) => lines.push(`- ${f}`));
+    lines.push("");
+  }
+  lines.push(`## Workflow Steps`);
+  for (const step of result.steps) {
+    lines.push(`### Step ${step.step}: ${step.action}`);
+    if (step.deadline) lines.push(`**Deadline**: ${step.deadline}`);
+    if (step.notes?.length) step.notes.forEach((n) => lines.push(`- ${n}`));
+    lines.push("");
+  }
+  lines.push(`_${result.disclaimer}_`);
+  return lines.join("\n");
+}
+
 function buildRightSpecificSteps(
   right: RightType,
   statute: string,

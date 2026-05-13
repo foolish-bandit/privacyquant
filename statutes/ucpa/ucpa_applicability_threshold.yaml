@@ -33,4 +33,4 @@ cross_refs:
   - "vcdpa.applicability.threshold"
   - "cpa.applicability.threshold"
 source_url: "https://le.utah.gov/xcode/Title13/Chapter61/C13-61_2022050420220504.pdf"
-git_hash: ""
+git_hash: "b5cef5e10e8f90efefb04306aad49942e0e69e32"

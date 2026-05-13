@@ -5,6 +5,46 @@ and all tools respond. Run from Claude Code after installing PrivacyQuant.
 
 ---
 
+## pq_search_requirements — new filters
+
+Find CT AI training disclosure requirements effective August 2026 or later:
+
+```json
+{
+  "query": "ai training disclosure",
+  "statute": "CTDPA",
+  "effective_after": "2026-08-01"
+}
+```
+
+Expected: nodes whose `effective_date` is 2026-08-01 or later, trimmed to those matching the query.
+
+Find only processor obligations related to deletion across all statutes:
+
+```json
+{
+  "query": "deletion",
+  "bearer": "processor",
+  "limit": 10
+}
+```
+
+Expected: deletion-related nodes where `obligation_bearer` is `processor`.
+
+Point-in-time search — what deletion rights were in effect as of 2023-01-01:
+
+```json
+{
+  "query": "right to deletion",
+  "effective_before": "2023-01-01",
+  "requirement_type": "hard"
+}
+```
+
+Expected: hard deletion-right nodes whose `effective_date` is on or before 2023-01-01.
+
+---
+
 ## pq_check_applicability
 
 SaaS company with $40M revenue processing 150K California consumers:

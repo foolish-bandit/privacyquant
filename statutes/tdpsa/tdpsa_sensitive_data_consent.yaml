@@ -29,6 +29,5 @@ cross_refs:
   - "vcdpa.sensitive_data.consent"
   - "cpa.sensitive_data.consent"
   - "tdpsa.controller_duties.sensitive_data_notice"
-  - "ndpa.sensitive_data.consent"
 source_url: "https://capitol.texas.gov/tlodocs/88R/billtext/pdf/HB04.pdf"
-git_hash: ""
+git_hash: "b5cef5e10e8f90efefb04306aad49942e0e69e32"

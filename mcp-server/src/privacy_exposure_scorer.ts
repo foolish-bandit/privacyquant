@@ -246,3 +246,38 @@ export function scorePrivacyExposure(
       "Actual enforcement risk depends on many factors not captured here.",
   };
 }
+
+export function formatResult(result: ExposureScoreResult): string {
+  const lines = [
+    `# Privacy Exposure Score`,
+    `**Score**: ${result.score}/100 — **${result.band}**`,
+    ``,
+    `## Score Breakdown`,
+  ];
+  for (const c of result.components) {
+    lines.push(`- **${c.label}**: ${c.points}/${c.max} — ${c.note}`);
+  }
+  lines.push("");
+  if (result.regulator_interest_notes.length) {
+    lines.push(`## Regulator Interest`);
+    result.regulator_interest_notes.forEach((n) => lines.push(`- ${n}`));
+    lines.push("");
+  }
+  if (result.remediation_priorities.length) {
+    lines.push(`## Remediation Priorities`);
+    result.remediation_priorities.forEach((p) => lines.push(p));
+    lines.push("");
+  }
+  if (result.analogous_precedents.length) {
+    lines.push(`## Analogous Enforcement Precedents`);
+    for (const p of result.analogous_precedents) {
+      lines.push(
+        `### ${p.case_name} (${p.year}) — ${p.monetary_amount_usd ? `$${p.monetary_amount_usd.toLocaleString()}` : "Injunctive"}`
+      );
+      lines.push(p.factual_pattern);
+      lines.push("");
+    }
+  }
+  lines.push(`_${result.disclaimer}_`);
+  return lines.join("\n");
+}

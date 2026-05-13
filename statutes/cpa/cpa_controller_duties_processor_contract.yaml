@@ -29,4 +29,4 @@ cross_refs:
   - "vcdpa.controller_duties.processor_contract"
   - "modpa.controller_duties.processor_contract"
 source_url: "https://leg.colorado.gov/sites/default/files/documents/2021A/bills/2021a_190_enr.pdf"
-git_hash: ""
+git_hash: "b5cef5e10e8f90efefb04306aad49942e0e69e32"

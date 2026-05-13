@@ -21,6 +21,5 @@ contract_signals:
 cross_refs:
   - "ccpa.controller_duties.data_protection_assessment"
   - "vcdpa.controller_duties.data_protection_assessment"
-  - "modpa.controller_duties.data_protection_assessment"
 source_url: "https://coag.gov/resources/colorado-privacy-act/"
-git_hash: ""
+git_hash: "b5cef5e10e8f90efefb04306aad49942e0e69e32"

@@ -24,6 +24,5 @@ contract_signals:
 cross_refs:
   - "ccpa.rights.portability"
   - "vcdpa.rights.portability"
-  - "ndpa.rights.portability"
 source_url: "https://capitol.texas.gov/tlodocs/88R/billtext/pdf/HB04.pdf"
-git_hash: ""
+git_hash: "b5cef5e10e8f90efefb04306aad49942e0e69e32"
