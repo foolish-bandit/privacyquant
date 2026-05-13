@@ -1,0 +1,33 @@
+id: "modpa.controller_duties.processor_contract"
+statute: "MODPA"
+section: "Md. Code Com. Law § 14-4608"
+title: "Processor Contract Requirements"
+effective_date: "2025-10-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller engages a processor to process personal data on its behalf"
+requirement: >
+  A binding contract must govern the processor's data processing including: nature and purpose
+  of processing; type of PD; duration; rights and obligations of both parties.
+  Must require the processor to: process data only per controller instructions; maintain
+  confidentiality; delete or return PD upon termination; allow audits; engage subprocessors
+  only under equivalent obligations; assist with consumer rights and security obligations.
+  MODPA's strict data minimization standard applies to the processor's handling of PD —
+  processor contracts must reflect this constraint.
+exceptions: []
+contract_signals:
+  - "data processing agreement"
+  - "DPA"
+  - "processor agreement"
+  - "subprocessor"
+  - "controller-processor"
+  - "data processing addendum"
+cross_refs:
+  - "ccpa.controller_duties.service_provider_contract"
+  - "vcdpa.controller_duties.processor_contract"
+  - "cpa.controller_duties.processor_contract"
+  - "modpa.data_minimization.strict_standard"
+source_url: "https://mgaleg.maryland.gov/2024RS/Chapters_noln/CH_182_sb0541e.pdf"
+git_hash: ""
