@@ -1,7 +1,7 @@
 {
   "name": "privacyquant",
   "version": "0.1.0",
-  "description": "Versioned statutory knowledge graph for US state consumer privacy laws. Exposes 16 MCP tools covering applicability analysis, multi-state compliance ceiling synthesis, DPA clause review and drafting (LLM-backed and deterministic), privacy notice drafting, DSAR routing and workflow, enforcement precedent research, risk scoring, legislative monitoring, and citation auditing. Covers CCPA/CPRA, VCDPA, CPA, CTDPA, UCPA, TDPSA, OCPA, MCDPA, ICDPA, INCDPA, TIPA, DPDPA, NJDPA, NHDPA, NDPA, KCDPA, MODPA, MCDPA-MN, RIDTPPA, and FDBR across 146 atomic requirement nodes.",
+  "description": "Versioned statutory knowledge graph for US state consumer privacy laws. Exposes 18 MCP tools covering applicability analysis, multi-state compliance ceiling synthesis, DPA clause review and drafting (LLM-backed and deterministic), privacy notice drafting, DSAR routing and workflow, enforcement precedent research, risk scoring, legislative monitoring, citation auditing, and DOCX memo deliverable generation. Covers CCPA/CPRA, VCDPA, CPA, CTDPA, UCPA, TDPSA, OCPA, MCDPA, ICDPA, INCDPA, TIPA, DPDPA, NJDPA, NHDPA, NDPA, KCDPA, MODPA, MCDPA-MN, RIDTPPA, and FDBR across 146 atomic requirement nodes.",
   "author": {
     "name": "Zachary Brenner",
     "url": "https://github.com/foolish-bandit"

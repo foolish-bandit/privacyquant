@@ -358,6 +358,72 @@ Expected: `api_status: "no_key"` with instructions for obtaining a free key.
 
 ---
 
+## pq_memo_from_analysis
+
+Auto-populated memo for a SaaS company operating in five states:
+
+```json
+{
+  "client_name": "Acme SaaS Corp.",
+  "prepared_by": "Privacy Counsel",
+  "annual_revenue_usd": 40000000,
+  "consumers_processed": 150000,
+  "revenue_pct_from_sale": 5,
+  "states_operating": ["CA", "VA", "CO", "TX", "MD"],
+  "is_nonprofit": false,
+  "executive_summary": "Acme SaaS Corp. is a B2B software platform processing consumer PI across five states. The applicability analysis identifies CCPA/CPRA, VCDPA, CPA, TDPSA, and MODPA as applicable. Priority gaps include GPC non-recognition and missing processor contract provisions.",
+  "next_steps": [
+    "Implement GPC signal recognition across all web properties within 30 days.",
+    "Update processor/service-provider contracts to include deletion flow-down and audit rights.",
+    "Complete data inventory to support notice-at-collection content refresh."
+  ]
+}
+```
+
+Expected: a `.docx` with populated cover, disclaimer, TOC, entity profile table (from inputs),
+applicability table (from `pq_check_applicability` results), placeholder status/gaps/remediation,
+default limitations, and the three provided next steps. The tool response lists the output path
+and which sections were populated vs placeholder.
+
+---
+
+## pq_generate_memo
+
+Full structured memo with all sections populated:
+
+```json
+{
+  "client_name": "Acme SaaS Corp.",
+  "memo_date": "May 13, AD 2026",
+  "prepared_by": "Privacy Counsel",
+  "executive_summary": "Acme SaaS Corp. processes consumer PI across CA, VA, CO, TX, and MD. CCPA/CPRA, VCDPA, CPA, TDPSA, and MODPA apply. Top priorities: GPC recognition and processor contract refresh.",
+  "entity_profile": [
+    {"label": "Annual revenue", "value": "$40,000,000", "source": "Client"},
+    {"label": "CA consumers", "value": "150,000", "source": "Client"},
+    {"label": "% revenue from sale of PI", "value": "5%", "source": "Client"}
+  ],
+  "applicability": [
+    {"state": "CA", "statute": "CCPA/CPRA", "verdict": "Applies", "reasoning": "Revenue > $26.625M and ≥ 100K consumers."},
+    {"state": "MD", "statute": "MODPA", "verdict": "Applies", "reasoning": "≥ 35K consumers in MD."}
+  ],
+  "gaps": [
+    {"id": "01", "states": "CA, CO", "section": "Cal. Civ. Code § 1798.135", "gap": "GPC signals not honored", "current": "No signal recognition", "required": "Honor GPC as opt-out of sale/sharing", "severity": 4, "likelihood": 5, "score": 20, "lane": "Critical", "dependencies": "Web platform team"}
+  ],
+  "remediation": {
+    "immediate": ["Pause cross-context behavioral ad sales until GPC signal is honored."],
+    "thirty_day": ["Deploy GPC recognition middleware across all web properties."],
+    "ninety_day": ["Update processor contracts to include deletion flow-down."],
+    "strategic": ["Roll out unified consent platform across all state programs."]
+  },
+  "next_steps": ["Sign off on remediation roadmap.", "Schedule quarterly compliance review."]
+}
+```
+
+Expected: a `.docx` with every section populated from the inputs, color-coded applicability
+verdict cells and gap lane cells, numbered limitations (defaults applied), and numbered next steps.
+
+---
+
 ## Build verification
 
 ```bash

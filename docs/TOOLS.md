@@ -1,6 +1,6 @@
 # PrivacyQuant Tool Reference
 
-15 MCP tools. 13 are fully deterministic (no LLM, no external API).
+18 MCP tools. 16 are fully deterministic (no LLM, no external API).
 All tools are registered in `mcp-server/src/index.ts`.
 
 ---
@@ -329,3 +329,65 @@ Flag citation-discipline issues in privacy-law work product.
 
 Conservative: flags possible issues without making legal judgments. Does not verify that
 cited authority actually supports the claim.
+
+---
+
+## Deliverables
+
+### `pq_generate_memo`
+
+Generate a formal client-ready DOCX privacy compliance memorandum from structured inputs.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `client_name` | string | Yes | Client entity name |
+| `memo_date` | string | No | `"Month Day, AD YYYY"` — defaults to today |
+| `prepared_by` | string | No | Author name for the cover page |
+| `executive_summary` | string | No | Multi-paragraph (`\n\n` separated) |
+| `scope_and_methodology` | string | No | Section 2 narrative — defaults to a generic scope statement |
+| `entity_profile` | object[] | No | `{label, value, source}` rows for the threshold inputs table |
+| `applicability` | object[] | No | `{state, statute, verdict, reasoning}` rows |
+| `status_determination` | object[] | No | `{data_flow, ca_status, other_states_status, notes}` rows |
+| `gaps` | object[] | No | `{id, states, section, gap, current, required, severity, likelihood, score, lane, dependencies}` rows |
+| `remediation` | object | No | `{immediate, thirty_day, ninety_day, strategic}` string-array lanes |
+| `cross_cutting` | string[] | No | Cross-cutting recommendation bullets |
+| `limitations` | string[] | No | Section 9 limitations — sensible defaults provided when omitted |
+| `next_steps` | string[] | No | Section 10 recommended next steps |
+
+Output: writes `privacyquant-memo-<client-slug>-<YYYYMMDD>.docx` to the working directory
+(falling back to `os.tmpdir()` if not writable) and returns the file path, a populated-vs-placeholder
+section summary, and the standard PrivacyQuant disclaimer.
+
+Style: US Letter (12240×15840 DXA), 1-inch margins (1440 DXA), Arial 12pt default. Verdict cells
+in the applicability table are color-coded (`Applies` red, `Likely Applies` yellow, `Does Not Apply` green);
+gap-table lane cells follow the four-lane palette (Critical → red, 0–30/High → orange, 31–90/Medium →
+yellow, Strategic/Low → green).
+
+---
+
+### `pq_memo_from_analysis`
+
+Convenience tool that produces a DRAFT DOCX memo with the entity profile and applicability
+sections auto-populated from the PrivacyQuant applicability checker.
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `client_name` | string | Yes | Client entity name |
+| `prepared_by` | string | No | Author name for the cover page |
+| `annual_revenue_usd` | number | No | Annual gross revenue in USD |
+| `consumers_processed` | integer | No | Number of consumers' PI processed annually |
+| `households_processed` | integer | No | Number of households' PI processed annually |
+| `revenue_pct_from_sale` | number | No | % of annual revenue from sale of PI |
+| `states_operating` | string[] | No | States — omit to evaluate all 20 |
+| `is_nonprofit` | boolean | No | Non-profit entity |
+| `is_government` | boolean | No | Government entity |
+| `is_hipaa_covered_entity` | boolean | No | HIPAA-covered entity |
+| `is_glba_covered` | boolean | No | GLBA-covered financial institution |
+| `executive_summary` | string | No | Executive summary narrative — strongly recommended |
+| `gaps` | object[] | No | Optional gap log (same schema as `pq_generate_memo`) |
+| `remediation` | object | No | Optional remediation roadmap (same schema as `pq_generate_memo`) |
+| `next_steps` | string[] | No | Optional recommended next steps |
+
+Sections that cannot be auto-populated (status determination, gaps and remediation unless
+provided, cross-cutting recommendations) render with placeholder text for attorney completion.
+Same output path and disclaimer behavior as `pq_generate_memo`.
