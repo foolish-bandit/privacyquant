@@ -1,0 +1,29 @@
+id: "vcdpa.rights.access"
+statute: "VCDPA"
+section: "Va. Code § 59.1-577(A)(1)"
+title: "Right to Confirm and Access"
+effective_date: "2023-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Consumer submits authenticated request to confirm whether controller processes their personal data"
+requirement: >
+  Controller must confirm whether or not it is processing the consumer's PD and provide access
+  to that PD. Response deadline: 45 days (extendable once by 45 days with notice).
+  Must be provided free of charge twice per 12-month period.
+exceptions:
+  - "Request is manifestly unfounded, excessive, or repetitive"
+  - "Complying would require revealing a trade secret"
+contract_signals:
+  - "right of access"
+  - "confirm processing"
+  - "access to personal data"
+  - "data subject access"
+  - "DSAR"
+cross_refs:
+  - "ccpa.rights.access"
+  - "cpa.rights.access"
+  - "modpa.rights.access"
+source_url: "https://law.lis.virginia.gov/vacode/title59.1/chapter53/section59.1-577/"
+git_hash: ""
