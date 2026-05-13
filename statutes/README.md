@@ -8,11 +8,11 @@ This directory contains the versioned statutory requirement nodes for US state c
 |---|---|---|---|---|
 | CCPA/CPRA | California | Jan 2020 / Jan 2023 | 14 | `ccpa/` |
 | VCDPA | Virginia | Jan 2023 | 11 | `vcdpa/` |
-| CPA | Colorado | Jul 2023 | 5 | `cpa/` |
-| CTDPA | Connecticut | Jul 2023 | 5 | `ctdpa/` |
+| CPA | Colorado | Jul 2023 | 6 | `cpa/` |
+| CTDPA | Connecticut | Jul 2023 | 7 | `ctdpa/` |
 | UCPA | Utah | Dec 2023 | 4 | `ucpa/` |
 | TDPSA | Texas | Jul 2024 | 3 | `tdpsa/` |
-| OCPA | Oregon | Jul 2024 | 3 | `ocpa/` |
+| OCPA | Oregon | Jul 2024 | 6 | `ocpa/` |
 | MCDPA | Montana | Oct 2024 | 3 | `mcdpa/` |
 | ICDPA | Iowa | Jan 2025 | 4 | `icdpa/` |
 | DPDPA | Delaware | Jan 2025 | 4 | `dpdpa/` |
@@ -27,7 +27,7 @@ This directory contains the versioned statutory requirement nodes for US state c
 | RIDTPPA | Rhode Island | Jan 2026 | 4 | `ridtppa/` |
 | FDBR | Florida | Jul 2024 | 2 | `fdbr/` |
 
-**Total: 93 nodes across 20 statutes.**
+**Total: 99 nodes across 20 statutes.**
 
 ## Node structure
 
