@@ -1,0 +1,34 @@
+id: "tdpsa.sensitive_data.consent"
+statute: "TDPSA"
+section: "Tex. Bus. & Com. Code § 541.001(31); § 541.052(b)"
+title: "Sensitive Data — Opt-In Consent Required"
+effective_date: "2024-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller intends to process sensitive data"
+requirement: >
+  Controller must obtain opt-in consent before processing sensitive data.
+  Standard sensitive categories apply: racial/ethnic origin; religious beliefs;
+  mental/physical health diagnosis; sexual orientation; citizenship/immigration status;
+  genetic or biometric data for unique identification; PD of a known child; precise geolocation.
+  If controller sells sensitive PD, additional specific notice is required at point of collection
+  (see tdpsa.controller_duties.sensitive_data_notice).
+  Note: small-business exemption is forfeit if entity sells sensitive PD without consent.
+exceptions:
+  - "Processing for the specific purpose for which consent was given"
+contract_signals:
+  - "sensitive data consent"
+  - "opt-in consent"
+  - "sensitive personal data"
+  - "consent to process sensitive"
+  - "biometric data"
+  - "precise geolocation"
+cross_refs:
+  - "vcdpa.sensitive_data.consent"
+  - "cpa.sensitive_data.consent"
+  - "tdpsa.controller_duties.sensitive_data_notice"
+  - "ndpa.sensitive_data.consent"
+source_url: "https://capitol.texas.gov/tlodocs/88R/billtext/pdf/HB04.pdf"
+git_hash: ""
