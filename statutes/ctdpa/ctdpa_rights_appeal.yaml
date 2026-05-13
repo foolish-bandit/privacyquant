@@ -1,0 +1,27 @@
+id: "ctdpa.rights.appeal"
+statute: "CTDPA"
+section: "Conn. Gen. Stat. § 42-518(c)"
+title: "Right to Appeal Denied Request"
+effective_date: "2023-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller declines to take action on a consumer rights request"
+requirement: >
+  If the controller declines to act, it must inform the consumer within 45 days with reasons
+  and instructions for how to appeal. The controller must complete the appeal within 60 days
+  of receipt. If the appeal is denied, the controller must provide an online mechanism for
+  the consumer to contact the Connecticut AG to submit a complaint.
+exceptions: []
+contract_signals:
+  - "right to appeal"
+  - "appeal denied request"
+  - "appeal process"
+  - "consumer appeal"
+cross_refs:
+  - "vcdpa.rights.appeal"
+  - "cpa.rights.appeal"
+  - "modpa.rights.appeal"
+source_url: "https://www.cga.ct.gov/2022/ACT/PA/PDF/2022PA-00015-R00SB-00006-PA.PDF"
+git_hash: ""
