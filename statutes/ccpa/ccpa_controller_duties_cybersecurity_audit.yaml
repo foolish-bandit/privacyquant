@@ -1,0 +1,39 @@
+id: "ccpa.controller_duties.cybersecurity_audit"
+statute: "CCPA/CPRA"
+section: "Cal. Code Regs. tit. 11, §§ 7120-7124"
+title: "Cybersecurity Audit — Annual Independent Audit Requirement (Eff. Jan. 1, 2026)"
+effective_date: "2026-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: business
+trigger: >
+  Business is subject to CCPA and conducts processing that presents 'significant risk' to consumer
+  security: (a) derives 50%+ of annual revenue from selling/sharing PI regardless of size, OR
+  (b) annual gross revenue >$26,625,000 AND processed PI of 250,000+ consumers OR sensitive PI of
+  50,000+ consumers in the prior calendar year.
+requirement: >
+  Covered businesses must complete an annual independent cybersecurity audit by a qualified
+  independent professional. The audit must cover 18 enumerated cybersecurity measures (§ 7121).
+  Annual certification of completion must be submitted to the CPPA.
+  Staggered first-audit deadlines based on annual gross revenue:
+  - Revenue >$100M (2026): first audit covers Jan. 1, 2027–Jan. 1, 2028; certification due April 1, 2028
+  - Revenue $50M–$100M (2027): first audit covers Jan. 1, 2028–Jan. 1, 2029; certification due April 1, 2029
+  - Revenue <$50M (2028): first audit covers Jan. 1, 2029–Jan. 1, 2030; certification due April 1, 2030
+  Full audit report retained by business; summary certification submitted to CPPA.
+  Audit reports may be subject to regulatory review or litigation discovery.
+exceptions:
+  - "Businesses not meeting the 'significant risk to consumer security' dual threshold"
+  - "Non-profits and government entities"
+contract_signals:
+  - "cybersecurity audit"
+  - "independent security audit"
+  - "cybersecurity certification"
+  - "annual audit"
+  - "security assessment"
+  - "qualified independent professional"
+cross_refs:
+  - "ccpa.controller_duties.data_protection_assessment"
+  - "ccpa.enforcement.parameters"
+source_url: "https://cppa.ca.gov/regulations/ccpa_updates.html"
+git_hash: ""
