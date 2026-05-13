@@ -1,0 +1,35 @@
+id: "cpa.sensitive_data.consent"
+statute: "CPA"
+section: "Colo. Rev. Stat. § 6-1-1308(7); § 6-1-1303(24)"
+title: "Sensitive Data — Opt-In Consent Required"
+effective_date: "2023-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller intends to process sensitive data"
+requirement: >
+  Controller must obtain opt-in consent before processing sensitive data.
+  Consent must be: clear and affirmative; freely given; specific; informed; unambiguous; and
+  obtained without dark patterns (CPA Rules § 7). Pre-checked boxes and 'agree by use' clauses
+  are facially non-compliant.
+  Sensitive categories: racial/ethnic origin; religious beliefs; mental/physical health;
+  sex life or sexual orientation; citizenship/immigration status; genetic or biometric data
+  processed for unique ID; PD of a known child; precise geolocation.
+  Loyalty programs require separate notice and consent structure (CPA Rules § 6.04).
+exceptions:
+  - "Processing for the specific purpose for which consent was given"
+contract_signals:
+  - "sensitive data consent"
+  - "opt-in consent"
+  - "sensitive personal data"
+  - "biometric data"
+  - "precise geolocation"
+  - "health data"
+  - "consent to process"
+cross_refs:
+  - "ccpa.sensitive_data.categories"
+  - "vcdpa.sensitive_data.consent"
+  - "modpa.sensitive_data.ban_on_sale"
+source_url: "https://leg.colorado.gov/sites/default/files/documents/2021A/bills/2021a_190_enr.pdf"
+git_hash: ""
