@@ -5,6 +5,7 @@ import { loadIndex } from "./loader.js";
 import { searchNodes } from "./search.js";
 import { resolveConflict, ALL_DIMENSIONS } from "./conflict_resolver.js";
 import type { Dimension } from "./conflict_resolver.js";
+import { evaluateClause } from "./clause_evaluator.js";
 import type { StatuteNode, StatuteIndex } from "./types.js";
 
 // ─── Load the knowledge graph once at startup ──────────────────────────────
@@ -464,6 +465,236 @@ What's the binding constraint on processor contract requirements and sensitive d
     lines.push(
       `Use pq_fetch_requirement with a node ID to retrieve the full statutory text behind any position.`
     );
+
+    return {
+      content: [{ type: "text", text: lines.join("\n") }],
+    };
+  }
+);
+
+// ─── Tool 5: pq_check_clause ───────────────────────────────────────────────
+server.registerTool(
+  "pq_check_clause",
+  {
+    title: "Check DPA Clause Against Statutory Requirements",
+    description: `Evaluate a DPA or contract clause against applicable US state privacy law requirements.
+Paste a raw clause and specify which statutes apply. The tool retrieves the relevant
+statutory nodes, then assesses each one with a GREEN / YELLOW / RED verdict plus a
+specific gap description and suggested redline language to close the gap.
+
+Use this during DPA review to:
+- Flag clauses that are silent on a required obligation
+- Identify language that is technically present but too vague to satisfy the requirement
+- Get concrete redline suggestions tied to specific statutory sections
+- Produce a clause-level gap log with node citations
+
+Args:
+  - clause (string): The raw DPA or contract clause text to evaluate. Paste the full
+    clause — do not summarize or paraphrase. The more complete the text, the more
+    accurate the assessment.
+  - statutes (array of strings): The applicable state privacy laws to check against.
+    Use acronyms: CCPA, VCDPA, CPA, CTDPA, TDPSA, OCPA, MODPA, NJDPA, etc.
+    If omitted, the tool searches for relevant nodes across all statutes.
+  - topics (array of strings, optional): Constrain the node search to specific topics.
+    Examples: ["deletion", "processor contract", "sensitive data", "appeal right"].
+    If omitted, the tool infers topics from the clause text automatically.
+  - max_nodes (integer, optional): Maximum number of statute nodes to evaluate the
+    clause against (default 6, max 12). Higher values are more thorough but slower.
+
+Returns:
+  - Overall verdict (GREEN / YELLOW / RED)
+  - Per-node assessments with: verdict, what is satisfied, specific gap, suggested redline
+  - Top priority fix across all gaps
+  - Node IDs for tracing back to full statutory text via pq_fetch_requirement
+
+Note: This tool makes a sub-call to Claude to perform the legal reasoning. It requires
+ANTHROPIC_API_KEY to be set in the environment. Response time is typically 10-20 seconds.`,
+    inputSchema: {
+      clause: z
+        .string()
+        .min(20)
+        .max(10000)
+        .describe("Raw DPA or contract clause text — paste the full clause"),
+      statutes: z
+        .array(z.string().min(2))
+        .max(10)
+        .optional()
+        .describe(
+          'Applicable statutes to check against, e.g. ["CCPA", "MODPA", "CPA"]'
+        ),
+      topics: z
+        .array(z.string().min(2))
+        .max(5)
+        .optional()
+        .describe(
+          'Optional topic filters, e.g. ["deletion", "processor contract"]'
+        ),
+      max_nodes: z
+        .number()
+        .int()
+        .min(1)
+        .max(12)
+        .default(6)
+        .describe("Maximum nodes to evaluate against (default 6)"),
+    },
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: false, // sub-calls to LLM are non-deterministic
+      openWorldHint: false,
+    },
+  },
+  async ({ clause, statutes, topics, max_nodes }) => {
+    // Check for API key upfront — better error than a confusing SDK failure
+    if (!process.env.ANTHROPIC_API_KEY) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: "pq_check_clause requires ANTHROPIC_API_KEY to be set in the environment. Set it and restart the MCP server.",
+          },
+        ],
+      };
+    }
+
+    // Build search query from clause text + optional topic hints
+    const topicHint = topics?.join(" ") ?? "";
+    // Extract first ~200 chars of clause as the search seed — enough signal for matching
+    const clauseSeed = clause.slice(0, 200);
+    const query = [topicHint, clauseSeed].filter(Boolean).join(" ");
+
+    // Search each applicable statute, or all if none specified
+    const statuteList = statutes ?? [];
+    let nodes: StatuteNode[] = [];
+
+    if (statuteList.length > 0) {
+      // Search per-statute and merge, deduplicating by id
+      const seen = new Set<string>();
+      const perStatuteLimit = Math.max(2, Math.ceil(max_nodes / statuteList.length));
+      for (const statute of statuteList) {
+        const results = searchNodes(index, {
+          query,
+          statute,
+          limit: perStatuteLimit,
+        });
+        for (const r of results) {
+          if (!seen.has(r.node.id)) {
+            seen.add(r.node.id);
+            nodes.push(r.node);
+          }
+        }
+      }
+      // If per-statute search didn't find enough, top up with a broader search
+      if (nodes.length < 2) {
+        const broader = searchNodes(index, { query, limit: max_nodes });
+        for (const r of broader) {
+          if (!seen.has(r.node.id)) {
+            seen.add(r.node.id);
+            nodes.push(r.node);
+          }
+        }
+      }
+    } else {
+      const results = searchNodes(index, { query, limit: max_nodes });
+      nodes = results.map((r) => r.node);
+    }
+
+    // Cap at max_nodes
+    nodes = nodes.slice(0, max_nodes);
+
+    if (nodes.length === 0) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: [
+              `No relevant statutory nodes found for this clause.`,
+              ``,
+              `Try:`,
+              `- Adding a 'topics' list with keywords from the clause (e.g. ["deletion", "data subject rights"])`,
+              `- Specifying statutes explicitly`,
+              `- Using pq_search_requirements with clause keywords to find relevant nodes manually`,
+            ].join("\n"),
+          },
+        ],
+      };
+    }
+
+    // Run the evaluation
+    let result;
+    try {
+      result = await evaluateClause(clause, nodes);
+    } catch (err) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Clause evaluation failed: ${err}\n\nEnsure ANTHROPIC_API_KEY is valid and the API is reachable.`,
+          },
+        ],
+      };
+    }
+
+    // Format output
+    const verdictEmoji: Record<string, string> = {
+      GREEN: "✅",
+      YELLOW: "⚠️",
+      RED: "🔴",
+    };
+
+    const lines: string[] = [
+      `# Clause Check Results`,
+      `**Overall verdict**: ${verdictEmoji[result.overall_verdict]} **${result.overall_verdict}**`,
+      `**Nodes evaluated**: ${result.assessments.length} across ${[...new Set(result.assessments.map((a) => a.statute))].join(", ")}`,
+      ``,
+      `**Clause (excerpt)**: _${result.clause_excerpt.replace(/\n/g, " ").slice(0, 200)}${result.clause_excerpt.length > 200 ? "…" : ""}_`,
+      ``,
+    ];
+
+    if (result.top_priority) {
+      lines.push(`## ⚡ Top Priority`);
+      lines.push(result.top_priority);
+      lines.push(``);
+    }
+
+    lines.push(`## Per-Node Assessments`);
+    lines.push(``);
+
+    for (const a of result.assessments) {
+      lines.push(
+        `### ${verdictEmoji[a.verdict]} ${a.verdict} — ${a.title} (${a.statute})`
+      );
+      lines.push(`**Node**: \`${a.node_id}\``);
+      lines.push(``);
+
+      if (a.satisfied && a.satisfied !== "Nothing") {
+        lines.push(`**Satisfied**: ${a.satisfied}`);
+      }
+
+      if (a.gap && a.verdict !== "GREEN") {
+        lines.push(`**Gap**: ${a.gap}`);
+      }
+
+      if (a.suggested_redline && a.verdict !== "GREEN") {
+        lines.push(``);
+        lines.push(`**Suggested redline**:`);
+        lines.push(`> ${a.suggested_redline.replace(/\n/g, "\n> ")}`);
+      }
+
+      lines.push(``);
+      lines.push(`---`);
+      lines.push(``);
+    }
+
+    lines.push(
+      `Use \`pq_fetch_requirement\` with any node ID above to retrieve the full statutory text and exceptions.`
+    );
+
+    if (result.overall_verdict !== "GREEN") {
+      lines.push(
+        `Use \`pq_resolve_conflict\` to check for multi-state binding constraints on the dimensions flagged above.`
+      );
+    }
 
     return {
       content: [{ type: "text", text: lines.join("\n") }],
