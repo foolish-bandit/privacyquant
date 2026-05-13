@@ -1,0 +1,39 @@
+{
+  "name": "privacyquant",
+  "version": "0.1.0",
+  "description": "Versioned statutory knowledge graph and MCP workflow layer for US state consumer privacy law.",
+  "author": {
+    "name": "Zachary Brenner",
+    "url": "https://github.com/foolish-bandit"
+  },
+  "homepage": "https://github.com/foolish-bandit/privacyquant",
+  "repository": "https://github.com/foolish-bandit/privacyquant",
+  "license": "MIT",
+  "keywords": [
+    "privacy",
+    "legal",
+    "MCP",
+    "CCPA",
+    "CPRA",
+    "DSAR",
+    "DPA",
+    "compliance",
+    "US privacy law"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.codex-mcp.json",
+  "interface": {
+    "displayName": "PrivacyQuant",
+    "shortDescription": "US state privacy law workflows backed by versioned statutory nodes.",
+    "longDescription": "PrivacyQuant gives Codex deterministic legal workflow tools for US state consumer privacy law, including applicability analysis, DSAR routing, DPA clause review, privacy notice drafting, enforcement precedent research, citation auditing, risk scoring, and DOCX memo generation.",
+    "developerName": "Zachary Brenner",
+    "category": "Legal",
+    "capabilities": ["Read", "Write"],
+    "websiteURL": "https://github.com/foolish-bandit/privacyquant",
+    "defaultPrompt": [
+      "Use PrivacyQuant to analyze which US state privacy laws apply to this company.",
+      "Use PrivacyQuant to route this consumer rights request and calculate the response deadline.",
+      "Use PrivacyQuant to review this DPA clause against applicable state privacy law requirements."
+    ]
+  }
+}

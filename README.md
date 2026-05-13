@@ -1,32 +1,65 @@
 # PrivacyQuant
 
-**Versioned statutory knowledge graph and MCP workflow layer for US state consumer privacy law.**
+**A versioned statutory knowledge graph and MCP workflow layer for US state consumer privacy law.**
 
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178c6)
 ![MCP](https://img.shields.io/badge/MCP-compatible-8b5cf6)
+![Claude plugin](https://img.shields.io/badge/Claude-plugin-d97706)
+![Codex plugin](https://img.shields.io/badge/Codex-plugin-6366f1)
 ![Nodes](https://img.shields.io/badge/statutory_nodes-146-16a34a)
 ![Tools](https://img.shields.io/badge/MCP_tools-18-0891b2)
 ![Statutes](https://img.shields.io/badge/statutes-20-dc2626)
 ![Deterministic](https://img.shields.io/badge/deterministic_by_default-16_of_18_tools-15803d)
+![Attorney review](https://img.shields.io/badge/output-draft_for_attorney_review-64748b)
 
 `US State Privacy` `MCP` `CCPA/CPRA` `DSAR` `DPA Drafting` `Privacy Notices` `Enforcement Research` `Legislative Monitoring` `Citation QA` `Risk Scoring`
 
 ---
 
-## What it is
+## Works with
+
+| Client | How |
+|---|---|
+| **Claude Code / Claude Desktop** | `.claude-plugin/plugin.json` marketplace manifest + `.mcp.json` auto-loaded by Claude Code |
+| **Codex** | `.codex-plugin/plugin.json` plugin manifest + `.codex-mcp.json` MCP config + `skills/` instructions |
+| **Any MCP-compatible client** | Launch the STDIO MCP server directly: `npx tsx mcp-server/src/index.ts` |
+
+---
+
+## What PrivacyQuant does
 
 PrivacyQuant is a structured, versioned, auditable legal workflow system built around atomic YAML statutory nodes and curated reference datasets.
 
 Every statutory requirement, consumer right, deadline, and threshold is stored as an individually citable node with a Git hash. When you cite a PrivacyQuant node, you are citing a specific version of the law — not a model's recollection of it.
 
-The 18 MCP tools expose deterministic workflows for applicability analysis, DPA clause review and drafting, privacy notice drafting, DSAR routing, multi-state conflict resolution, enforcement precedent research, legislative monitoring, citation auditing, risk scoring, and DOCX deliverable generation. Sixteen of the eighteen tools require no LLM and no external API.
+The 18 MCP tools expose deterministic workflows across these areas:
 
-**What PrivacyQuant is not:**
+| Workflow | Tools |
+|---|---|
+| **Applicability analysis** | `pq_check_applicability` — determines which state laws apply given revenue, consumer count, and sale-revenue thresholds |
+| **Multi-state conflict resolution** | `pq_resolve_conflict`, `pq_resolve_conflict_nodes` — synthesizes the compliance ceiling across applicable states |
+| **DPA clause review** | `pq_check_clause` — returns GREEN / YELLOW / RED verdicts with redlines against statutory requirements |
+| **DPA clause drafting** | `pq_draft_dpa_clause`, `pq_draft_dpa_clause_deterministic` — first-draft DPA language from node IDs |
+| **Privacy notice drafting** | `pq_draft_notice_clause` — notice at collection, full privacy notice, opt-out, sensitive data, financial incentive, AI training |
+| **DSAR routing** | `pq_dsar_router`, `pq_route_dsar_workflow` — right existence, deadline, appeal requirement, step-by-step checklist |
+| **Enforcement research** | `pq_find_precedent` — 84 curated enforcement actions searchable by violation theory, state, industry |
+| **Risk scoring** | `pq_score_privacy_risk` — deterministic 0-100 exposure score with component breakdown and remediation priorities |
+| **Citation auditing** | `pq_audit_citations` — flags uncited claims, unresolved placeholders, and suspicious section numbers in work product |
+| **DOCX memo generation** | `pq_generate_memo`, `pq_memo_from_analysis` — formal client-ready compliance memo with cover, disclaimer, TOC, and appendix stubs |
+| **Legislative monitoring** | `pq_watch_legislation` — active privacy bills in covered states via Open States / Plural API |
+| **Statutory graph access** | `pq_fetch_requirement`, `pq_search_requirements`, `pq_list_statutes` — direct node retrieval and search |
+
+Sixteen of the eighteen tools require no LLM and no external API.
+
+## What it is not
+
 - Legal advice or a substitute for qualified counsel
 - A court-record database (see [CONNECTORS.md](CONNECTORS.md) for CourtListener pairing)
-- An automatically-updated law tracker
+- An automatically-updated law tracker — nodes reflect law at node version dates
 - Proof of compliance with any applicable statute
+- A cloud SaaS product — it runs as a local STDIO MCP server you host yourself
+- A GDPR, HIPAA, GLBA, FCRA, COPPA, FERPA, BIPA, or state AI law engine (see [scope exclusions](#scope-exclusions))
 
 ---
 
@@ -219,6 +252,38 @@ The 18 MCP tools expose deterministic workflows for applicability analysis, DPA 
 
 ---
 
+## Architecture
+
+PrivacyQuant is the product. Claude and Codex are distribution targets. One repo avoids
+statutory graph and tool version drift between clients — the MCP server and YAML data layer
+are shared; only the thin client wrappers differ.
+
+```
+privacyquant/
+  ├─ mcp-server/               shared MCP tool engine (18 tools, TypeScript)
+  ├─ statutes/                 shared statutory graph (146 YAML nodes, 20 statutes)
+  ├─ references/               shared reference data (enforcement corpus, workflows, state guides)
+  ├─ .claude-plugin/           Claude Code marketplace manifest
+  ├─ .codex-plugin/            Codex plugin manifest
+  ├─ .mcp.json                 Claude Code / manual MCP config
+  ├─ .codex-mcp.json           Codex MCP config
+  ├─ skills/                   Codex skill instructions
+  ├─ CLAUDE.md                 Claude Code practice profile (auto-loaded by Claude Code)
+  └─ scripts/                  Validation and node-generation utilities
+```
+
+---
+
+## Scope exclusions
+
+The following regimes are outside PrivacyQuant's current scope. Flag them when they arise
+alongside covered state law, then handle the sectoral or AI layer with a separate resource.
+
+GDPR / UK GDPR · HIPAA · GLBA · FCRA · COPPA · FERPA · Illinois BIPA ·
+Washington MHMDA · Colorado AI Act · NYC Local Law 144 · standalone state AI laws
+
+---
+
 ## Installation
 
 ### Claude Code (plugin — recommended)
@@ -238,6 +303,46 @@ cd privacyquant/mcp-server && npm install && npm run build
 The repo root contains `.mcp.json` — Claude Code reads it automatically. The MCP server
 entrypoint is `mcp-server/src/index.ts`.
 
+### Codex
+
+**Option A — Local MCP config**
+
+Add the following to `~/.codex/config.toml` (replace `cwd` with the absolute path to your
+local clone):
+
+```toml
+[mcp_servers.privacyquant]
+command = "npx"
+args = ["tsx", "mcp-server/src/index.ts"]
+cwd = "/absolute/path/to/privacyquant"
+env_vars = ["OPENAI_API_KEY", "ANTHROPIC_API_KEY", "OPENSTATES_API_KEY", "PLURAL_API_KEY"]
+startup_timeout_sec = 20
+tool_timeout_sec = 120
+```
+
+`cwd` must be the absolute path to the cloned repository root — relative paths are not
+supported by the Codex MCP config.
+
+**Option B — Bundled plugin**
+
+This repository includes Codex plugin files for local or repo-based plugin loading:
+
+- `.codex-plugin/plugin.json` — Codex plugin manifest
+- `.codex-mcp.json` — Codex MCP server config (`mcp_servers` shape)
+- `skills/privacyquant-legal-workflows/SKILL.md` — skill instructions
+
+Point your Codex client at the repository root to load the plugin locally. Official public
+marketplace distribution is not yet configured and can be added later if desired.
+
+### Any MCP-compatible client
+
+```bash
+npx tsx mcp-server/src/index.ts
+```
+
+The server communicates over STDIO using the MCP protocol. Point any MCP-compatible client
+at this command.
+
 ### Cowork
 
 Install from the Cowork plugin browser — search **privacyquant**.
@@ -248,10 +353,11 @@ Install from the Cowork plugin browser — search **privacyquant**.
 
 | Variable | Required for | Notes |
 |---|---|---|
-| `ANTHROPIC_API_KEY` | `pq_check_clause`, `pq_draft_dpa_clause` | Uses `claude-sonnet-4-20250514`. |
-| `OPENSTATES_API_KEY` or `PLURAL_API_KEY` | `pq_watch_legislation` | Free key at [open.pluralpolicy.com](https://open.pluralpolicy.com). |
+| `ANTHROPIC_API_KEY` | `pq_check_clause`, `pq_draft_dpa_clause` | Required only for these two LLM-backed tools. Uses `claude-sonnet-4-20250514`. All 16 other tools are fully deterministic and need no API key. |
+| `OPENAI_API_KEY` | Future OpenAI provider support | Included for forward compatibility. Not currently used unless an OpenAI provider is explicitly configured. |
+| `OPENSTATES_API_KEY` or `PLURAL_API_KEY` | `pq_watch_legislation` | Only needed for legislative monitoring. Free key at [open.pluralpolicy.com](https://open.pluralpolicy.com). |
 
-All other tools require no API key.
+Most PrivacyQuant tools require no API key at all.
 
 ---
 
@@ -305,7 +411,12 @@ privacyquant/
 │   └── SMOKE_TESTS.md            Example inputs for each tool
 ├── CLAUDE.md                     Practice profile read automatically by Claude Code
 ├── CONNECTORS.md                 Companion connector docs (CourtListener, etc.)
-└── .claude-plugin/plugin.json    Claude Code marketplace manifest
+├── .claude-plugin/plugin.json    Claude Code marketplace manifest
+├── .codex-plugin/plugin.json     Codex plugin manifest
+├── .mcp.json                     Claude Code / manual MCP config
+├── .codex-mcp.json               Codex MCP config
+└── skills/
+    └── privacyquant-legal-workflows/SKILL.md  Codex skill instructions
 ```
 
 ---
@@ -364,6 +475,8 @@ Node updates, enforcement corpus entries, and new tool PRs are welcome.
 - **New tools:** Register in `index.ts`; keep deterministic by default; document in `docs/TOOLS.md`.
 
 Run `npm run validate` from `mcp-server/` before submitting a PR. The script checks node counts, cross-refs, tool registration counts, enforcement corpus integrity, and required field presence. PRs that break validation will fail CI.
+
+For Codex packaging changes, also run `node scripts/validate-codex-plugin.mjs` from the repo root to verify that the Codex plugin manifest, MCP config, and skill file are well-formed.
 
 ---
 

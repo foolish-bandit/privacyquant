@@ -1,0 +1,17 @@
+{
+  "mcp_servers": {
+    "privacyquant": {
+      "command": "npx",
+      "args": ["tsx", "mcp-server/src/index.ts"],
+      "cwd": ".",
+      "env_vars": [
+        "ANTHROPIC_API_KEY",
+        "OPENAI_API_KEY",
+        "OPENSTATES_API_KEY",
+        "PLURAL_API_KEY"
+      ],
+      "startup_timeout_sec": 20,
+      "tool_timeout_sec": 120
+    }
+  }
+}
