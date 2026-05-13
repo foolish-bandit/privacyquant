@@ -26,6 +26,11 @@ contract_signals:
   - "processor contract"
   - "CCPA service provider"
   - "contractor agreement"
+nist_controls:
+  - "SA-4"
+  - "SA-9"
+  - "UL-2"
+  - "CA-3"
 cross_refs:
   - "vcdpa.controller_duties.processor_contract"
   - "cpa.controller_duties.processor_contract"
