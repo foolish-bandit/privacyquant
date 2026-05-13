@@ -1,0 +1,30 @@
+id: "ocpa.controller_duties.processor_contract"
+statute: "OCPA"
+section: "ORS § 646A.582"
+title: "Processor Contract Requirements"
+effective_date: "2024-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller engages a processor to process personal data on its behalf"
+requirement: >
+  A binding contract must govern the processor's data processing including: nature and purpose
+  of processing; type of PD; duration; rights and obligations of both parties.
+  Must require the processor to: process data only per controller instructions; maintain
+  confidentiality; delete or return PD upon termination; allow audits; engage subprocessors
+  only under equivalent obligations; assist with consumer rights and security obligations.
+exceptions: []
+contract_signals:
+  - "data processing agreement"
+  - "DPA"
+  - "processor agreement"
+  - "subprocessor"
+  - "controller-processor"
+  - "data processing addendum"
+cross_refs:
+  - "ccpa.controller_duties.service_provider_contract"
+  - "vcdpa.controller_duties.processor_contract"
+  - "cpa.controller_duties.processor_contract"
+source_url: "https://www.oregonlegislature.gov/bills_laws/ors/ors646A.html"
+git_hash: ""
