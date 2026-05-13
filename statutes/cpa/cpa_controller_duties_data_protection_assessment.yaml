@@ -1,0 +1,26 @@
+id: "cpa.controller_duties.data_protection_assessment"
+statute: "CPA"
+section: "Colo. Rev. Stat. § 6-1-1309; 4 Colo. Code Regs. § 904-3, Rule 8"
+title: "Data Protection Assessment"
+effective_date: "2023-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller engages in high-risk processing including sale, targeted advertising, sensitive data, profiling with significant effects"
+requirement: >
+  Controller must document a data protection assessment for each processing activity presenting
+  a heightened risk of harm to consumers. The CPA Rules (Rule 8) specify assessment content.
+  The AG may request assessments. Assessments are confidential and not subject to public records laws.
+exceptions: []
+contract_signals:
+  - "data protection assessment"
+  - "DPIA"
+  - "risk assessment"
+  - "high-risk processing"
+cross_refs:
+  - "ccpa.controller_duties.data_protection_assessment"
+  - "vcdpa.controller_duties.data_protection_assessment"
+  - "modpa.controller_duties.data_protection_assessment"
+source_url: "https://coag.gov/resources/colorado-privacy-act/"
+git_hash: ""
