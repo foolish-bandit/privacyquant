@@ -1,0 +1,30 @@
+id: "modpa.applicability.threshold"
+statute: "MODPA"
+section: "Md. Code Com. Law § 14-4602"
+title: "Applicability Threshold — Low Thresholds (10k/35k)"
+effective_date: "2025-10-01"
+supersedes: []
+amended_by: []
+requirement_type: threshold
+obligation_bearer: controller
+trigger: "Person conducting business in Maryland or providing products/services targeted to Maryland residents"
+requirement: >
+  Applies to persons conducting business in Maryland or targeting MD residents AND during the
+  preceding calendar year:
+  (a) controlled/processed PD of at least 35,000 MD consumers (excluding solely-payment-transaction data); OR
+  (b) controlled/processed PD of at least 10,000 MD consumers AND derived at least 20% of gross revenue from sale of PD.
+  MODPA is the strictest comprehensive state privacy law in the US — a multi-state program
+  built to MODPA + CA exceeds all other state requirements.
+exceptions:
+  - "Standard exemptions"
+contract_signals:
+  - "Maryland Online Data Privacy Act"
+  - "MODPA"
+  - "Maryland residents"
+  - "Md. Code Com. Law § 14-46"
+cross_refs:
+  - "dpdpa.applicability.threshold"
+  - "nhdpa.applicability.threshold"
+  - "ridtppa.applicability.threshold"
+source_url: "https://mgaleg.maryland.gov/2024RS/Chapters_noln/CH_182_sb0541e.pdf"
+git_hash: ""
