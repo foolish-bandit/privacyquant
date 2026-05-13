@@ -8,6 +8,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Resolve statutes dir relative to the repo root (two levels up from mcp-server/src/)
 const STATUTES_DIR = path.resolve(__dirname, "../../statutes");
+const REFERENCES_DIR = path.resolve(__dirname, "../../references");
+const NIST_CROSSWALK_PATH = path.join(REFERENCES_DIR, "nist_controls_crosswalk.yaml");
 
 function isStatuteNode(obj: unknown): obj is StatuteNode {
   if (typeof obj !== "object" || obj === null) return false;
@@ -19,10 +21,34 @@ function isStatuteNode(obj: unknown): obj is StatuteNode {
   );
 }
 
+function loadNistCrosswalk(): Map<string, string[]> {
+  const crosswalk = new Map<string, string[]>();
+  if (!fs.existsSync(NIST_CROSSWALK_PATH)) return crosswalk;
+
+  try {
+    const raw = yaml.load(fs.readFileSync(NIST_CROSSWALK_PATH, "utf8"));
+    if (typeof raw !== "object" || raw === null) return crosswalk;
+
+    const records = raw as Record<string, unknown>;
+    for (const [nodeId, controls] of Object.entries(records)) {
+      if (!Array.isArray(controls)) continue;
+      crosswalk.set(
+        nodeId,
+        controls.filter((control): control is string => typeof control === "string")
+      );
+    }
+  } catch (err) {
+    process.stderr.write(`Warning: failed to load ${NIST_CROSSWALK_PATH}: ${err}\n`);
+  }
+
+  return crosswalk;
+}
+
 export function loadIndex(): StatuteIndex {
   const byId = new Map<string, StatuteNode>();
   const byStatute = new Map<string, StatuteNode[]>();
   const all: StatuteNode[] = [];
+  const nistCrosswalk = loadNistCrosswalk();
 
   if (!fs.existsSync(STATUTES_DIR)) {
     throw new Error(
@@ -64,6 +90,12 @@ export function loadIndex(): StatuteIndex {
           contract_signals: Array.isArray(raw.contract_signals)
             ? raw.contract_signals
             : [],
+          data_categories: Array.isArray(raw.data_categories)
+            ? raw.data_categories
+            : [],
+          nist_controls: Array.isArray(raw.nist_controls)
+            ? raw.nist_controls
+            : nistCrosswalk.get(raw.id) ?? [],
           cross_refs: Array.isArray(raw.cross_refs) ? raw.cross_refs : [],
           source_url: raw.source_url ?? "",
           git_hash: raw.git_hash ?? "",
