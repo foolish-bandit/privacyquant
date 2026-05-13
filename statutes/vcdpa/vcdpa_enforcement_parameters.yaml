@@ -1,0 +1,26 @@
+id: "vcdpa.enforcement.parameters"
+statute: "VCDPA"
+section: "Va. Code § 59.1-584"
+title: "Enforcement — AG Only; Civil Penalties"
+effective_date: "2023-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller or processor violates VCDPA"
+requirement: >
+  Enforced exclusively by the Virginia Attorney General. No private right of action.
+  Civil penalty up to $7,500 per violation. 30-day cure period remains in effect.
+  AG may seek injunctive relief and recovery of reasonable attorneys' fees and investigation costs.
+exceptions: []
+contract_signals:
+  - "Virginia Attorney General"
+  - "civil penalty"
+  - "VCDPA violation"
+  - "enforcement action"
+  - "cure period"
+cross_refs:
+  - "ccpa.enforcement.parameters"
+  - "cpa.enforcement.parameters"
+source_url: "https://law.lis.virginia.gov/vacode/title59.1/chapter53/section59.1-584/"
+git_hash: ""
