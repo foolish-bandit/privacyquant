@@ -1,0 +1,53 @@
+id: "cpa.controller_duties.biometric"
+statute: "CPA"
+section: "Colo. Rev. Stat. § 6-1-1308.5 (SB 25-058, eff. July 1, 2025)"
+title: "Biometric Data — Specific Obligations (Eff. July 1, 2025)"
+effective_date: "2025-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: >
+  Any entity that collects biometric identifiers or biometric data from Colorado residents,
+  regardless of whether the entity otherwise meets the general CPA applicability threshold.
+  Applicability is BROADER than the general CPA — the biometric requirements apply even to
+  entities that do not meet the 100,000 consumer threshold.
+requirement: >
+  Colorado SB 25-058 (2025) added biometric-specific obligations to the CPA, effective July 1, 2025:
+  1. WRITTEN BIOMETRIC POLICY: Controllers must adopt and maintain a written biometric data
+     policy that includes retention schedules and prescribed deletion timelines.
+  2. NOTICE AND CONSENT: Clear notice at or before collection specifying:
+     - Purposes for biometric data collection
+     - Retention periods
+     - Whether and to whom biometric data will be disclosed to processors
+  3. NO SALE WITHOUT CONSENT: Prohibits selling biometric identifiers without consent.
+  4. DATA PROTECTION ASSESSMENTS: Because biometric data is sensitive data under the CPA,
+     these changes increase when DPAs are required — particularly where biometrics are used
+     for identification or in high-risk contexts.
+  5. PROCESSOR DISCLOSURES: Notice must specify processor disclosures at point of collection.
+  Scope note: This applies to any amount of biometric data from Colorado residents —
+  the general CPA consumer-count threshold does NOT limit these biometric obligations.
+exceptions:
+  - "Information captured from patients in healthcare settings covered by HIPAA (data-level)"
+  - "Security screening in publicly accessible locations (verify current exemption)"
+contract_signals:
+  - "biometric data"
+  - "biometric identifiers"
+  - "biometric policy"
+  - "fingerprint"
+  - "retinal scan"
+  - "facial geometry"
+  - "voiceprint"
+  - "Colorado biometric"
+data_categories:
+  - "user.biometric"
+  - "user.biometric.fingerprint"
+  - "user.biometric.voice"
+  - "user.biometric.retinal"
+cross_refs:
+  - "cpa.sensitive_data.consent"
+  - "cpa.controller_duties.data_protection_assessment"
+  - "ccpa.sensitive_data.categories"
+  - "tdpsa.rights.opt_out_sale"
+source_url: "https://leg.colorado.gov/bills/sb25-058"
+git_hash: ""
