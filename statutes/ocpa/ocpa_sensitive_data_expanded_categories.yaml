@@ -1,0 +1,32 @@
+id: "ocpa.sensitive_data.expanded_categories"
+statute: "OCPA"
+section: "ORS § 646A.570(17)"
+title: "Sensitive Data — Expanded Categories Including OR-Specific"
+effective_date: "2024-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller intends to process sensitive data including Oregon-specific categories"
+requirement: >
+  Opt-in consent required before processing sensitive data.
+  Standard categories plus two Oregon-specific additions:
+  (1) status as a victim of a crime; (2) transgender or non-binary status.
+  Controllers whose sensitive-data programs are built for other states must audit their definitions
+  to ensure Oregon's expanded categories are covered.
+exceptions: []
+contract_signals:
+  - "sensitive data"
+  - "sensitive personal data"
+  - "opt-in consent"
+  - "victim status"
+  - "transgender"
+  - "non-binary"
+  - "biometric"
+  - "precise geolocation"
+cross_refs:
+  - "njdpa.sensitive_data.expanded_categories"
+  - "vcdpa.sensitive_data.consent"
+  - "cpa.sensitive_data.consent"
+source_url: "https://www.oregonlegislature.gov/bills_laws/ors/ors646A.html"
+git_hash: ""
