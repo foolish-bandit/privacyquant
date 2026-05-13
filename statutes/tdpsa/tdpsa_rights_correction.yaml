@@ -1,0 +1,28 @@
+id: "tdpsa.rights.correction"
+statute: "TDPSA"
+section: "Tex. Bus. & Com. Code § 541.051(a)(2)"
+title: "Right to Correction"
+effective_date: "2024-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Consumer submits an authenticated request to correct inaccurate personal data"
+requirement: >
+  Controller must correct inaccurate PD about the consumer, taking into account the nature
+  of the PD and purposes of processing. Response deadline: 45 days (extendable once
+  by 45 days with notice).
+exceptions:
+  - "Request is manifestly unfounded, excessive, or repetitive"
+contract_signals:
+  - "right to rectification"
+  - "right to correction"
+  - "correct inaccurate data"
+  - "rectify personal data"
+  - "data correction request"
+cross_refs:
+  - "ccpa.rights.correction"
+  - "vcdpa.rights.correction"
+  - "ndpa.rights.correction"
+source_url: "https://capitol.texas.gov/tlodocs/88R/billtext/pdf/HB04.pdf"
+git_hash: ""
