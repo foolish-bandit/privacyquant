@@ -1,0 +1,31 @@
+id: "vcdpa.rights.deletion"
+statute: "VCDPA"
+section: "Va. Code § 59.1-577(A)(3)"
+title: "Right to Deletion"
+effective_date: "2023-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Consumer submits authenticated request to delete personal data the consumer has provided or that the controller has obtained about the consumer"
+requirement: >
+  Controller must delete personal data provided by or obtained about the consumer.
+  Response deadline: 45 days (extendable once by 45 days with notice).
+exceptions:
+  - "Processing necessary to complete a transaction or perform a contract"
+  - "Processing necessary to protect against security incidents or fraudulent activity"
+  - "Processing necessary for certain public interest research"
+  - "Processing required to comply with a legal obligation"
+  - "Processing necessary to exercise or defend legal claims"
+contract_signals:
+  - "right to erasure"
+  - "right to deletion"
+  - "delete personal data"
+  - "data deletion"
+  - "erase data"
+cross_refs:
+  - "ccpa.rights.deletion"
+  - "cpa.rights.deletion"
+  - "modpa.rights.deletion"
+source_url: "https://law.lis.virginia.gov/vacode/title59.1/chapter53/section59.1-577/"
+git_hash: ""
