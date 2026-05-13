@@ -1,0 +1,25 @@
+id: "dpdpa.rights.third_party_categories"
+statute: "DPDPA"
+section: "Del. Code tit. 6, § 12D-105"
+title: "Right to Categories of Third Parties"
+effective_date: "2025-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Consumer requests disclosure of third parties to whom controller has disclosed personal data"
+requirement: >
+  Delaware consumers have the right to obtain a list of the categories of third parties to whom
+  the controller has disclosed PD. (Categories, not specific named entities — contrast with
+  Oregon and Minnesota which require specific named third parties.)
+exceptions: []
+contract_signals:
+  - "categories of third parties"
+  - "third-party disclosure"
+  - "data recipients"
+  - "third-party categories"
+cross_refs:
+  - "ocpa.rights.specific_third_parties"
+  - "mcdpa_mn.rights.specific_third_parties"
+source_url: "https://legis.delaware.gov/BillDetail?LegislationId=140388"
+git_hash: ""
