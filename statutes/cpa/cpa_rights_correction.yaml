@@ -1,0 +1,30 @@
+id: "cpa.rights.correction"
+statute: "CPA"
+section: "Colo. Rev. Stat. § 6-1-1306(1)(a)(II)"
+title: "Right to Correction"
+effective_date: "2023-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Consumer submits an authenticated request to correct inaccurate personal data"
+requirement: >
+  Controller must correct inaccurate PD about the consumer, taking into account the nature
+  of the PD and the purposes of processing. Response deadline: 45 days (extendable once
+  by 45 days with notice).
+exceptions:
+  - "Request is manifestly unfounded, excessive, or repetitive"
+  - "Keeping original version necessary for legal compliance"
+contract_signals:
+  - "right to rectification"
+  - "right to correction"
+  - "correct inaccurate data"
+  - "rectify personal data"
+  - "data correction request"
+cross_refs:
+  - "ccpa.rights.correction"
+  - "vcdpa.rights.correction"
+  - "ctdpa.rights.correction"
+  - "modpa.rights.correction"
+source_url: "https://leg.colorado.gov/sites/default/files/documents/2021A/bills/2021a_190_enr.pdf"
+git_hash: ""
