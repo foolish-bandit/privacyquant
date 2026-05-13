@@ -1,0 +1,32 @@
+id: "cpa.rights.opt_out_sale"
+statute: "CPA"
+section: "Colo. Rev. Stat. § 6-1-1306(1)(a)"
+title: "Right to Opt Out of Sale, Targeted Advertising, and Profiling"
+effective_date: "2023-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller sells personal data, uses it for targeted advertising, or uses it for profiling with significant effects"
+requirement: >
+  Consumers have the right to opt out of: (1) sale of PD; (2) targeted advertising; (3) profiling
+  in furtherance of decisions that produce legal or similarly significant effects.
+  Controller must provide a clear and conspicuous mechanism to opt out.
+  Controller must recognize universal opt-out mechanism (UOOM) signals listed by the AG —
+  currently Global Privacy Control (GPC). Recognition must apply to known users, not just devices.
+  Effective July 2024.
+exceptions: []
+contract_signals:
+  - "opt-out of sale"
+  - "opt out of targeted advertising"
+  - "Global Privacy Control"
+  - "GPC"
+  - "universal opt-out"
+  - "UOOM"
+  - "opt out of profiling"
+cross_refs:
+  - "ccpa.rights.opt_out_sale_sharing"
+  - "vcdpa.rights.opt_out_sale"
+  - "ctdpa.rights.opt_out_sale"
+source_url: "https://leg.colorado.gov/sites/default/files/documents/2021A/bills/2021a_190_enr.pdf"
+git_hash: ""
