@@ -1,0 +1,30 @@
+id: "vcdpa.controller_duties.processor_contract"
+statute: "VCDPA"
+section: "Va. Code § 59.1-580"
+title: "Processor Contract Requirements"
+effective_date: "2023-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller engages a processor to process personal data on its behalf"
+requirement: >
+  A binding contract must govern the processor's data processing, including: nature and purpose
+  of processing; type of data; duration; rights and obligations of both parties.
+  The contract must require the processor to: process data only per controller instructions;
+  maintain confidentiality; delete or return PD upon termination; provide audit assistance;
+  engage subprocessors only under equivalent contractual obligations; assist with consumer rights
+  fulfillment and security obligations.
+exceptions: []
+contract_signals:
+  - "data processing agreement"
+  - "DPA"
+  - "processor agreement"
+  - "subprocessor"
+  - "controller-processor"
+  - "processing on behalf of"
+cross_refs:
+  - "ccpa.controller_duties.service_provider_contract"
+  - "cpa.controller_duties.processor_contract"
+source_url: "https://law.lis.virginia.gov/vacode/title59.1/chapter53/section59.1-580/"
+git_hash: ""
