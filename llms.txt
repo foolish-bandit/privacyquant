@@ -1,0 +1,88 @@
+# PrivacyQuant
+
+> Versioned statutory knowledge graph and MCP workflow layer for US state consumer privacy law.
+
+PrivacyQuant is a structured, auditable legal reference corpus. Every statutory
+requirement is stored as an individually citable YAML node with a Git hash, enabling
+downstream consumers to verify the exact law version being cited. The enforcement corpus
+covers 84 enforcement actions across 20 state privacy statutes with 48 violation-theory
+tags. All content is MIT-licensed. Statutory text is public law.
+
+## Coverage
+
+- **Statutes (20):** CCPA/CPRA, VCDPA, CPA, CTDPA, UCPA, TDPSA, OCPA, MCDPA, ICDPA,
+  INCDPA, TIPA, DPDPA, NJDPA, NHDPA, NDPA, KCDPA, MODPA, MCDPA-MN, RIDTPPA, FDBR
+- **Statutory nodes:** 146 across 20 statutes
+- **Enforcement corpus:** 84 actions, v2.3, 48 violation-theory tags
+- **Crosswalks:** IAB/Fideslang data categories, NIST SP 800-53 Rev. 5
+- **Federal overlays:** HIPAA, GLBA, COPPA, FERPA, FCRA intersection with state law
+
+## Reference documents
+
+- [Applicability matrix](/references/applicability-matrix) — threshold matrix for all 20 states
+- [Rights comparison](/references/rights-comparison) — cross-state consumer rights comparison
+- [Controller duties](/references/controller-duties) — cross-state controller obligation comparison
+- [Sensitive data](/references/sensitive-data) — sensitive data categories and treatment by state
+- [Universal opt-out / GPC](/references/universal-opt-out) — UOOM recognition by state and effective dates
+- [Enforcement](/references/enforcement) — penalties, cure periods, and enforcement mechanisms
+- [Kids and teens](/references/kids-and-teens) — minor/teen provisions and COPPA interaction
+- [Federal overlays](/references/federal-overlays) — HIPAA/GLBA/COPPA/FERPA/FCRA intersection
+- [AG priorities](/references/ag-priorities) — regulator priority weighting
+- [Defense arguments](/references/defense-arguments) — litigation defense framing
+- [Fideslang mapping](/references/fideslang-mapping) — IAB/Fideslang data category crosswalk
+- [NIST controls mapping](/references/nist-controls-mapping) — NIST SP 800-53 Rev. 5 crosswalk
+
+## Per-state reference files
+
+- [California (CCPA/CPRA)](/references/states/ca)
+- [Virginia (VCDPA)](/references/states/va)
+- [Colorado (CPA)](/references/states/co)
+- [Connecticut (CTDPA)](/references/states/ct)
+- [Texas (TDPSA)](/references/states/tx)
+- [Florida (FDBR)](/references/states/fl)
+- [New Jersey (NJDPA)](/references/states/nj)
+- [New Hampshire (NHDPA)](/references/states/nh)
+- [Oregon (OCPA)](/references/states/or)
+- [Montana (MCDPA)](/references/states/mt)
+- [Iowa (ICDPA)](/references/states/ia)
+- [Indiana (INCDPA)](/references/states/in)
+- [Tennessee (TIPA)](/references/states/tn)
+- [Delaware (DPDPA)](/references/states/de)
+- [North Dakota (NDPA)](/references/states/nd)
+- [Kentucky (KCDPA)](/references/states/ky)
+- [Missouri (MODPA)](/references/states/mo)
+- [Minnesota (MCDPA-MN)](/references/states/mn)
+- [Rhode Island (RIDTPPA)](/references/states/ri)
+- [Utah (UCPA)](/references/states/ut)
+
+## Workflow guides
+
+- [DSAR routing](/references/workflows/dsar-routing)
+- [Gap analysis methodology](/references/workflows/gap-analysis-method)
+- [Client intake questionnaire](/references/workflows/intake-questionnaire)
+- [Applicability status determination](/references/workflows/status-determination)
+
+## Raw data
+
+- [Enforcement actions corpus (JSON)](https://raw.githubusercontent.com/foolish-bandit/privacyquant/main/references/enforcement_actions.json)
+- [Fideslang mapping (YAML)](https://raw.githubusercontent.com/foolish-bandit/privacyquant/main/references/fideslang-mapping.yaml)
+- [NIST controls mapping (YAML)](https://raw.githubusercontent.com/foolish-bandit/privacyquant/main/references/nist-controls-mapping.yaml)
+
+## MCP integration
+
+PrivacyQuant exposes 16 MCP tools for programmatic access. Install via Claude Code:
+
+```
+/plugin marketplace add foolish-bandit/privacyquant
+```
+
+Full tool documentation: https://github.com/foolish-bandit/privacyquant/blob/main/docs/TOOLS.md
+
+## License
+
+MIT. Statutory text is public law. Node content is original analytical work product.
+IAB/Fideslang taxonomy (CC-BY 4.0). NIST crosswalk data (public domain).
+
+## Source
+
+https://github.com/foolish-bandit/privacyquant
