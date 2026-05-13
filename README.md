@@ -1,4 +1,4 @@
-# PrivacyQuant
+# PrivacyQuant(LQ)
 
 **Research, draft, and cite US state consumer privacy law — inside Claude or any compatible AI assistant.**
 
