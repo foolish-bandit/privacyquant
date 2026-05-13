@@ -3,7 +3,7 @@
 ## Submission metadata
 
 **Plugin name**: privacyquant  
-**Publisher**: foolish-bandit (Zachary Brenner / Sonomos, Inc.)  
+**Publisher**: foolish-bandit (Zachary Brenner)  
 **Repository**: https://github.com/foolish-bandit/privacyquant  
 **License**: MIT  
 **Submit via**: https://clau.de/plugin-directory-submission
