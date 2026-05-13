@@ -1,0 +1,29 @@
+id: "ndpa.applicability.threshold"
+statute: "NDPA"
+section: "Neb. Rev. Stat. § 87-1103"
+title: "Applicability — SBA Size-Based, Modeled on Texas"
+effective_date: "2025-01-01"
+supersedes: []
+amended_by: []
+requirement_type: threshold
+obligation_bearer: controller
+trigger: "Person conducting business in Nebraska or producing products/services consumed by Nebraska residents"
+requirement: >
+  Modeled on TDPSA (Texas). Applies to persons conducting business in NE or targeting NE residents
+  AND processing or engaging in the sale of PD AND NOT a small business as defined by the SBA
+  (size standards vary by NAICS code).
+  EXCEPTION: if entity sells sensitive PD without consent, small-business exemption is forfeit.
+  No numerical consumer threshold.
+  A multi-state program built to satisfy Texas largely satisfies Nebraska.
+exceptions:
+  - "Standard exemptions"
+contract_signals:
+  - "Nebraska Data Privacy Act"
+  - "NDPA"
+  - "Nebraska residents"
+  - "Neb. Rev. Stat. § 87-11"
+cross_refs:
+  - "tdpsa.applicability.threshold"
+  - "vcdpa.applicability.threshold"
+source_url: "https://nebraskalegislature.gov/bills/view_bill.php?DocumentID=53455"
+git_hash: ""
