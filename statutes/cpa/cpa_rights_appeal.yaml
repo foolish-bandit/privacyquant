@@ -1,0 +1,29 @@
+id: "cpa.rights.appeal"
+statute: "CPA"
+section: "Colo. Rev. Stat. § 6-1-1306(3)"
+title: "Right to Appeal Denied Request"
+effective_date: "2023-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller declines to take action on a consumer rights request"
+requirement: >
+  If the controller declines to act on a consumer request, it must inform the consumer
+  within 45 days of the reasons and provide instructions for how the consumer may appeal.
+  The controller must complete the appeal within 45 days of receipt (extendable by 60 days
+  with notice). If the appeal is denied, the controller must provide an online mechanism
+  to contact the Colorado AG to submit a complaint.
+exceptions: []
+contract_signals:
+  - "right to appeal"
+  - "appeal denied request"
+  - "appeal process"
+  - "consumer appeal"
+  - "appeal mechanism"
+cross_refs:
+  - "vcdpa.rights.appeal"
+  - "ctdpa.rights.appeal"
+  - "modpa.rights.appeal"
+source_url: "https://leg.colorado.gov/sites/default/files/documents/2021A/bills/2021a_190_enr.pdf"
+git_hash: ""
