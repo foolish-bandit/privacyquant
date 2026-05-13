@@ -1,0 +1,31 @@
+id: "ucpa.sensitive_data.opt_out"
+statute: "UCPA"
+section: "Utah Code § 13-61-302; § 13-61-101"
+title: "Sensitive Data — Opt-OUT Structure (Not Opt-In)"
+effective_date: "2023-12-31"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller intends to process sensitive data"
+requirement: >
+  Utah and Iowa are the ONLY comprehensive state laws using an opt-OUT (notice + ability to opt out)
+  structure for sensitive data — not opt-in consent.
+  Controller must provide clear notice before processing sensitive data and must provide the
+  consumer an opportunity to opt out BEFORE processing commences.
+  Sensitive categories: standard (racial/ethnic origin, religious beliefs, mental/physical health,
+  sex life/orientation, citizenship, genetic/biometric, precise geolocation, child PD).
+  WARNING: A program built to other states' opt-in standard satisfies UCPA, but a program built
+  only to UCPA's opt-out standard will fail in 17 other states.
+exceptions: []
+contract_signals:
+  - "sensitive data"
+  - "sensitive personal data"
+  - "opt-out of sensitive data processing"
+  - "notice before processing"
+cross_refs:
+  - "icdpa.sensitive_data.opt_out"
+  - "vcdpa.sensitive_data.consent"
+  - "cpa.sensitive_data.consent"
+source_url: "https://le.utah.gov/xcode/Title13/Chapter61/C13-61_2022050420220504.pdf"
+git_hash: ""
