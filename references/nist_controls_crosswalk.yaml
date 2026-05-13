@@ -1,0 +1,108 @@
+# PrivacyQuant NIST Controls Crosswalk
+#
+# Maps selected statutory nodes to NIST SP 800-53 Rev. 5 / Privacy Framework-related
+# control identifiers. These mappings are intended to help security and compliance teams
+# connect PrivacyQuant statutory nodes to existing control catalogs.
+#
+# Important: a control mapping is a crosswalk aid, not a legal conclusion and not proof
+# of compliance with the underlying statute. Teams should validate mappings against their
+# own systems, policies, processing activities, and counsel review.
+
+ccpa.rights.access:
+  - AC-21
+  - IP-1
+  - IP-2
+  - IP-3
+  - PT-3
+
+ccpa.rights.deletion:
+  - DM-2
+  - DM-3
+  - IP-1
+  - IP-2
+  - IP-3
+  - SI-12
+
+ccpa.rights.correction:
+  - IP-1
+  - IP-2
+  - IP-3
+  - DI-1
+  - DI-2
+
+ccpa.rights.portability:
+  - AC-21
+  - IP-1
+  - IP-2
+  - IP-3
+  - TR-1
+
+ccpa.rights.opt_out_sale_sharing:
+  - CT-1
+  - CT-2
+  - IP-1
+  - IP-2
+  - PT-2
+  - UL-1
+  - UL-2
+
+ccpa.rights.limit_sensitive_pi:
+  - AP-1
+  - AP-2
+  - CT-1
+  - CT-2
+  - DM-1
+  - PT-2
+  - UL-1
+
+ccpa.sensitive_data.categories:
+  - AP-1
+  - DM-1
+  - DM-2
+  - PT-2
+  - PT-3
+  - SC-7
+
+ccpa.controller_duties.notice_at_collection:
+  - TR-1
+  - TR-2
+  - IP-1
+  - IP-2
+
+ccpa.controller_duties.privacy_notice:
+  - TR-1
+  - TR-2
+  - IP-1
+  - IP-2
+  - PM-20
+
+ccpa.controller_duties.data_protection_assessment:
+  - RA-3
+  - RA-8
+  - PM-18
+  - PM-28
+  - PT-2
+
+ccpa.controller_duties.service_provider_contract:
+  - SA-9
+  - SA-9(1)
+  - SR-3
+  - SR-5
+  - PS-7
+  - CA-3
+
+ccpa.enforcement.parameters:
+  - CA-2
+  - CA-7
+  - PM-4
+  - PM-9
+  - PM-30
+
+ccpa.sale_sharing.distinction:
+  - AP-1
+  - AP-2
+  - CT-1
+  - CT-2
+  - PT-2
+  - UL-1
+  - UL-2
