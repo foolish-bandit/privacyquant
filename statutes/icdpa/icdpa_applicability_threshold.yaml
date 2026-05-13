@@ -1,0 +1,31 @@
+id: "icdpa.applicability.threshold"
+statute: "ICDPA"
+section: "Iowa Code § 715D.2"
+title: "Applicability Threshold"
+effective_date: "2025-01-01"
+supersedes: []
+amended_by: []
+requirement_type: threshold
+obligation_bearer: controller
+trigger: "Person conducting business in Iowa or producing products/services targeted to Iowa consumers"
+requirement: >
+  Applies to persons conducting business in Iowa or targeting IA consumers AND in a calendar year:
+  (a) controls/processes PD of at least 100,000 IA consumers; OR
+  (b) controls/processes PD of at least 25,000 IA consumers AND derives over 50% of gross revenue from sale of PD.
+exceptions:
+  - "Government entities"
+  - "Financial institutions (GLBA)"
+  - "HIPAA covered entities/BAs"
+  - "Non-profits"
+  - "Higher education"
+  - "Employment data and B2B contacts"
+contract_signals:
+  - "Iowa Consumer Data Protection Act"
+  - "ICDPA"
+  - "Iowa residents"
+  - "Iowa Code § 715D"
+cross_refs:
+  - "ucpa.applicability.threshold"
+  - "vcdpa.applicability.threshold"
+source_url: "https://www.legis.iowa.gov/docs/acts/2023/ACT0006.pdf"
+git_hash: ""
