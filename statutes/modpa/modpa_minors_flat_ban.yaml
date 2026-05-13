@@ -1,0 +1,35 @@
+id: "modpa.minors.flat_ban"
+statute: "MODPA"
+section: "Md. Code Com. Law § 14-4607(a)(5)"
+title: "Minor Protections — Flat Ban on Sale and Targeted Advertising for Known Minors Under 18"
+effective_date: "2025-10-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller knows or has reason to believe consumer is under 18 years of age"
+requirement: >
+  FLAT BAN (not opt-in/opt-out — a complete prohibition regardless of consent) on:
+  (1) Sale of PD of consumers known to be under 18;
+  (2) Processing of PD of consumers known to be under 18 for targeted advertising.
+  Heightened data minimization for known minor data.
+  These are the strictest minor protections in any US state privacy law.
+  A controller serving a known minor audience may not engage in sale or targeted advertising
+  involving those consumers under any circumstances.
+  Requires age-detection or known-minor suppression infrastructure.
+exceptions: []
+contract_signals:
+  - "minor"
+  - "known minor"
+  - "under 18"
+  - "children's data"
+  - "teen"
+  - "age verification"
+  - "age-appropriate"
+  - "minor targeted advertising ban"
+cross_refs:
+  - "ctdpa.minors.teen_protections"
+  - "njdpa.minors.teen_protections"
+  - "fdbr.enforcement.parameters"
+source_url: "https://mgaleg.maryland.gov/2024RS/Chapters_noln/CH_182_sb0541e.pdf"
+git_hash: ""
