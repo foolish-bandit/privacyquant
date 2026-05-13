@@ -1,0 +1,30 @@
+id: "ocpa.rights.specific_third_parties"
+statute: "OCPA"
+section: "ORS § 646A.574"
+title: "Right to List of Specific Third Parties"
+effective_date: "2024-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Consumer requests disclosure of third parties to whom controller has disclosed personal data"
+requirement: >
+  In addition to standard rights (access, correct, delete, portability, opt-out, appeal),
+  Oregon consumers may request the SPECIFIC THIRD PARTIES (not just categories) to whom the
+  controller has disclosed PD. This is a significant operational lift over most states' categorical
+  disclosure requirement. Controller must build per-consumer disclosure logs to satisfy this right.
+  Appeal deadline: 45 days.
+exceptions:
+  - "Disclosure would reveal a trade secret"
+contract_signals:
+  - "specific third parties"
+  - "list of third parties"
+  - "third-party disclosure"
+  - "recipients of personal data"
+  - "data disclosure log"
+cross_refs:
+  - "mcdpa_mn.rights.specific_third_parties"
+  - "ridtppa.controller_duties.named_third_parties"
+  - "dpdpa.rights.third_party_categories"
+source_url: "https://www.oregonlegislature.gov/bills_laws/ors/ors646A.html"
+git_hash: ""
