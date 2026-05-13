@@ -1,7 +1,7 @@
 # PrivacyQuant — Practice Profile
 
 This file is read automatically when PrivacyQuant tools are active. It governs how
-Claude uses the five PrivacyQuant MCP tools and how it presents output to legal practitioners.
+Claude uses the sixteen PrivacyQuant MCP tools and how it presents output to legal practitioners.
 
 ---
 
@@ -23,8 +23,19 @@ The tools are a data layer, not a law firm. Every output is a draft for attorney
 | `pq_fetch_requirement` | You have a node ID and need the full statutory text, exceptions, and cross-refs |
 | `pq_search_requirements` | You have a keyword, clause fragment, or topic and need relevant nodes |
 | `pq_list_statutes` | You want to see what statutes and node IDs are available |
-| `pq_resolve_conflict` | You need the compliance ceiling across multiple applicable states |
-| `pq_check_clause` | You have a DPA clause and want GREEN/YELLOW/RED verdicts with redlines |
+| `pq_resolve_conflict` | You need the compliance ceiling across multiple applicable states using curated static rules |
+| `pq_resolve_conflict_nodes` | Same as pq_resolve_conflict but enriched with live node evidence, requirement excerpts, and section citations — use when you need the "why" behind the binding rule |
+| `pq_check_clause` | You have a DPA clause and want GREEN/YELLOW/RED verdicts with redlines (requires ANTHROPIC_API_KEY) |
+| `pq_draft_dpa_clause` | You have node IDs and want first-draft DPA clause language covering multiple requirements (requires ANTHROPIC_API_KEY) |
+| `pq_draft_dpa_clause_deterministic` | You have a single node ID and want immediate first-draft DPA language with no API key or LLM latency — deterministic template-based approach |
+| `pq_draft_notice_clause` | You need to draft privacy notice language (notice at collection, full privacy notice, opt-out disclosure, sensitive data, financial incentive, AI training) |
+| `pq_check_applicability` | You need to know which state privacy laws apply based on revenue, consumer count, and sale-revenue thresholds |
+| `pq_dsar_router` | A consumer has submitted a rights request and you need the applicable statute, deadline, and whether the right exists |
+| `pq_route_dsar_workflow` | You have a received DSAR and need a step-by-step operational checklist with deadline calculations |
+| `pq_find_precedent` | You have a violation pattern or gap and want analogous enforcement actions — use tags, free-text query, statute names, industry, or year filters |
+| `pq_score_privacy_risk` | You want a deterministic 0-100 privacy exposure triage score with component breakdown and remediation priorities |
+| `pq_watch_legislation` | You want to monitor active privacy bills in covered states for node update leads (requires OPENSTATES_API_KEY) |
+| `pq_audit_citations` | You have completed work product and want to flag uncited claims, unresolved placeholders, and suspicious section numbers |
 
 ---
 
