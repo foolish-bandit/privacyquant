@@ -1,0 +1,29 @@
+id: "modpa.rights.correction"
+statute: "MODPA"
+section: "Md. Code Com. Law § 14-4605(a)(2)"
+title: "Right to Correction"
+effective_date: "2025-10-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Consumer submits an authenticated request to correct inaccurate personal data"
+requirement: >
+  Controller must correct inaccurate PD about the consumer, taking into account the nature
+  of the PD and the purposes of processing. Response deadline: 45 days (extendable once
+  by 45 days with notice).
+exceptions:
+  - "Request is manifestly unfounded, excessive, or repetitive"
+contract_signals:
+  - "right to rectification"
+  - "right to correction"
+  - "correct inaccurate data"
+  - "rectify personal data"
+  - "data correction request"
+cross_refs:
+  - "ccpa.rights.correction"
+  - "vcdpa.rights.correction"
+  - "cpa.rights.correction"
+  - "ocpa.rights.correction"
+source_url: "https://mgaleg.maryland.gov/2024RS/Chapters_noln/CH_182_sb0541e.pdf"
+git_hash: ""
