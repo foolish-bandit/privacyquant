@@ -1,0 +1,36 @@
+id: "ctdpa.applicability.threshold"
+statute: "CTDPA"
+section: "Conn. Gen. Stat. § 42-516"
+title: "Applicability Threshold"
+effective_date: "2023-07-01"
+supersedes: []
+amended_by: []
+requirement_type: threshold
+obligation_bearer: controller
+trigger: "Person conducting business in Connecticut or producing products/services targeted to Connecticut residents"
+requirement: >
+  Applies to persons conducting business in Connecticut or targeting CT residents AND, during the
+  preceding calendar year:
+  (a) controlled or processed PD of at least 100,000 consumers (excluding solely-payment-transaction data); OR
+  (b) controlled or processed PD of at least 25,000 consumers AND derived >25% of gross revenue from sale of PD.
+  The 25% threshold is lower than Virginia's 50% and catches more mid-sized businesses.
+exceptions:
+  - "State agencies and political subdivisions"
+  - "Non-profits"
+  - "Higher education institutions"
+  - "National securities associations"
+  - "Financial institutions (GLBA, entity-level)"
+  - "HIPAA covered entities and business associates (entity-level)"
+  - "Employment data"
+  - "B2B contacts"
+contract_signals:
+  - "Connecticut Data Privacy Act"
+  - "CTDPA"
+  - "Connecticut residents"
+  - "Conn. Gen. Stat. § 42-5"
+cross_refs:
+  - "vcdpa.applicability.threshold"
+  - "cpa.applicability.threshold"
+  - "njdpa.applicability.threshold"
+source_url: "https://www.cga.ct.gov/2022/ACT/PA/PDF/2022PA-00015-R00SB-00006-PA.PDF"
+git_hash: ""
