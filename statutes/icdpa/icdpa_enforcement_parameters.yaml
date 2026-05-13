@@ -1,0 +1,25 @@
+id: "icdpa.enforcement.parameters"
+statute: "ICDPA"
+section: "Iowa Code § 715D.8"
+title: "Enforcement — AG; 90-Day Cure Period"
+effective_date: "2025-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller or processor violates ICDPA"
+requirement: >
+  Enforced by the Iowa AG. No private right of action.
+  Civil penalty up to $7,500 per violation.
+  90-day cure period — the longest of any state.
+exceptions: []
+contract_signals:
+  - "Iowa Attorney General"
+  - "civil penalty"
+  - "ICDPA violation"
+  - "cure period"
+cross_refs:
+  - "ucpa.enforcement.parameters"
+  - "vcdpa.enforcement.parameters"
+source_url: "https://www.legis.iowa.gov/docs/acts/2023/ACT0006.pdf"
+git_hash: ""
