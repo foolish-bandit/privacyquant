@@ -1,0 +1,28 @@
+id: "ocpa.enforcement.cure_period_expired"
+statute: "OCPA"
+section: "Or. Rev. Stat. § 646A.584"
+title: "Enforcement — Cure Period Expired"
+effective_date: "2026-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Oregon Attorney General investigates or enforces an alleged OCPA violation on or after January 1, 2026"
+requirement: >
+  Oregon's 30-day right to cure expired on January 1, 2026. The Oregon Attorney General may now
+  proceed with enforcement without first providing the controller a mandatory opportunity to cure.
+  Civil penalties may reach up to $7,500 per violation.
+exceptions: []
+contract_signals:
+  - "right to cure"
+  - "cure period"
+  - "30-day cure"
+  - "Oregon Attorney General"
+  - "OCPA enforcement"
+  - "civil penalty"
+cross_refs:
+  - "ccpa.enforcement.parameters"
+  - "vcdpa.enforcement.parameters"
+  - "cpa.enforcement.parameters"
+source_url: "https://www.doj.state.or.us/consumer-protection/id-theft-data-breaches/privacy/businesses-and-non-profits/"
+git_hash: ""
