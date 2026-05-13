@@ -1,0 +1,26 @@
+id: "tipa.enforcement.parameters"
+statute: "TIPA"
+section: "Tenn. Code §§ 47-18-3210 to -3212"
+title: "Enforcement — AG; 60-Day Cure; Treble Damages for Willful Violations"
+effective_date: "2025-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller or processor violates TIPA"
+requirement: >
+  Enforced by the Tennessee AG. No private right of action. Civil penalty up to $7,500 per violation.
+  Willful violations may result in treble damages (3x penalty), elevating enforcement exposure
+  significantly above the base penalty. 60-day cure period in effect.
+exceptions: []
+contract_signals:
+  - "Tennessee Attorney General"
+  - "civil penalty"
+  - "TIPA violation"
+  - "treble damages"
+  - "willful violation"
+cross_refs:
+  - "fdbr.enforcement.parameters"
+  - "vcdpa.enforcement.parameters"
+source_url: "https://www.sos.tn.gov/products/division-publications/public-chapter-0902"
+git_hash: ""
