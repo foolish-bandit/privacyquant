@@ -1,0 +1,30 @@
+id: "tipa.applicability.threshold"
+statute: "TIPA"
+section: "Tenn. Code § 47-18-3202"
+title: "Applicability Threshold — Highest Primary Tier (175k) + $25M Revenue Floor"
+effective_date: "2025-07-01"
+supersedes: []
+amended_by: []
+requirement_type: threshold
+obligation_bearer: controller
+trigger: "Person conducting business in Tennessee and producing products/services targeted to Tennessee residents"
+requirement: >
+  Applies to persons conducting business in Tennessee targeting TN residents AND exceeding
+  $25 million revenue AND:
+  (a) control/process PD of at least 175,000 TN consumers in a calendar year; OR
+  (b) control/process PD of at least 25,000 TN consumers AND derive over 50% of gross revenue from sale of PD.
+  175,000 primary-tier threshold is the highest of any state. Combined with the $25M revenue floor,
+  TIPA's applicability is the narrowest among general comprehensive state laws.
+exceptions:
+  - "Standard exemptions (GLBA, HIPAA, non-profits, higher education)"
+  - "Employment data and B2B contacts"
+contract_signals:
+  - "Tennessee Information Protection Act"
+  - "TIPA"
+  - "Tennessee residents"
+  - "Tenn. Code § 47-18-32"
+cross_refs:
+  - "ucpa.applicability.threshold"
+  - "vcdpa.applicability.threshold"
+source_url: "https://www.sos.tn.gov/products/division-publications/public-chapter-0902"
+git_hash: ""
