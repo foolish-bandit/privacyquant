@@ -1,0 +1,23 @@
+id: "kcdpa.enforcement.parameters"
+statute: "KCDPA"
+section: "Ky. Rev. Stat. § 367.3623"
+title: "Enforcement — AG; 30-Day Cure"
+effective_date: "2026-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller or processor violates KCDPA"
+requirement: >
+  Enforced by the Kentucky AG. No private right of action.
+  Civil penalty up to $7,500 per violation. 30-day cure period.
+exceptions: []
+contract_signals:
+  - "Kentucky Attorney General"
+  - "civil penalty"
+  - "KCDPA violation"
+cross_refs:
+  - "vcdpa.enforcement.parameters"
+  - "incdpa.enforcement.parameters"
+source_url: "https://apps.legislature.ky.gov/record/24rs/hb15.html"
+git_hash: ""
