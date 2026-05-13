@@ -1,0 +1,36 @@
+id: "modpa.rights.opt_out_sale"
+statute: "MODPA"
+section: "Md. Code Com. Law § 14-4605(a)(5)"
+title: "Right to Opt Out of Sale, Targeted Advertising, and Profiling"
+effective_date: "2025-10-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller sells personal data, processes for targeted advertising, or profiles consumers for significant decisions"
+requirement: >
+  Consumers have the right to opt out of: (1) sale of PD; (2) targeted advertising;
+  (3) profiling that produces a legal or similarly significant effect.
+  Controller must provide a clear and conspicuous opt-out mechanism.
+  UOOM recognition (including GPC) required at effective date (October 1, 2025).
+  Note: MODPA also imposes a FLAT BAN on sale of sensitive data — opt-out is irrelevant
+  for sensitive data sale, which is prohibited outright (modpa.sensitive_data.ban_on_sale).
+  Flat ban on sale and targeted advertising for known minors under 18 regardless of opt-out
+  (modpa.minors.flat_ban).
+exceptions: []
+contract_signals:
+  - "opt-out of sale"
+  - "opt out of targeted advertising"
+  - "opt out of profiling"
+  - "right to opt out"
+  - "sale of personal data"
+  - "Global Privacy Control"
+  - "GPC"
+cross_refs:
+  - "ccpa.rights.opt_out_sale_sharing"
+  - "cpa.rights.opt_out_sale"
+  - "modpa.sensitive_data.ban_on_sale"
+  - "modpa.minors.flat_ban"
+  - "modpa.uoom.gpc"
+source_url: "https://mgaleg.maryland.gov/2024RS/Chapters_noln/CH_182_sb0541e.pdf"
+git_hash: ""
