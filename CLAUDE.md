@@ -165,8 +165,7 @@ alone don't provide.
 | `references/workflows/status-determination.md` | Step-by-step guide for applicability determination; use when threshold analysis is ambiguous |
 | `assets/memo-template.md` | Template for a multi-state privacy compliance memo; fill in bracketed sections with tool output |
 | `assets/notice-clauses/notice-at-collection.md` | Notice-at-collection template; use with `pq_draft_notice_clause` output |
-| `assets/notice-clauses/full-privacy-notice.md` | Full privacy policy template covering all 20 states |
-| `assets/notice-clauses/opt-out-disclosure.md` | Opt-out / "Do Not Sell" page template; multi-state compliant |
+| `assets/notice-clauses/opt-out-disclosures.md` | Opt-out / "Do Not Sell" page template; multi-state compliant |
 | `assets/notice-clauses/sensitive-data-notice.md` | Sensitive data notice and consent form template |
 
 ---
