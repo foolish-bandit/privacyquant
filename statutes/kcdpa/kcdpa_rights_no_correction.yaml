@@ -1,0 +1,28 @@
+id: "kcdpa.rights.no_correction"
+statute: "KCDPA"
+section: "Ky. Rev. Stat. § 367.3614"
+title: "Consumer Rights — No Correction Right"
+effective_date: "2026-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Consumer submits rights request under KCDPA"
+requirement: >
+  Kentucky provides access, deletion, portability, opt-out of sale/targeted advertising/profiling,
+  and right to appeal within 45 days.
+  Notably, there is NO correction right — one of only three states (with UT and IA) lacking this right.
+  No UOOM recognition required — modeled on VA.
+exceptions:
+  - "Requests that are manifestly unfounded or excessive"
+contract_signals:
+  - "access request"
+  - "deletion request"
+  - "opt-out of sale"
+  - "Kentucky privacy rights"
+cross_refs:
+  - "vcdpa.rights.opt_out_sale"
+  - "ucpa.rights.narrow_regime"
+  - "icdpa.rights.narrow_regime"
+source_url: "https://apps.legislature.ky.gov/record/24rs/hb15.html"
+git_hash: ""
