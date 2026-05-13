@@ -5,10 +5,10 @@
 ![License](https://img.shields.io/badge/license-MIT-blue)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.5-3178c6)
 ![MCP](https://img.shields.io/badge/MCP-compatible-8b5cf6)
-![Nodes](https://img.shields.io/badge/statutory_nodes-141-16a34a)
-![Tools](https://img.shields.io/badge/MCP_tools-15-0891b2)
+![Nodes](https://img.shields.io/badge/statutory_nodes-146-16a34a)
+![Tools](https://img.shields.io/badge/MCP_tools-16-0891b2)
 ![Statutes](https://img.shields.io/badge/statutes-20-dc2626)
-![Deterministic](https://img.shields.io/badge/deterministic_by_default-13_of_15_tools-15803d)
+![Deterministic](https://img.shields.io/badge/deterministic_by_default-14_of_16_tools-15803d)
 
 `US State Privacy` `MCP` `CCPA/CPRA` `DSAR` `DPA Drafting` `Privacy Notices` `Enforcement Research` `Legislative Monitoring` `Citation QA` `Risk Scoring`
 
@@ -20,7 +20,7 @@ PrivacyQuant is a structured, versioned, auditable legal workflow system built a
 
 Every statutory requirement, consumer right, deadline, and threshold is stored as an individually citable node with a Git hash. When you cite a PrivacyQuant node, you are citing a specific version of the law — not a model's recollection of it.
 
-The 15 MCP tools expose deterministic workflows for applicability analysis, DPA clause review and drafting, privacy notice drafting, DSAR routing, multi-state conflict resolution, enforcement precedent research, legislative monitoring, citation auditing, and risk scoring. Thirteen of the fifteen tools require no LLM and no external API.
+The 16 MCP tools expose deterministic workflows for applicability analysis, DPA clause review and drafting, privacy notice drafting, DSAR routing, multi-state conflict resolution, enforcement precedent research, legislative monitoring, citation auditing, and risk scoring. Fourteen of the sixteen tools require no LLM and no external API.
 
 **What PrivacyQuant is not:**
 - Legal advice or a substitute for qualified counsel
@@ -34,9 +34,9 @@ The 15 MCP tools expose deterministic workflows for applicability analysis, DPA 
 
 | | |
 |---|---|
-| Statutory nodes | 141 across 20 statutes |
-| MCP tools | 15 |
-| Deterministic tools | 13 (no LLM, no external API) |
+| Statutory nodes | 146 across 20 statutes |
+| MCP tools | 16 |
+| Deterministic tools | 14 (no LLM, no external API) |
 | LLM-dependent tools | `pq_check_clause`, `pq_draft_dpa_clause` (require `ANTHROPIC_API_KEY`) |
 | Live API tools | `pq_watch_legislation` (requires `OPENSTATES_API_KEY`) |
 | Enforcement corpus | 84 actions, v2.3, 48 violation-theory tags |
@@ -72,7 +72,8 @@ The 15 MCP tools expose deterministic workflows for applicability analysis, DPA 
 | Tool | Purpose |
 |---|---|
 | `pq_check_clause` | Review a DPA or contract clause against statutory requirements. Returns GREEN / YELLOW / RED verdicts with gap analysis and suggested redlines. Requires `ANTHROPIC_API_KEY`. |
-| `pq_draft_dpa_clause` | Generate first-draft DPA clause language from statutory node IDs. Inverse of `pq_check_clause`. Requires `ANTHROPIC_API_KEY`. |
+| `pq_draft_dpa_clause` | Generate first-draft DPA clause language from multiple statutory node IDs. Inverse of `pq_check_clause`. Requires `ANTHROPIC_API_KEY`. |
+| `pq_draft_dpa_clause_deterministic` | Template-based first-draft DPA clause from a single node ID. No LLM, no API key. Use when you need draft language immediately from one node. |
 | `pq_draft_notice_clause` | Draft privacy notice language from processing facts. Supports notice at collection, full privacy notice, opt-out disclosure, sensitive data notice, financial incentive, and AI/LLM training disclosure. Deterministic. |
 
 ### DSAR routing and workflow
@@ -231,7 +232,7 @@ All other tools require no API key.
 
 ```
 privacyquant/
-├── statutes/                     141 YAML nodes across 20 statutes
+├── statutes/                     146 YAML nodes across 20 statutes
 │   ├── schema.yaml               Node schema with all supported fields
 │   ├── ccpa/ vcdpa/ cpa/ ...     One directory per statute
 ├── references/
@@ -240,7 +241,7 @@ privacyquant/
 │   ├── nist-controls-mapping.yaml  NIST SP 800-53 Rev. 5 crosswalk
 │   └── ag-priorities.md          Regulator priority weighting
 ├── mcp-server/
-│   ├── src/index.ts              Entrypoint — all 15 tools registered here
+│   ├── src/index.ts              Entrypoint — all 16 tools registered here
 │   └── src/*.ts                  Tool modules
 ├── docs/
 │   ├── TOOLS.md                  Grouped tool reference
@@ -268,7 +269,7 @@ See [CONNECTORS.md](CONNECTORS.md) for setup instructions and workflow examples.
 
 ## Development notes
 
-**Tool registration:** All 15 tools are registered in `mcp-server/src/index.ts` before
+**Tool registration:** All 16 tools are registered in `mcp-server/src/index.ts` before
 `server.connect(...)`. Do not reintroduce bootstrap monkey-patching. The `bootstrap.ts`
 entrypoint has been permanently removed.
 

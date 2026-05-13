@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { loadIndex } from "./loader.js";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { StatuteIndex, StatuteNode } from "./types.js";
 
 type DraftStyle = "standard" | "customer_friendly" | "provider_friendly";
@@ -18,18 +18,6 @@ type DraftArgs = {
   include_notes?: boolean;
 };
 
-type ToolResult = {
-  content: Array<{ type: "text"; text: string }>;
-};
-
-type ToolServer = {
-  registerTool: (
-    name: string,
-    config: Record<string, unknown>,
-    handler: (args: DraftArgs) => Promise<ToolResult>
-  ) => unknown;
-};
-
 type TemplateKey =
   | "processor_contract"
   | "deletion"
@@ -40,15 +28,7 @@ type TemplateKey =
   | "security"
   | "default";
 
-let cachedIndex: StatuteIndex | null = null;
-
-function getIndex(): StatuteIndex {
-  if (!cachedIndex) cachedIndex = loadIndex();
-  return cachedIndex;
-}
-
-function findNode(id: string): StatuteNode | undefined {
-  const index = getIndex();
+function findNode(id: string, index: StatuteIndex): StatuteNode | undefined {
   const exact = index.byId.get(id);
   if (exact) return exact;
 
@@ -170,7 +150,7 @@ function formatDraft(node: StatuteNode, args: DraftArgs): string {
   const template = classifyNode(node);
   const includeNotes = args.include_notes ?? true;
   const lines = [
-    "# Draft DPA Clause",
+    "# Draft DPA Clause (Deterministic)",
     "",
     `**Node**: \`${node.id}\``,
     `**Statute**: ${node.statute}`,
@@ -186,7 +166,7 @@ function formatDraft(node: StatuteNode, args: DraftArgs): string {
     lines.push(
       "",
       "## Drafting Notes",
-      "- This is a deterministic first-draft clause generated from a PrivacyQuant node; it is not legal advice.",
+      "- This is a deterministic first-draft clause generated from a single PrivacyQuant node; it is not legal advice.",
       "- Review against the full agreement, party roles, data processing exhibit, and jurisdiction-specific definitions.",
       "- Run `pq_check_clause` against the final edited language before relying on it.",
       `- Source node requirement: ${node.requirement.trim()}`,
@@ -203,17 +183,31 @@ function formatDraft(node: StatuteNode, args: DraftArgs): string {
   return lines.join("\n");
 }
 
-export function registerDraftDpaClauseTool(server: ToolServer): void {
+export function registerDraftDpaClauseTool(server: McpServer, index: StatuteIndex): void {
   server.registerTool(
-    "pq_draft_dpa_clause",
+    "pq_draft_dpa_clause_deterministic",
     {
-      title: "Draft DPA Clause from Requirement",
-      description: `Draft a ready-to-review DPA clause from a PrivacyQuant statutory node ID.
+      title: "Draft DPA Clause from Single Requirement (Deterministic)",
+      description: `Draft a ready-to-review DPA clause from a single PrivacyQuant statutory node ID.
+Deterministic — no LLM sub-call. Uses a template-based approach keyed on the node's content.
 
-Use this as the inverse of pq_check_clause: pq_check_clause reviews a clause against
-statutory nodes, while pq_draft_dpa_clause starts with a statutory node and returns
-first-draft contract language. The tool is deterministic and does not call an LLM.
-Run pq_check_clause against the final edited language before relying on it.`,
+Use this when you have a specific node ID and want first-draft contract language immediately,
+without an API key or LLM latency. Takes a single node ID (e.g. "ccpa.rights.deletion") and
+returns a ready-to-edit clause based on a classification of the requirement type
+(processor_contract, deletion, correction, access_portability, sensitive_data, opt_out, security).
+
+For drafting from multiple node IDs with richer LLM-generated language, use
+pq_draft_dpa_clause instead (requires ANTHROPIC_API_KEY).
+
+Args:
+  - id (string): Node ID in dot notation, e.g. "ccpa.rights.deletion"
+  - role (optional): "controller_processor" or "business_service_provider"
+  - party_names (optional): controller/processor or business/service_provider names
+  - style (optional): "standard" | "customer_friendly" | "provider_friendly"
+  - include_notes (optional): Whether to include drafting notes (default true)
+
+Returns first-draft clause language with template classification and drafting notes.
+Run pq_check_clause against the final edited text before relying on it.`,
       inputSchema: {
         id: z.string().min(1).describe('Node ID in dot notation, e.g. "ccpa.rights.deletion"'),
         role: z.enum(["controller_processor", "business_service_provider"]).optional(),
@@ -234,7 +228,7 @@ Run pq_check_clause against the final edited language before relying on it.`,
       },
     },
     async (args) => {
-      const node = findNode(args.id);
+      const node = findNode(args.id, index);
       if (!node) {
         return {
           content: [{

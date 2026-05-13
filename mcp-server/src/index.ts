@@ -19,6 +19,7 @@ import { auditCitations } from "./citation_auditor.js";
 import { draftNoticeClause } from "./notice_clause_drafter.js";
 import { scorePrivacyExposure } from "./privacy_exposure_scorer.js";
 import { watchLegislation } from "./legislation_watcher.js";
+import { registerDraftDpaClauseTool } from "./draft_dpa_clause.js";
 import type { StatuteNode, StatuteIndex } from "./types.js";
 
 // ─── Load the knowledge graph once at startup ──────────────────────────────
@@ -1032,6 +1033,24 @@ settlement amount, factual pattern, operational lessons, and citation.`,
         .max(10)
         .default(5)
         .describe("Number of results to return (default 5)"),
+      statutes: z
+        .array(z.string().min(2))
+        .max(10)
+        .optional()
+        .describe("Statute names to match against corpus action statutes, e.g. [\"CCPA\", \"BIPA\", \"FTC Act\"]"),
+      industry: z
+        .string()
+        .min(2)
+        .max(100)
+        .optional()
+        .describe("Industry descriptor to weight results toward, e.g. \"healthcare\", \"adtech\", \"automotive\""),
+      min_year: z
+        .number()
+        .int()
+        .min(2000)
+        .max(2100)
+        .optional()
+        .describe("Only return enforcement actions from this year or later"),
     },
     annotations: {
       readOnlyHint: true,
@@ -1040,25 +1059,47 @@ settlement amount, factual pattern, operational lessons, and citation.`,
       openWorldHint: false,
     },
   },
-  async ({ tags, states, query, top_n }) => {
+  async ({ tags, states, query, top_n, statutes, industry, min_year }) => {
     let matches;
     let searchMode: string;
 
+    // Build a supplementary text query from statutes + industry for use when tags-only mode
+    // doesn't capture statute/industry signals, or as the primary query when no tags/query given
+    const supplementParts: string[] = [];
+    if (statutes?.length) supplementParts.push(...statutes);
+    if (industry) supplementParts.push(industry);
+    const supplementQuery = supplementParts.join(" ");
+
+    // Determine effective query (user query + statute/industry terms)
+    const effectiveQuery = [query, supplementQuery].filter(Boolean).join(" ");
+
+    // Fetch a larger pool when min_year filtering will discard some results
+    const pool = min_year ? top_n * 4 : top_n;
+
     if (tags && tags.length > 0) {
-      matches = rankActions(tags, states ?? [], top_n);
+      matches = rankActions(tags, states ?? [], pool);
       searchMode = `tags: ${tags.join(", ")}${states?.length ? ` | states: ${states.join(", ")}` : ""}`;
-    } else if (query) {
-      matches = textQuery(query, top_n);
-      searchMode = `query: "${query}"`;
+      if (supplementQuery) searchMode += ` | filter: ${supplementQuery}`;
+    } else if (effectiveQuery) {
+      matches = textQuery(effectiveQuery, pool);
+      searchMode = `query: "${effectiveQuery}"`;
     } else {
       return {
         content: [{
           type: "text",
-          text: "Provide at least one tag or a query string.\n\nAvailable tags:\n" +
+          text: "Provide at least one tag, query string, statute name, or industry.\n\nAvailable tags:\n" +
             allTags().join(", "),
         }],
       };
     }
+
+    // Apply min_year hard filter
+    if (min_year !== undefined) {
+      matches = matches.filter((m) => m.year >= min_year);
+    }
+
+    // Trim to requested count after filtering
+    matches = matches.slice(0, top_n);
 
     if (matches.length === 0) {
       const suggestion = tags?.length
@@ -1108,7 +1149,7 @@ settlement amount, factual pattern, operational lessons, and citation.`,
     });
 
     lines.push(
-      `_Corpus v2.2 — 82 enforcement actions. ` +
+      `_Corpus v2.3 — 84 enforcement actions. ` +
       `Settlement amounts reflect reported headline figures; verify against source documents before citing in work product._`
     );
 
@@ -1448,6 +1489,9 @@ server.registerTool("pq_watch_legislation", {
   lines.push(`_${result.disclaimer}_`);
   return { content: [{ type: "text", text: lines.join("\n") }] };
 });
+
+// ─── Tool 16: pq_draft_dpa_clause_deterministic ──────────────────────────────
+registerDraftDpaClauseTool(server, index);
 
 // ─── Start ─────────────────────────────────────────────────────────────────
 async function main(): Promise<void> {
