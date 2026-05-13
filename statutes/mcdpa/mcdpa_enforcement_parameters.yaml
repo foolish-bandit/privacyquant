@@ -1,0 +1,23 @@
+id: "mcdpa.enforcement.parameters"
+statute: "MCDPA"
+section: "Mont. Code § 30-14-2822"
+title: "Enforcement — AG Only; Cure Period Until April 2026"
+effective_date: "2024-10-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller or processor violates MCDPA"
+requirement: >
+  Enforced exclusively by the Montana AG. No private right of action.
+  Civil penalty up to $7,500 per violation. Cure period sunset April 1, 2026.
+exceptions: []
+contract_signals:
+  - "Montana Attorney General"
+  - "civil penalty"
+  - "MCDPA violation"
+cross_refs:
+  - "vcdpa.enforcement.parameters"
+  - "tdpsa.enforcement.parameters"
+source_url: "https://leg.mt.gov/bills/2023/billpdf/SB0384.pdf"
+git_hash: ""
