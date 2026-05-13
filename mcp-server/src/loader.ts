@@ -42,7 +42,10 @@ export function loadIndex(): StatuteIndex {
     const dirPath = path.join(STATUTES_DIR, dir);
     const files = fs
       .readdirSync(dirPath)
-      .filter((f) => f.endsWith(".yaml") || f.endsWith(".yml"));
+      .filter(
+        (f) =>
+          (f.endsWith(".yaml") || f.endsWith(".yml")) && f !== "schema.yaml"
+      );
 
     for (const file of files) {
       const filePath = path.join(dirPath, file);
