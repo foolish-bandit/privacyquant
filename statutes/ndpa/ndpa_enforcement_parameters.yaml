@@ -1,0 +1,23 @@
+id: "ndpa.enforcement.parameters"
+statute: "NDPA"
+section: "Neb. Rev. Stat. § 87-1114"
+title: "Enforcement — AG; 30-Day Cure"
+effective_date: "2025-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller or processor violates NDPA"
+requirement: >
+  Enforced by the Nebraska AG. No private right of action.
+  Civil penalty up to $7,500 per violation. 30-day cure period.
+exceptions: []
+contract_signals:
+  - "Nebraska Attorney General"
+  - "civil penalty"
+  - "NDPA violation"
+cross_refs:
+  - "tdpsa.enforcement.parameters"
+  - "vcdpa.enforcement.parameters"
+source_url: "https://nebraskalegislature.gov/bills/view_bill.php?DocumentID=53455"
+git_hash: ""
