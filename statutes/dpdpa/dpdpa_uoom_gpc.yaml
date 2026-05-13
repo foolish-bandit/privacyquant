@@ -1,0 +1,25 @@
+id: "dpdpa.uoom.gpc"
+statute: "DPDPA"
+section: "Del. Code tit. 6, § 12D-106"
+title: "Universal Opt-Out Mechanism Required"
+effective_date: "2026-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller sells personal data or processes for targeted advertising"
+requirement: >
+  Effective January 1, 2026, controllers must recognize and honor universal opt-out mechanism
+  signals including GPC.
+exceptions: []
+contract_signals:
+  - "Global Privacy Control"
+  - "GPC"
+  - "universal opt-out"
+  - "UOOM"
+cross_refs:
+  - "ctdpa.uoom.gpc"
+  - "modpa.uoom.gpc"
+  - "nhdpa.uoom.gpc"
+source_url: "https://legis.delaware.gov/BillDetail?LegislationId=140388"
+git_hash: ""
