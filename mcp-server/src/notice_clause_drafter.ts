@@ -1,8 +1,17 @@
-import { z } from "zod";
-import { loadIndex } from "./loader.js";
-import type { StatuteIndex, StatuteNode } from "./types.js";
+/**
+ * notice_clause_drafter.ts
+ *
+ * Deterministic privacy notice drafting. Generates first-draft privacy notice
+ * clause language from processing facts without an LLM.
+ *
+ * Supports: notice_at_collection, privacy_notice, opt_out_disclosure,
+ *           sensitive_data_notice, financial_incentive, ai_training_disclosure.
+ *
+ * Original template language. Not a copy of any existing template.
+ * Deterministic. No LLM. No live API.
+ */
 
-type NoticeType =
+export type NoticeType =
   | "notice_at_collection"
   | "privacy_notice"
   | "opt_out_disclosure"
@@ -10,11 +19,11 @@ type NoticeType =
   | "financial_incentive"
   | "ai_training_disclosure";
 
-type DraftStyle = "standard" | "consumer_friendly" | "lawyerly";
+export type NoticeStyle = "plain" | "formal" | "layered";
 
-type NoticeArgs = {
+export interface NoticeDraftInput {
   notice_type: NoticeType;
-  states?: string[];
+  states: string[];
   business_name?: string;
   data_categories?: string[];
   purposes?: string[];
@@ -27,288 +36,430 @@ type NoticeArgs = {
   uses_llm_training?: boolean;
   universal_opt_out?: boolean;
   contact_method?: string;
-  style?: DraftStyle;
+  style?: NoticeStyle;
   include_notes?: boolean;
-};
-
-type ToolResult = { content: Array<{ type: "text"; text: string }> };
-
-type ToolServer = {
-  registerTool: (
-    name: string,
-    config: Record<string, unknown>,
-    handler: (args: NoticeArgs) => Promise<ToolResult>
-  ) => unknown;
-};
-
-type NodeEvidence = {
-  id: string;
-  title: string;
-  statute: string;
-  section: string;
-  excerpt: string;
-  source_url: string;
-};
-
-let cachedIndex: StatuteIndex | null = null;
-
-function getIndex(): StatuteIndex {
-  if (!cachedIndex) cachedIndex = loadIndex();
-  return cachedIndex;
 }
 
-const STATE_TO_STATUTE: Record<string, string[]> = {
-  CA: ["CCPA", "CPRA", "CCPA/CPRA"],
-  VA: ["VCDPA"],
-  CO: ["CPA"],
-  CT: ["CTDPA"],
-  UT: ["UCPA"],
-  TX: ["TDPSA"],
-  OR: ["OCPA"],
-  MT: ["MCDPA"],
-  IA: ["ICDPA"],
-  IN: ["INCDPA"],
-  TN: ["TIPA"],
-  DE: ["DPDPA"],
-  NJ: ["NJDPA"],
-  NH: ["NHDPA"],
-  NE: ["NDPA"],
-  KY: ["KCDPA"],
-  MD: ["MODPA"],
-  MN: ["MCDPA-MN"],
-  RI: ["RIDTPPA"],
-  FL: ["FDBR"],
-};
-
-function normalize(value: string): string {
-  return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+export interface NoticeDraftResult {
+  notice_type: NoticeType;
+  clause_text: string;
+  missing_facts: string[];
+  drafting_notes: string[];
+  supporting_nodes: string[];
 }
 
-function excerpt(value: string, max = 280): string {
-  const clean = value.trim().replace(/\s+/g, " ");
-  return clean.length > max ? `${clean.slice(0, max)}…` : clean;
-}
+const BIZ = (name?: string) => name ?? "[BUSINESS NAME]";
 
-function sentenceList(values: string[] | undefined, fallback: string): string {
-  const items = (values ?? []).map((value) => value.trim()).filter(Boolean);
-  if (items.length === 0) return fallback;
-  if (items.length === 1) return items[0];
-  if (items.length === 2) return `${items[0]} and ${items[1]}`;
-  return `${items.slice(0, -1).join(", ")}, and ${items[items.length - 1]}`;
-}
-
-function business(args: NoticeArgs): string {
-  return args.business_name?.trim() || "We";
-}
-
-function possessiveBusiness(args: NoticeArgs): string {
-  const name = args.business_name?.trim();
-  if (!name) return "our";
-  return name.endsWith("s") ? `${name}'` : `${name}'s`;
-}
-
-function targetStatutes(args: NoticeArgs): string[] {
-  const states = args.states?.map((state) => state.trim().toUpperCase()).filter(Boolean) ?? [];
-  if (!states.length) return [];
-  return [...new Set(states.flatMap((state) => STATE_TO_STATUTE[state] ?? [state]))];
-}
-
-function nodeMatchesNoticeType(node: StatuteNode, args: NoticeArgs): boolean {
-  const text = normalize([node.id, node.title, node.trigger, node.requirement, node.contract_signals.join(" ")].join(" "));
-  switch (args.notice_type) {
-    case "notice_at_collection":
-      return text.includes("notice") || text.includes("collection") || text.includes("privacy notice");
-    case "privacy_notice":
-      return text.includes("privacy notice") || text.includes("notice") || text.includes("disclosure");
-    case "opt_out_disclosure":
-      return text.includes("opt out") || text.includes("opt-out") || text.includes("sale") || text.includes("sharing") || text.includes("targeted advertising") || text.includes("gpc") || text.includes("universal opt");
-    case "sensitive_data_notice":
-      return text.includes("sensitive") || text.includes("biometric") || text.includes("precise geolocation") || text.includes("minor") || text.includes("child");
-    case "financial_incentive":
-      return text.includes("financial incentive") || text.includes("loyalty") || text.includes("price") || text.includes("service difference");
-    case "ai_training_disclosure":
-      return text.includes("large language model") || text.includes("llm") || text.includes("automated") || text.includes("profiling") || text.includes("admt") || text.includes("training");
-  }
-}
-
-function statuteMatch(node: StatuteNode, statutes: string[]): boolean {
-  if (!statutes.length) return true;
-  const nodeText = normalize(`${node.id} ${node.statute}`);
-  return statutes.some((statute) => nodeText.includes(normalize(statute)) || normalize(statute).includes(nodeText));
-}
-
-function findEvidence(args: NoticeArgs, limit = 8): NodeEvidence[] {
-  const index = getIndex();
-  const statutes = targetStatutes(args);
-  return index.all
-    .filter((node) => statuteMatch(node, statutes))
-    .filter((node) => nodeMatchesNoticeType(node, args))
-    .slice(0, limit)
-    .map((node) => ({
-      id: node.id,
-      title: node.title,
-      statute: node.statute,
-      section: node.section,
-      excerpt: excerpt(node.requirement),
-      source_url: node.source_url,
-    }));
-}
-
-function intro(args: NoticeArgs): string {
-  const name = business(args);
-  if (args.style === "lawyerly") {
-    return `${name} provides this notice to describe its collection, use, disclosure, and retention of personal information as required by applicable privacy laws.`;
-  }
-  return `${name} explains below what personal information we collect, why we use it, and what choices you have.`;
-}
-
-function draftNoticeAtCollection(args: NoticeArgs): string {
-  const cats = sentenceList(args.data_categories, "the categories of personal information described in our privacy notice");
-  const purposes = sentenceList(args.purposes, "the business and commercial purposes described in our privacy notice");
-  return `${intro(args)} We collect ${cats}. We use this information for ${purposes}. We retain personal information only for as long as reasonably necessary for the purposes described in this notice, to comply with legal obligations, resolve disputes, enforce agreements, prevent fraud or abuse, and maintain security. We do not collect additional categories of personal information or use collected personal information for materially different purposes without providing any notice required by applicable law.`;
-}
-
-function draftPrivacyNotice(args: NoticeArgs): string {
-  const cats = sentenceList(args.data_categories, "identifiers, commercial information, internet or device activity, and other information you provide or generate when using our services");
-  const purposes = sentenceList(args.purposes, "providing and improving our services, communicating with you, security and fraud prevention, legal compliance, analytics, and other disclosed business purposes");
-  const disclosure = args.sale_or_sharing || args.targeted_advertising
-    ? "We may disclose certain personal information to advertising, analytics, or business partners in ways that may be considered a sale, sharing, or targeted advertising under some state privacy laws."
-    : "We do not sell personal information or share it for cross-context behavioral advertising unless disclosed elsewhere in this notice.";
-  return `${intro(args)} We collect ${cats}. We use personal information for ${purposes}. ${disclosure} We describe consumer privacy rights, request methods, verification steps, appeal rights where available, and our contact method below. ${business(args)} will not discriminate against you for exercising privacy rights, although some choices may affect features that rely on the data at issue.`;
-}
-
-function draftOptOut(args: NoticeArgs): string {
-  const mechanisms = args.universal_opt_out
-    ? "You may also use a browser or device-based universal opt-out signal, such as Global Privacy Control, where we are required to recognize it."
-    : "Where required, we will provide a method to opt out of sale, sharing, targeted advertising, or profiling.";
-  const scope = args.sale_or_sharing && args.targeted_advertising
-    ? "sale or sharing of personal information and targeted advertising"
-    : args.targeted_advertising
-      ? "targeted advertising"
-      : "sale or sharing of personal information";
-  return `You may opt out of ${scope}. To exercise this choice, use the opt-out link or request method provided in this notice. ${mechanisms} After we process your opt-out, we will stop the covered activity for the browser, device, account, or consumer profile that we can reasonably associate with the request, subject to legal exceptions and technical limitations.`;
-}
-
-function draftSensitive(args: NoticeArgs): string {
-  const cats = sentenceList(args.data_categories, "sensitive personal information or sensitive personal data");
-  const minors = args.minors_data ? " We do not sell personal information of consumers we know are under the age threshold set by applicable law, and we apply heightened protections for known children or teens where required." : "";
-  return `We may collect or process ${cats} only for disclosed and permitted purposes, such as providing requested services, account security, fraud prevention, legal compliance, or other purposes allowed by applicable law. Where required, we will obtain consent before processing sensitive data or provide a right to limit or opt out of certain sensitive-data uses.${minors} We do not use sensitive data for secondary purposes, sale, sharing, targeted advertising, profiling, or artificial-intelligence model training unless disclosed and permitted by applicable law.`;
-}
-
-function draftFinancialIncentive(args: NoticeArgs): string {
-  return `We may offer programs, benefits, discounts, rewards, or other financial incentives that involve the collection or use of personal information. Participation is voluntary. We will describe the material terms of the program before you enroll, including the categories of personal information involved, the value of the incentive, how the value is reasonably related to the data, how to opt in, and how to withdraw. We will not use financial-incentive programs in a way that is unjust, unreasonable, coercive, or usurious under applicable law.`;
-}
-
-function draftAITraining(args: NoticeArgs): string {
-  const cats = sentenceList(args.data_categories, "personal information described in this notice");
-  const purposes = args.uses_llm_training
-    ? `We may use ${cats} to train, fine-tune, evaluate, improve, or monitor artificial-intelligence systems, including large language models, where disclosed and permitted by applicable law.`
-    : `We do not use ${cats} to train large language models unless we provide notice and obtain any consent required by applicable law.`;
-  return `${purposes} Where automated decision-making, profiling, or AI-assisted processing creates legal or similarly significant effects, we will provide disclosures, assessments, opt-out rights, or appeal processes required by applicable law.`;
-}
-
-function draftClause(args: NoticeArgs): string {
-  switch (args.notice_type) {
-    case "notice_at_collection": return draftNoticeAtCollection(args);
-    case "privacy_notice": return draftPrivacyNotice(args);
-    case "opt_out_disclosure": return draftOptOut(args);
-    case "sensitive_data_notice": return draftSensitive(args);
-    case "financial_incentive": return draftFinancialIncentive(args);
-    case "ai_training_disclosure": return draftAITraining(args);
-  }
-}
-
-function missingFacts(args: NoticeArgs): string[] {
+function noticeAtCollection(input: NoticeDraftInput): NoticeDraftResult {
+  const biz = BIZ(input.business_name);
+  const cats = input.data_categories?.join(", ") ?? "[list data categories]";
+  const purposes = input.purposes?.join("; ") ?? "[describe purposes]";
   const missing: string[] = [];
-  if (!args.states?.length) missing.push("states");
-  if (!args.data_categories?.length) missing.push("data_categories");
-  if (["notice_at_collection", "privacy_notice"].includes(args.notice_type) && !args.purposes?.length) missing.push("purposes");
-  if (args.notice_type === "opt_out_disclosure" && args.sale_or_sharing === undefined && args.targeted_advertising === undefined) missing.push("sale_or_sharing or targeted_advertising");
-  if (args.notice_type === "financial_incentive" && args.financial_incentive !== true) missing.push("financial_incentive=true confirmation");
-  if (args.notice_type === "ai_training_disclosure" && args.uses_llm_training === undefined && args.profiling_or_admt === undefined) missing.push("uses_llm_training or profiling_or_admt");
-  return missing;
+  const notes: string[] = [];
+  const nodes: string[] = ["ccpa.controller_duties.notice_at_collection"];
+
+  if (!input.business_name) missing.push("business_name");
+  if (!input.data_categories?.length) missing.push("data_categories");
+  if (!input.purposes?.length) missing.push("purposes");
+  if (!input.contact_method) missing.push("contact_method");
+
+  const selling =
+    input.sale_or_sharing
+      ? `${biz} may sell or share your personal information with third parties for targeted advertising. ` +
+        `You have the right to opt out of this sale or sharing.`
+      : `${biz} does not sell or share your personal information for cross-context behavioral advertising.`;
+
+  const sensitive = input.sensitive_data
+    ? `\n\nIf you have provided sensitive personal information (including, as applicable, precise geolocation, ` +
+      `health data, biometric data, racial or ethnic origin, or other sensitive categories), ` +
+      `you have the right to limit our use of that information to purposes that are reasonably necessary ` +
+      `and proportionate to the services you have requested.`
+    : "";
+
+  const admt = input.profiling_or_admt
+    ? `\n\nWe use automated decision-making technology that may affect decisions about you. ` +
+      `You have the right to opt out of such automated processing and to request information about the ` +
+      `logic and likely outcomes of automated decisions that significantly affect you.`
+    : "";
+
+  const llm = input.uses_llm_training
+    ? `\n\nWe may use your personal information to train large language model (AI) systems. ` +
+      `You have the right to opt out of this use. [Describe opt-out mechanism].`
+    : "";
+
+  const uoom = input.universal_opt_out
+    ? `We recognize the Global Privacy Control (GPC) signal as a valid opt-out request.`
+    : "";
+
+  const contact = input.contact_method
+    ? `To exercise your rights, contact us at ${input.contact_method}.`
+    : `To exercise your rights, contact us at [contact method].`;
+
+  const text = [
+    `NOTICE AT COLLECTION — ${biz.toUpperCase()}`,
+    ``,
+    `We collect the following categories of personal information: ${cats}.`,
+    ``,
+    `We collect and use your personal information for the following purposes: ${purposes}.`,
+    ``,
+    selling,
+    sensitive,
+    admt,
+    llm,
+    uoom ? `\n${uoom}` : "",
+    ``,
+    contact,
+  ]
+    .join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+
+  if (input.sale_or_sharing) {
+    notes.push(
+      "CA requires a 'Do Not Sell or Share My Personal Information' link on the homepage. Draft this separately."
+    );
+    nodes.push("ccpa.rights.opt_out_sale_sharing");
+  }
+  if (input.uses_llm_training) {
+    notes.push(
+      "CT CTDPA requires explicit LLM training disclosure effective August 1, 2026. Ensure notice is live by that date."
+    );
+    nodes.push("ctdpa.controller_duties.admt_llm_disclosure");
+  }
+  if (input.sensitive_data && input.states.some((s) => ["CA"].includes(s.toUpperCase()))) {
+    notes.push(
+      "CA uses a 'limit use' structure for sensitive PI — not opt-in consent. Draft 'Limit the Use of My Sensitive Personal Information' link separately."
+    );
+    nodes.push("ccpa.rights.limit_sensitive_pi");
+  }
+
+  return {
+    notice_type: "notice_at_collection",
+    clause_text: text,
+    missing_facts: missing,
+    drafting_notes: notes,
+    supporting_nodes: nodes,
+  };
 }
 
-function render(args: NoticeArgs): string {
-  const evidence = findEvidence(args);
-  const missing = missingFacts(args);
-  const lines: string[] = [
-    "# Draft Privacy Notice Clause",
-    "",
-    `**Notice type**: ${args.notice_type}`,
-    `**States**: ${args.states?.join(", ") || "not specified"}`,
-    `**Style**: ${args.style ?? "standard"}`,
-    "",
-    "## Clause",
-    draftClause(args),
+function optOutDisclosure(input: NoticeDraftInput): NoticeDraftResult {
+  const biz = BIZ(input.business_name);
+  const missing: string[] = [];
+  const notes: string[] = [];
+  const nodes: string[] = [];
+
+  if (!input.business_name) missing.push("business_name");
+  if (!input.contact_method) missing.push("contact_method");
+
+  const gpcLine =
+    input.universal_opt_out
+      ? `We honor the Global Privacy Control (GPC) browser signal as a valid opt-out request for sale and sharing of personal information.`
+      : `[If applicable: describe UOOM/GPC recognition policy]`;
+
+  const contact = input.contact_method ?? "[opt-out contact method or URL]";
+
+  const text = [
+    `OPT-OUT OF SALE, SHARING, AND TARGETED ADVERTISING`,
+    ``,
+    `You have the right to opt out of:`,
+    `  (a) the sale of your personal information to third parties;`,
+    `  (b) the sharing of your personal information for cross-context behavioral advertising; and`,
+    input.targeted_advertising
+      ? `  (c) the use of your personal information for targeted advertising.`
+      : null,
+    input.profiling_or_admt
+      ? `  (d) profiling and automated decision-making that produces legal or similarly significant effects.`
+      : null,
+    ``,
+    `To submit an opt-out request, visit ${contact} or complete the opt-out form on our website.`,
+    ``,
+    gpcLine,
+    ``,
+    `We will process your opt-out request within 15 calendar days (California) or 45 calendar days ` +
+      `(all other applicable states). We will not discriminate against you for exercising this right.`,
+  ]
+    .filter((l) => l !== null)
+    .join("\n")
+    .trim();
+
+  if (input.universal_opt_out) {
+    notes.push("GPC recognition is required in CA, CO, CT, OR, NJ, MT, MN. Verify technical implementation.");
+    nodes.push("ccpa.rights.opt_out_sale_sharing", "cpa.rights.opt_out_sale");
+  }
+  if (input.targeted_advertising) {
+    notes.push("Targeted advertising opt-out required under most comprehensive state laws.");
+  }
+
+  return {
+    notice_type: "opt_out_disclosure",
+    clause_text: text,
+    missing_facts: missing,
+    drafting_notes: notes,
+    supporting_nodes: nodes,
+  };
+}
+
+function sensitiveDataNotice(input: NoticeDraftInput): NoticeDraftResult {
+  const biz = BIZ(input.business_name);
+  const cats = input.data_categories?.join(", ") ?? "[list sensitive data categories]";
+  const missing: string[] = [];
+  const notes: string[] = [];
+  const nodes = ["ccpa.sensitive_data.categories"];
+
+  if (!input.business_name) missing.push("business_name");
+  if (!input.data_categories?.length) missing.push("data_categories — sensitive categories specifically");
+  if (!input.purposes?.length) missing.push("purposes");
+
+  const purposes = input.purposes?.join("; ") ?? "[sensitive data processing purposes]";
+
+  const caLimitUse = input.states.some((s) => s.toUpperCase() === "CA")
+    ? `\n\nIf you are a California resident, you have the right to limit our use and disclosure of ` +
+      `sensitive personal information to uses necessary to provide the services you requested. ` +
+      `To limit this use, visit [Limit Use link] or contact us at [contact].`
+    : "";
+
+  const optInStates = input.states
+    .filter((s) =>
+      ["VA", "CO", "TX", "OR", "MD", "CT", "MT", "MN", "NJ", "NH", "DE", "KY", "IN", "RI"].includes(
+        s.toUpperCase()
+      )
+    )
+    .map((s) => s.toUpperCase());
+
+  const optInNote =
+    optInStates.length > 0
+      ? `\n\nFor residents of ${optInStates.join(", ")}: we will obtain your consent before processing ` +
+        `sensitive personal information unless a statutory exception applies.`
+      : "";
+
+  const text = [
+    `SENSITIVE PERSONAL INFORMATION NOTICE`,
+    ``,
+    `${biz} collects and processes the following categories of sensitive personal information:`,
+    cats,
+    ``,
+    `We process this information for the following purposes: ${purposes}.`,
+    caLimitUse,
+    optInNote,
+  ]
+    .join("\n")
+    .trim();
+
+  if (optInStates.length > 0) {
+    notes.push(
+      `Opt-in consent is required for sensitive data under ${optInStates.join(", ")}. ` +
+        "Ensure consent management collects affirmative consent before processing."
+    );
+  }
+  if (input.states.some((s) => s.toUpperCase() === "MD")) {
+    notes.push(
+      "Maryland MODPA flat bans sale of sensitive data — no opt-in or opt-out mechanism. Simply do not sell."
+    );
+    nodes.push("modpa.sensitive_data.ban_on_sale");
+  }
+
+  return {
+    notice_type: "sensitive_data_notice",
+    clause_text: text,
+    missing_facts: missing,
+    drafting_notes: notes,
+    supporting_nodes: nodes,
+  };
+}
+
+function aiTrainingDisclosure(input: NoticeDraftInput): NoticeDraftResult {
+  const biz = BIZ(input.business_name);
+  const missing: string[] = [];
+  const notes: string[] = [];
+
+  if (!input.business_name) missing.push("business_name");
+  if (!input.contact_method) missing.push("contact_method");
+
+  const text = [
+    `AI / LLM TRAINING DATA DISCLOSURE`,
+    ``,
+    `${biz} may use personal information we collect from you to train, fine-tune, or improve ` +
+      `large language model (AI) systems.`,
+    ``,
+    `Categories of personal information that may be used for this purpose: ` +
+      (input.data_categories?.join(", ") ?? "[list categories]"),
+    ``,
+    `You have the right to opt out of the use of your personal information for AI training. ` +
+      `To exercise this right, contact us at ${input.contact_method ?? "[contact method]"} ` +
+      `or submit an opt-out request at [opt-out URL].`,
+    ``,
+    `We will not use sensitive personal information for AI training without your prior affirmative consent.`,
+  ]
+    .join("\n")
+    .trim();
+
+  notes.push(
+    "Connecticut CTDPA requires this disclosure effective August 1, 2026 for controllers collecting PI for LLM training."
+  );
+  notes.push(
+    "Other states may add similar requirements — monitor legislative changes via pq_watch_legislation."
+  );
+
+  return {
+    notice_type: "ai_training_disclosure",
+    clause_text: text,
+    missing_facts: missing,
+    drafting_notes: notes,
+    supporting_nodes: ["ctdpa.controller_duties.admt_llm_disclosure"],
+  };
+}
+
+function financialIncentiveNotice(input: NoticeDraftInput): NoticeDraftResult {
+  const biz = BIZ(input.business_name);
+  const missing: string[] = [];
+  const notes: string[] = [];
+
+  if (!input.business_name) missing.push("business_name");
+
+  const text = [
+    `FINANCIAL INCENTIVE NOTICE`,
+    ``,
+    `${biz} offers a financial incentive program in exchange for the collection, sale, or retention ` +
+      `of personal information. Participation is voluntary.`,
+    ``,
+    `Program description: [describe program, e.g., loyalty points, discounts, free tier]`,
+    ``,
+    `The categories of personal information collected in connection with this program are: ` +
+      (input.data_categories?.join(", ") ?? "[list categories]"),
+    ``,
+    `We have calculated that the value of your personal information in connection with this program ` +
+      `is reasonably related to the value of the benefit offered. This calculation was based on: ` +
+      `[describe methodology, e.g., cost of providing the benefit, revenue attributable to PI].`,
+    ``,
+    `You may opt in to the program by: [describe opt-in mechanism]. ` +
+      `You may opt out of or withdraw from the program at any time by: [describe opt-out/withdrawal mechanism]. ` +
+      `Withdrawal will not affect benefits already received.`,
+  ]
+    .join("\n")
+    .trim();
+
+  notes.push(
+    "CA CCPA requires financial incentive notices to include a good-faith estimate of PI value and methodology."
+  );
+  notes.push(
+    "The 'reasonably related' standard means you must document the value calculation — this notice is a placeholder for that calculation."
+  );
+
+  return {
+    notice_type: "financial_incentive",
+    clause_text: text,
+    missing_facts: missing,
+    drafting_notes: notes,
+    supporting_nodes: ["ccpa.controller_duties.notice_at_collection"],
+  };
+}
+
+function privacyNotice(input: NoticeDraftInput): NoticeDraftResult {
+  const biz = BIZ(input.business_name);
+  const cats = input.data_categories?.join(", ") ?? "[list categories]";
+  const purposes = input.purposes?.join("; ") ?? "[describe purposes]";
+  const missing: string[] = [];
+  const notes: string[] = [];
+  const nodes = [
+    "ccpa.controller_duties.notice_at_collection",
+    "vcdpa.rights.access",
+    "cpa.rights.access",
   ];
 
-  if (missing.length > 0) {
-    lines.push("", "## Missing Business Facts", ...missing.map((item) => `- ${item}`));
-  }
+  if (!input.business_name) missing.push("business_name");
+  if (!input.data_categories?.length) missing.push("data_categories");
+  if (!input.purposes?.length) missing.push("purposes");
+  if (!input.contact_method) missing.push("contact_method");
 
-  if (args.include_notes ?? true) {
-    lines.push("", "## Drafting Notes");
-    lines.push("- This is deterministic first-draft notice language, not legal advice.");
-    lines.push("- Review against the full privacy notice, data map, retention schedule, consumer-rights workflow, and current regulations.");
-    lines.push("- Run `pq_audit_citations` on explanatory legal analysis before publication.");
-    lines.push("- For multi-state programs, pair this with `pq_check_applicability` and `pq_resolve_conflict_nodes`.");
-    if (args.universal_opt_out) lines.push("- Because universal opt-out support is enabled, verify GPC/UOOM obligations state by state.");
-    if (args.minors_data) lines.push("- Because minors' data is involved, verify COPPA and state teen/minor restrictions separately.");
-    if (args.uses_llm_training) lines.push("- Because LLM training is involved, verify emerging state AI/ADMT disclosure and assessment duties.");
-  }
+  const stateSuffix =
+    input.states.length > 0
+      ? `\n\nThis policy applies to residents of: ${input.states.map((s) => s.toUpperCase()).join(", ")}.`
+      : "";
 
-  lines.push("", "## Supporting PrivacyQuant Nodes");
-  if (evidence.length === 0) {
-    lines.push("No directly matching nodes were found. Try adding states, data categories, or processing flags.");
-  } else {
-    for (const node of evidence) {
-      lines.push(`- \`${node.id}\` — ${node.title} (${node.statute}; ${node.section})`);
-      lines.push(`  - ${node.excerpt}`);
-      if (node.source_url) lines.push(`  - Source: ${node.source_url}`);
-    }
-  }
+  const rights = [
+    "- Right to know / access the personal information we hold about you",
+    "- Right to delete personal information we have collected from you",
+    input.states.some((s) =>
+      !["UT", "IA"].includes(s.toUpperCase())
+    )
+      ? "- Right to correct inaccurate personal information"
+      : null,
+    "- Right to obtain a portable copy of your personal information",
+    input.sale_or_sharing || input.targeted_advertising
+      ? "- Right to opt out of the sale or sharing of your personal information and use for targeted advertising"
+      : null,
+    input.states.some((s) => s.toUpperCase() === "CA")
+      ? "- Right to limit the use of sensitive personal information (California residents)"
+      : null,
+    input.profiling_or_admt
+      ? "- Right to opt out of automated decision-making and profiling"
+      : null,
+    "- Right to non-discrimination for exercising these rights",
+  ]
+    .filter(Boolean)
+    .join("\n");
 
-  return lines.join("\n");
+  const contact = input.contact_method ?? "[contact method]";
+
+  const text = [
+    `PRIVACY NOTICE — ${biz.toUpperCase()}`,
+    `Effective date: [DATE] | Last updated: [DATE]`,
+    stateSuffix,
+    ``,
+    `INFORMATION WE COLLECT`,
+    `We collect the following categories of personal information: ${cats}.`,
+    ``,
+    `HOW WE USE YOUR INFORMATION`,
+    `We use your personal information for the following purposes: ${purposes}.`,
+    ``,
+    input.sale_or_sharing
+      ? "SALE AND SHARING\nWe may sell or share your personal information with third parties. You have the right to opt out."
+      : "SALE AND SHARING\nWe do not sell or share your personal information for cross-context behavioral advertising.",
+    ``,
+    `YOUR RIGHTS`,
+    `Depending on your state of residence, you may have the following rights:`,
+    rights,
+    ``,
+    `HOW TO EXERCISE YOUR RIGHTS`,
+    `To submit a request, contact us at ${contact}. We will verify your identity and respond ` +
+      `within the timeframe required by applicable law.`,
+    ``,
+    `CONTACT US`,
+    `${biz} | ${contact}`,
+  ]
+    .join("\n")
+    .trim();
+
+  notes.push(
+    "This is a skeletal privacy notice. Customize with your actual data inventory, retention schedules, processor list, and third-party disclosures."
+  );
+  notes.push(
+    "Run pq_audit_citations on the final notice text before publishing to check citation discipline."
+  );
+
+  return {
+    notice_type: "privacy_notice",
+    clause_text: text,
+    missing_facts: missing,
+    drafting_notes: notes,
+    supporting_nodes: nodes,
+  };
 }
 
-export function registerNoticeClauseDrafterTool(server: ToolServer): void {
-  server.registerTool(
-    "pq_draft_notice_clause",
-    {
-      title: "Draft Privacy Notice Clause",
-      description: `Draft first-pass privacy notice language from processing facts and PrivacyQuant nodes.
-
-Use this for notice-at-collection, privacy notice, opt-out disclosure, sensitive-data notice,
-financial-incentive notice, and AI/LLM training disclosure language. The tool is deterministic,
-does not call an LLM, and returns supporting PrivacyQuant nodes for review.`,
-      inputSchema: {
-        notice_type: z.enum(["notice_at_collection", "privacy_notice", "opt_out_disclosure", "sensitive_data_notice", "financial_incentive", "ai_training_disclosure"]),
-        states: z.array(z.string().min(2)).optional().describe("State abbreviations or statute names relevant to the notice."),
-        business_name: z.string().optional(),
-        data_categories: z.array(z.string()).optional(),
-        purposes: z.array(z.string()).optional(),
-        sale_or_sharing: z.boolean().optional(),
-        targeted_advertising: z.boolean().optional(),
-        profiling_or_admt: z.boolean().optional(),
-        sensitive_data: z.boolean().optional(),
-        minors_data: z.boolean().optional(),
-        financial_incentive: z.boolean().optional(),
-        uses_llm_training: z.boolean().optional(),
-        universal_opt_out: z.boolean().optional(),
-        contact_method: z.string().optional(),
-        style: z.enum(["standard", "consumer_friendly", "lawyerly"]).default("standard"),
-        include_notes: z.boolean().default(true),
-      },
-      annotations: {
-        readOnlyHint: true,
-        destructiveHint: false,
-        idempotentHint: true,
-        openWorldHint: false,
-      },
-    },
-    async (args) => {
-      return { content: [{ type: "text", text: render(args) }] };
-    }
-  );
+export function draftNoticeClause(input: NoticeDraftInput): NoticeDraftResult {
+  switch (input.notice_type) {
+    case "notice_at_collection":
+      return noticeAtCollection(input);
+    case "opt_out_disclosure":
+      return optOutDisclosure(input);
+    case "sensitive_data_notice":
+      return sensitiveDataNotice(input);
+    case "ai_training_disclosure":
+      return aiTrainingDisclosure(input);
+    case "financial_incentive":
+      return financialIncentiveNotice(input);
+    case "privacy_notice":
+    default:
+      return privacyNotice(input);
+  }
 }
