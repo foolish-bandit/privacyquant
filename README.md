@@ -288,17 +288,17 @@ privacyquant/
 │   ├── memo-template.md          Multi-state privacy compliance memo template
 │   ├── applicability-questions.json  Structured intake questions for pq_check_applicability
 │   └── notice-clauses/           Privacy notice and consent templates
-│       ├── notice-at-collection.md
-│       ├── full-privacy-notice.md
-│       ├── opt-out-disclosure.md
-│       └── sensitive-data-notice.md
+│       ├── notice-at-collection.md   CA-specific notice-at-collection model clause
+│       ├── opt-out-disclosures.md    Multi-state "Your Privacy Choices" disclosures
+│       ├── sensitive-data-notice.md  Opt-in / limit-use / MD-ban modules
+│       └── financial-incentive.md    CA financial-incentive + CO loyalty-program notices
 ├── scripts/
 │   ├── generate_nodes.py         Node generation utility (see dev notes before use)
 │   └── populate_git_hashes.sh    Backfills git_hash fields in all statutes/ YAML nodes
 ├── .githooks/
 │   └── pre-commit                Auto-populates git_hash on commit (requires core.hooksPath)
 ├── mcp-server/
-│   ├── src/index.ts              Entrypoint — all 16 tools registered here
+│   ├── src/index.ts              Entrypoint — all 18 tools registered here
 │   └── src/*.ts                  Tool modules
 ├── docs/
 │   ├── TOOLS.md                  Grouped tool reference
