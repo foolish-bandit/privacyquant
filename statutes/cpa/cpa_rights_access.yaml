@@ -1,0 +1,34 @@
+id: "cpa.rights.access"
+statute: "CPA"
+section: "Colo. Rev. Stat. § 6-1-1306(1)(a)(I)"
+title: "Right to Access"
+effective_date: "2023-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Consumer submits an authenticated request to confirm processing or obtain a copy of their personal data"
+requirement: >
+  Controller must confirm whether it is processing the consumer's PD and provide access to
+  that PD. Response deadline: 45 days (extendable once by 45 days with notice).
+  Must be provided free of charge twice per 12-month period. A reasonable fee may be charged
+  for subsequent requests within the same period.
+exceptions:
+  - "Request is manifestly unfounded, excessive, or repetitive"
+  - "Compliance would require revealing a trade secret"
+  - "Compliance would adversely affect the rights of another consumer"
+contract_signals:
+  - "right of access"
+  - "right to access"
+  - "confirm processing"
+  - "data subject access request"
+  - "DSAR"
+  - "access to personal data"
+  - "copy of personal data"
+cross_refs:
+  - "ccpa.rights.access"
+  - "vcdpa.rights.access"
+  - "ctdpa.rights.access"
+  - "modpa.rights.access"
+source_url: "https://leg.colorado.gov/sites/default/files/documents/2021A/bills/2021a_190_enr.pdf"
+git_hash: ""
