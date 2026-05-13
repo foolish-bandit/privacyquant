@@ -1,0 +1,41 @@
+id: "ctdpa.controller_duties.admt_llm_disclosure"
+statute: "CTDPA"
+section: "Conn. Gen. Stat. § 42-516a (as amended 2025, eff. Aug. 1, 2026)"
+title: "ADMT Disclosure — LLM Training Data and Profiling Contest Right (Eff. Aug. 1, 2026)"
+effective_date: "2026-08-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: >
+  Controller (a) uses ADMT for profiling that produces legal or similarly significant effects,
+  OR (b) collects, uses, or sells personal data for training large language models.
+requirement: >
+  Connecticut amended the CTDPA in 2025 with two new obligations effective August 1, 2026:
+  1. LLM TRAINING DISCLOSURE: Any controller that collects, uses, or sells personal data
+     for the purpose of training large language models must disclose this in its privacy notice.
+     The disclosure must specifically identify that personal data is used for LLM training purposes.
+     This is the first US state law to explicitly require disclosure of LLM training data use.
+  2. EXPANDED PROFILING OPT-OUT: Opt-out rights for profiling are extended to "any automated
+     decision" producing legal or similarly significant effects (broader than prior language).
+  3. RIGHT TO CONTEST PROFILING: Consumers gain the right to contest profiling decisions and
+     require businesses to conduct dedicated profiling impact assessments for covered uses.
+  4. PROFILING IMPACT ASSESSMENTS: Required beginning August 1, 2026 for covered profiling uses.
+exceptions:
+  - "Research, journalism, and non-commercial purposes (verify current exemption scope)"
+  - "Internal profiling for fraud prevention and security"
+contract_signals:
+  - "LLM training"
+  - "large language model training"
+  - "AI training data"
+  - "profiling impact assessment"
+  - "contest automated decision"
+  - "ADMT disclosure"
+  - "Connecticut ADMT"
+cross_refs:
+  - "ccpa.controller_duties.admt_opt_out"
+  - "ccpa.controller_duties.data_protection_assessment"
+  - "mcdpa_mn.rights.question_profiling"
+  - "ctdpa.rights.opt_out_sale"
+source_url: "https://www.cga.ct.gov/"
+git_hash: ""
