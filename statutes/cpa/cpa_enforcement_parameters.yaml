@@ -1,0 +1,26 @@
+id: "cpa.enforcement.parameters"
+statute: "CPA"
+section: "Colo. Rev. Stat. § 6-1-1311"
+title: "Enforcement — AG and District Attorneys; Civil Penalties"
+effective_date: "2023-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller or processor violates CPA"
+requirement: >
+  Enforced by the Colorado AG and district attorneys. No private right of action.
+  Civil penalty up to $20,000 per violation, capped at $500,000 per related series.
+  Cure period SUNSET January 1, 2025 — no longer mandatory. Violations committed after
+  January 1, 2025 may be immediately actionable without cure opportunity.
+exceptions: []
+contract_signals:
+  - "Colorado Attorney General"
+  - "civil penalty"
+  - "CPA violation"
+  - "district attorney"
+cross_refs:
+  - "ccpa.enforcement.parameters"
+  - "vcdpa.enforcement.parameters"
+source_url: "https://leg.colorado.gov/sites/default/files/documents/2021A/bills/2021a_190_enr.pdf"
+git_hash: ""
