@@ -22,6 +22,8 @@ export interface StatuteNode {
   requirement: string;
   exceptions: string[];
   contract_signals: string[];
+  data_categories: string[];
+  nist_controls: string[];
   cross_refs: string[];
   source_url: string;
   git_hash: string;
