@@ -1,0 +1,28 @@
+id: "ridtppa.controller_duties.named_third_parties"
+statute: "RIDTPPA"
+section: "R.I. Gen. Laws § 6-48.1-5"
+title: "Privacy Notice Must Identify Third Parties by Name"
+effective_date: "2026-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller provides privacy notice to Rhode Island consumers"
+requirement: >
+  The privacy notice must identify, by name, all third parties with which the controller may share
+  PD. This is more granular than categorical disclosure (which most states accept) and similar to
+  Oregon's and Minnesota's per-consumer specific third party rights.
+  Controllers must maintain an up-to-date named list of third-party recipients tied to the
+  privacy notice — a significant transparency and operational obligation.
+exceptions: []
+contract_signals:
+  - "named third parties"
+  - "specific third parties"
+  - "list of third parties"
+  - "privacy notice third-party disclosure"
+cross_refs:
+  - "ocpa.rights.specific_third_parties"
+  - "mcdpa_mn.rights.specific_third_parties"
+  - "dpdpa.rights.third_party_categories"
+source_url: "https://webserver.rilegislature.gov/BillText/BillText24/HouseText24/H7787A.pdf"
+git_hash: ""
