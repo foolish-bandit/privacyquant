@@ -110,7 +110,7 @@ export function loadCorpus(): EnforcementCorpus {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
   // mcp-server/src/ → repo root → references/
-  const corpusPath = path.resolve(__dirname, "../../../references/enforcement_actions.json");
+  const corpusPath = path.resolve(__dirname, "../../references/enforcement_actions.json");
   if (!fs.existsSync(corpusPath)) {
     throw new Error(`Enforcement corpus not found at ${corpusPath}`);
   }
