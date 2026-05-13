@@ -1,0 +1,26 @@
+id: "ctdpa.enforcement.parameters"
+statute: "CTDPA"
+section: "Conn. Gen. Stat. § 42-524"
+title: "Enforcement — AG Only; Civil Penalties"
+effective_date: "2023-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller or processor violates CTDPA"
+requirement: >
+  Enforced exclusively by the Connecticut Attorney General under the CUTPA framework.
+  No private right of action. Civil penalty up to $5,000 per willful violation.
+  Cure period sunset January 1, 2025 — AG enforcement now immediate without statutory cure right.
+  AG may seek injunctive and equitable relief.
+exceptions: []
+contract_signals:
+  - "Connecticut Attorney General"
+  - "civil penalty"
+  - "CTDPA violation"
+  - "CUTPA"
+cross_refs:
+  - "vcdpa.enforcement.parameters"
+  - "cpa.enforcement.parameters"
+source_url: "https://www.cga.ct.gov/2022/ACT/PA/PDF/2022PA-00015-R00SB-00006-PA.PDF"
+git_hash: ""
