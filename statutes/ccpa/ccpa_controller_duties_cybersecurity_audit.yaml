@@ -32,6 +32,11 @@ contract_signals:
   - "annual audit"
   - "security assessment"
   - "qualified independent professional"
+nist_controls:
+  - "CA-2"
+  - "CA-7"
+  - "AU-2"
+  - "RA-5"
 cross_refs:
   - "ccpa.controller_duties.data_protection_assessment"
   - "ccpa.enforcement.parameters"
