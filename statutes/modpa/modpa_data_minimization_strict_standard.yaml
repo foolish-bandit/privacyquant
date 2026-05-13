@@ -1,0 +1,35 @@
+id: "modpa.data_minimization.strict_standard"
+statute: "MODPA"
+section: "Md. Code Com. Law § 14-4607(a)(1)"
+title: "Strict Data Minimization — Reasonably Necessary AND Proportionate"
+effective_date: "2025-10-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller collects or processes personal data of Maryland consumers"
+requirement: >
+  Collection of PD must be limited to what is 'reasonably necessary AND proportionate' to provide
+  or maintain a specific product or service REQUESTED BY THE CONSUMER.
+  This is materially stricter than other states' 'necessary' or 'necessary and proportionate'
+  formulations. A controller may not collect PD for generalized analytics, product improvement,
+  third-party marketing, or other purposes the consumer has not specifically requested, without
+  separate justification or specific consent.
+  Operational impact: privacy-by-default settings; reduced default tracking; tightened purpose
+  statements; per-purpose consent flows.
+exceptions:
+  - "Processing necessary to comply with a legal obligation"
+  - "Processing necessary to protect vital interests of the consumer or another natural person"
+contract_signals:
+  - "data minimization"
+  - "reasonably necessary"
+  - "proportionate"
+  - "purpose limitation"
+  - "collect only what is necessary"
+  - "minimal data collection"
+cross_refs:
+  - "cpa.controller_duties.data_protection_assessment"
+  - "vcdpa.controller_duties.privacy_notice"
+  - "ccpa.controller_duties.privacy_notice"
+source_url: "https://mgaleg.maryland.gov/2024RS/Chapters_noln/CH_182_sb0541e.pdf"
+git_hash: ""
