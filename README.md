@@ -315,6 +315,8 @@ entrypoint has been permanently removed.
 a `server.registerTool(...)` block. Keep tools deterministic by default. Run
 `npm --prefix mcp-server run build` to verify compilation.
 
+**Running tests:** Run `npm test` in `mcp-server/` to execute the test suite (`vitest run`). Tests cover corpus integrity, applicability checking, DSAR routing, conflict resolution, loader, and search.
+
 **Node authoring:** Hand-authored YAML in `statutes/` is the source of truth. The
 `scripts/generate_nodes.py` generator contains embedded source data that may be stale
 relative to hand-authored nodes — do not run it without reviewing its embedded data first.
