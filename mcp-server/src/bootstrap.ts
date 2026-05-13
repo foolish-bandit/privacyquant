@@ -1,6 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { registerApplicabilityCheckerTool } from "./applicability_checker.js";
 import { registerDraftDpaClauseTool } from "./draft_dpa_clause.js";
+import { registerDSARWorkflowRouterTool } from "./dsar_workflow_router.js";
 import { registerFindPrecedentTool } from "./precedent_finder.js";
 import { registerNodeAwareConflictResolverTool } from "./node_aware_conflict_resolver.js";
 import { registerWatchLegislationTool } from "./legislation_watcher.js";
@@ -19,6 +20,7 @@ proto.connect = async function patchedConnect(this: object, transport: unknown):
     registerApplicabilityCheckerTool(server as Parameters<typeof registerApplicabilityCheckerTool>[0]);
     registerFindPrecedentTool(server as Parameters<typeof registerFindPrecedentTool>[0]);
     registerNodeAwareConflictResolverTool(server as Parameters<typeof registerNodeAwareConflictResolverTool>[0]);
+    registerDSARWorkflowRouterTool(server as Parameters<typeof registerDSARWorkflowRouterTool>[0]);
     registeredServers.add(this);
   }
 
