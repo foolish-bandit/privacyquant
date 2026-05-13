@@ -8,6 +8,7 @@ import type { Dimension } from "./conflict_resolver.js";
 import { evaluateClause } from "./clause_evaluator.js";
 import { routeDSAR, RIGHT_LABELS } from "./dsar_router.js";
 import type { RightType } from "./dsar_router.js";
+import { rankActions, textQuery, allTags } from "./precedent_matcher.js";
 import type { StatuteNode, StatuteIndex } from "./types.js";
 
 // ─── Load the knowledge graph once at startup ──────────────────────────────
@@ -918,6 +919,172 @@ Returns:
     lines.push(
       `_Output is a draft for attorney review — not legal advice. ` +
       `Verify node data reflects current law before relying on deadlines._`
+    );
+
+    return {
+      content: [{ type: "text", text: lines.join("\n") }],
+    };
+  }
+);
+
+// ─── Tool 7: pq_find_precedent ─────────────────────────────────────────────
+server.registerTool(
+  "pq_find_precedent",
+  {
+    title: "Find Analogous Enforcement Actions",
+    description: `Search the PrivacyQuant enforcement actions corpus for real enforcement actions
+analogous to a compliance gap or violation pattern.
+
+Use this when:
+- A DPA gap analysis (pq_check_clause) has returned RED or YELLOW verdicts and you
+  want to know what enforcement actions have targeted the same gaps
+- A client wants to understand the practical enforcement risk behind a specific gap
+- You are drafting a risk memo and need settlement amounts, regulators, and factual
+  patterns for comparable cases
+- You want to know what remediation was imposed in analogous matters
+
+Two search modes:
+  1. Tag search (precise): provide one or more violation_theory tags from the
+     48-tag taxonomy. Returns actions that share those exact theories, ranked by
+     tag overlap + state proximity + recency + settlement severity.
+  2. Free-text search (fallback): provide a query string if you don't know the
+     tag. Matched against case names, factual patterns, violation theories, and
+     operational lessons.
+
+The 48 violation theory tags:
+  GPC/opt-out: gpc_not_honored, uoom_not_honored, targeted_ads_no_optout,
+    dark_pattern_optout, no_donotsell_link, no_homepage_link, discrimination_for_optout
+  Notice/disclosure: notice_at_collection_missing, notice_inadequate_content,
+    notice_stale, sale_not_disclosed, sharing_not_disclosed, deceptive_privacy_representation,
+    loyalty_program_inadequate_disclosure
+  Sensitive/special data: sensitive_data_no_consent, sensitive_data_sale_general,
+    sensitive_data_sale_md_ban, pixel_health_data_disclosure
+  Minor/children: minor_data_sold, minor_data_targeted_ads, minor_no_parental_consent,
+    actual_knowledge_minors
+  Rights requests: deletion_failure, deletion_processor_not_directed,
+    rights_request_response_late, rights_request_denial_unjustified,
+    rights_request_appeal_missing, verification_excessive, verification_inadequate
+  Contracts/processors: dpa_missing, processor_contract_inadequate,
+    subprocessor_flowdown_missing
+  Data governance: minimization_violation, purpose_limitation_violation,
+    retention_excessive, retention_undisclosed, risk_assessment_missing
+  Security: security_failure_breach
+  Biometric: biometric_no_written_consent, biometric_no_retention_schedule
+  Dark patterns/consent: dark_pattern_consent, consent_bundled, consent_pre_checked,
+    financial_incentive_no_value_calc
+  Brokers: data_broker_registration_failure
+  Adjacent: vppa_video_disclosure, wiretap_chat_pixel, wiretap_session_replay
+
+Args:
+  - tags (array, optional): One or more violation theory tags from the 48-tag taxonomy
+  - states (array, optional): Applicable states to weight — e.g. ["CA", "TX", "MD"]
+  - query (string, optional): Free-text fallback when tags are unknown
+  - top_n (integer, optional): Number of results to return (default 5, max 10)
+
+Returns ranked enforcement actions with: case name, year, regulator, respondent,
+settlement amount, factual pattern, operational lessons, and citation.`,
+    inputSchema: {
+      tags: z
+        .array(z.string().min(3))
+        .max(10)
+        .optional()
+        .describe("Violation theory tags from the 48-tag taxonomy"),
+      states: z
+        .array(z.string().min(2).max(2))
+        .max(20)
+        .optional()
+        .describe("Applicable state abbreviations to weight results toward"),
+      query: z
+        .string()
+        .min(3)
+        .max(500)
+        .optional()
+        .describe("Free-text query — used when tags are unknown"),
+      top_n: z
+        .number()
+        .int()
+        .min(1)
+        .max(10)
+        .default(5)
+        .describe("Number of results to return (default 5)"),
+    },
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
+  },
+  async ({ tags, states, query, top_n }) => {
+    let matches;
+    let searchMode: string;
+
+    if (tags && tags.length > 0) {
+      matches = rankActions(tags, states ?? [], top_n);
+      searchMode = `tags: ${tags.join(", ")}${states?.length ? ` | states: ${states.join(", ")}` : ""}`;
+    } else if (query) {
+      matches = textQuery(query, top_n);
+      searchMode = `query: "${query}"`;
+    } else {
+      return {
+        content: [{
+          type: "text",
+          text: "Provide at least one tag or a query string.\n\nAvailable tags:\n" +
+            allTags().join(", "),
+        }],
+      };
+    }
+
+    if (matches.length === 0) {
+      const suggestion = tags?.length
+        ? `No actions matched tags [${tags.join(", ")}]. Try broader tags or use a free-text query.`
+        : `No actions matched "${query}". Try different keywords or use tags.`;
+      return {
+        content: [{ type: "text", text: suggestion }],
+      };
+    }
+
+    const fmt = (n: number | null) =>
+      n ? `$${n.toLocaleString("en-US")}` : "Injunctive / undisclosed";
+
+    const lines: string[] = [
+      `# Enforcement Precedents`,
+      `**Search**: ${searchMode}`,
+      `**Results**: ${matches.length} of ${top_n} requested`,
+      ``,
+    ];
+
+    matches.forEach((m, i) => {
+      lines.push(`## ${i + 1}. ${m.case_name} (${m.year})`);
+      lines.push(`**Regulator**: ${m.regulator.join(", ")}`);
+      lines.push(`**Respondent**: ${m.respondent}${m.respondent_industry ? ` — ${m.respondent_industry}` : ""}`);
+      lines.push(`**Settlement**: ${fmt(m.monetary_amount_usd)}`);
+      lines.push(`**Score**: ${m.score} (tag: ${m.score_breakdown.tag_score}, state: ${m.score_breakdown.state_score}, recency: ${m.score_breakdown.recency_score}, severity: ${m.score_breakdown.severity_score})`);
+
+      if (m.score_breakdown.tag_overlap.length > 0) {
+        lines.push(`**Matched theories**: ${m.score_breakdown.tag_overlap.join(", ")}`);
+      }
+      lines.push(`**All theories**: ${m.violation_theories.join(", ")}`);
+      lines.push(``);
+      lines.push(`**Facts**: ${m.factual_pattern}`);
+
+      if (m.operational_lessons.length > 0) {
+        lines.push(``);
+        lines.push(`**Operational lessons**:`);
+        m.operational_lessons.forEach((l) => lines.push(`- ${l}`));
+      }
+
+      lines.push(``);
+      lines.push(`**Citation**: ${m.citation}`);
+      if (m.url) lines.push(`**URL**: ${m.url}`);
+      lines.push(``);
+      lines.push(`---`);
+      lines.push(``);
+    });
+
+    lines.push(
+      `_Corpus v2.2 — 82 enforcement actions. ` +
+      `Settlement amounts reflect reported headline figures; verify against source documents before citing in work product._`
     );
 
     return {
