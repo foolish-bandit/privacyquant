@@ -1,0 +1,27 @@
+id: "vcdpa.controller_duties.privacy_notice"
+statute: "VCDPA"
+section: "Va. Code § 59.1-578(A)"
+title: "Privacy Notice Requirements"
+effective_date: "2023-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller processes personal data of Virginia consumers"
+requirement: >
+  Controller must provide a reasonably accessible, clear, and meaningful privacy notice that
+  includes: categories of PD processed; purposes for processing; how consumers may exercise
+  their rights and appeal denials; categories of PD shared with third parties; categories of
+  third parties with whom PD is shared; an active contact email address or other online
+  mechanism to contact the controller.
+exceptions: []
+contract_signals:
+  - "privacy notice"
+  - "privacy policy"
+  - "privacy statement"
+  - "data processing disclosure"
+cross_refs:
+  - "ccpa.controller_duties.privacy_notice"
+  - "cpa.controller_duties.privacy_notice"
+source_url: "https://law.lis.virginia.gov/vacode/title59.1/chapter53/section59.1-578/"
+git_hash: ""
