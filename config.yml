@@ -2,7 +2,7 @@ title: PrivacyQuant
 description: >
   Versioned statutory knowledge graph and MCP workflow layer for US state
   consumer privacy law. 146 YAML nodes across 20 statutes, 84 enforcement
-  actions, and 16 deterministic MCP tools for applicability analysis, DPA
+  actions, and 18 deterministic MCP tools for applicability analysis, DPA
   drafting, DSAR routing, conflict resolution, and risk scoring.
 url: "https://foolish-bandit.github.io"
 baseurl: "/privacyquant"
