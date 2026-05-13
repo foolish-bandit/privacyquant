@@ -45,18 +45,7 @@ All output is a **draft for review by qualified counsel**. PrivacyQuant is a res
 
 ## How to load PrivacyQuant
 
-### Option 1 — Claude (recommended for most attorneys)
-
-If you use **Claude for Work** or **Claude Desktop**, install the plugin with two commands in Claude Code:
-
-```
-/plugin marketplace add foolish-bandit/privacyquant
-/plugin install privacyquant@privacyquant
-```
-
-That's it. Claude will load the PrivacyQuant tools automatically in every session. No server setup required.
-
-### Option 2 — Claude Code (advanced / self-hosted)
+### Option 1 — Claude Code (self-hosted)
 
 If you want to run PrivacyQuant locally from your own machine:
 
@@ -67,7 +56,7 @@ cd privacyquant/mcp-server && npm install && npm run build
 
 Claude Code will detect the configuration file in the repository and connect automatically.
 
-### Option 3 — Codex or another AI assistant
+### Option 2 — Codex or another AI assistant
 
 See the [Installation](#installation) section below for Codex setup and instructions for any other MCP-compatible AI assistant.
 
@@ -77,7 +66,7 @@ See the [Installation](#installation) section below for Codex setup and instruct
 
 | Client | How |
 |---|---|
-| **Claude Code / Claude Desktop** | Plugin marketplace (two commands above) or `.mcp.json` auto-loaded by Claude Code |
+| **Claude Code** | Plugin marketplace (two commands above) or `.mcp.json` auto-loaded by Claude Code |
 | **Codex** | `.codex-plugin/plugin.json` plugin manifest + `.codex-mcp.json` MCP config + `skills/` instructions |
 | **Any MCP-compatible client** | Run the server directly: `npx tsx mcp-server/src/index.ts` |
 
