@@ -1,0 +1,37 @@
+{
+  "states": ["CA", "VA", "CO", "CT", "OR", "TX", "NE", "FL"],
+  "entity": {
+    "legal_name": "ExampleCo, Inc.",
+    "for_profit": true,
+    "naics_code": "541511"
+  },
+  "revenue": {
+    "annual_gross": 30000000
+  },
+  "consumers": {
+    "by_state": {
+      "CA": 50000,
+      "VA": 4000,
+      "CO": 3000,
+      "CT": 2500,
+      "OR": 2000,
+      "TX": 15000,
+      "NE": 500,
+      "FL": 1000
+    }
+  },
+  "sale_practices": {
+    "sells_pd": false,
+    "any_revenue_from_sale": false,
+    "percent_revenue_from_sale": 0,
+    "sells_sensitive_data_without_consent": false
+  },
+  "sectoral_overlay": {
+    "government_entity": false,
+    "glba_financial_institution": false,
+    "hipaa_covered_entity_or_ba": false,
+    "non_profit": false,
+    "higher_ed_institution": false
+  },
+  "data_categories": ["contact", "account", "device", "usage"]
+}
