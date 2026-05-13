@@ -1,0 +1,26 @@
+id: "vcdpa.rights.portability"
+statute: "VCDPA"
+section: "Va. Code § 59.1-577(A)(4)"
+title: "Right to Data Portability"
+effective_date: "2023-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Consumer submits authenticated request to obtain a copy of personal data in a portable format"
+requirement: >
+  Controller must provide a copy of the consumer's PD in a portable, readily usable format
+  that allows transmission to another controller where technically feasible.
+  Response deadline: 45 days.
+exceptions:
+  - "Disclosure would reveal a trade secret"
+contract_signals:
+  - "data portability"
+  - "portable format"
+  - "machine-readable copy"
+  - "transmit to another controller"
+cross_refs:
+  - "ccpa.rights.portability"
+  - "cpa.rights.portability"
+source_url: "https://law.lis.virginia.gov/vacode/title59.1/chapter53/section59.1-577/"
+git_hash: ""
