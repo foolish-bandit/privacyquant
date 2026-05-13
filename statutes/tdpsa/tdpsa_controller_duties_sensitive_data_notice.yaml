@@ -1,0 +1,29 @@
+id: "tdpsa.controller_duties.sensitive_data_notice"
+statute: "TDPSA"
+section: "Tex. Bus. & Com. Code § 541.053"
+title: "Specific Notice Required for Sale of Sensitive Personal Data"
+effective_date: "2024-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller sells sensitive personal data including biometric or genetic data"
+requirement: >
+  Controller that sells sensitive PD must disclose at the point of collection or in its privacy
+  policy: 'NOTICE: We may sell your sensitive personal data.'
+  Similar verbatim disclosure required specifically for sale of biometric or genetic data.
+  Generic privacy policy language does not satisfy this requirement — verbatim statutory language required.
+exceptions: []
+contract_signals:
+  - "sensitive personal data"
+  - "sale of sensitive data"
+  - "biometric data"
+  - "genetic data"
+  - "notice of sale"
+  - "TDPSA notice"
+cross_refs:
+  - "ccpa.sensitive_data.categories"
+  - "vcdpa.sensitive_data.consent"
+  - "modpa.sensitive_data.ban_on_sale"
+source_url: "https://capitol.texas.gov/tlodocs/88R/billtext/pdf/HB04.pdf"
+git_hash: ""
