@@ -43,6 +43,11 @@ contract_signals:
   - "opt out of automated"
   - "right to access ADMT"
   - "AI decision-making"
+nist_controls:
+  - "IP-1"
+  - "IP-3"
+  - "PT-7"
+  - "RA-8"
 cross_refs:
   - "ccpa.controller_duties.data_protection_assessment"
   - "ccpa.rights.opt_out_sale_sharing"
