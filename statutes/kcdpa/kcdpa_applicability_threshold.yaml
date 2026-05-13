@@ -1,0 +1,27 @@
+id: "kcdpa.applicability.threshold"
+statute: "KCDPA"
+section: "Ky. Rev. Stat. § 367.3611"
+title: "Applicability Threshold"
+effective_date: "2026-01-01"
+supersedes: []
+amended_by: []
+requirement_type: threshold
+obligation_bearer: controller
+trigger: "Person conducting business in Kentucky or producing products/services targeted to Kentucky residents"
+requirement: >
+  Applies to persons conducting business in Kentucky or targeting KY residents AND during a calendar year:
+  (a) control/process PD of at least 100,000 KY consumers; OR
+  (b) control/process PD of at least 25,000 KY consumers AND derive over 50% of gross revenue from sale of PD.
+  Modeled closely on VCDPA.
+exceptions:
+  - "Standard exemptions"
+contract_signals:
+  - "Kentucky Consumer Data Protection Act"
+  - "KCDPA"
+  - "Kentucky residents"
+  - "Ky. Rev. Stat. § 367.36"
+cross_refs:
+  - "vcdpa.applicability.threshold"
+  - "incdpa.applicability.threshold"
+source_url: "https://apps.legislature.ky.gov/record/24rs/hb15.html"
+git_hash: ""
