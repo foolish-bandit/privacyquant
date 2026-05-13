@@ -1,0 +1,34 @@
+id: "ctdpa.rights.deletion"
+statute: "CTDPA"
+section: "Conn. Gen. Stat. § 42-518(a)(3)"
+title: "Right to Deletion"
+effective_date: "2023-07-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Consumer submits an authenticated request to delete personal data provided by or obtained about the consumer"
+requirement: >
+  Controller must delete PD provided by or obtained about the consumer. Response deadline:
+  45 days (extendable once by 45 days with notice). Controller must also direct processors
+  to delete the PD.
+exceptions:
+  - "Processing necessary to complete a transaction or perform a contract"
+  - "Processing necessary to detect or protect against security incidents"
+  - "Processing necessary to comply with a legal obligation"
+  - "Processing necessary to exercise or defend legal claims"
+  - "Processing necessary for certain public interest research or public health activities"
+contract_signals:
+  - "right to erasure"
+  - "right to deletion"
+  - "delete personal data"
+  - "data deletion request"
+  - "erase personal data"
+  - "right to be forgotten"
+cross_refs:
+  - "ccpa.rights.deletion"
+  - "vcdpa.rights.deletion"
+  - "cpa.rights.deletion"
+  - "modpa.rights.deletion"
+source_url: "https://www.cga.ct.gov/2022/ACT/PA/PDF/2022PA-00015-R00SB-00006-PA.PDF"
+git_hash: ""
