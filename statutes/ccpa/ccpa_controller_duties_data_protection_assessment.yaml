@@ -38,6 +38,10 @@ contract_signals:
   - "risk assessment"
   - "significant risk"
   - "senior executive attestation"
+nist_controls:
+  - "RA-3"
+  - "RA-8"
+  - "PT-5"
 cross_refs:
   - "ccpa.controller_duties.admt_opt_out"
   - "ccpa.controller_duties.cybersecurity_audit"
