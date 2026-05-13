@@ -1,0 +1,29 @@
+id: "vcdpa.rights.opt_out_sale"
+statute: "VCDPA"
+section: "Va. Code § 59.1-577(A)(5)"
+title: "Right to Opt Out of Sale, Targeted Advertising, and Profiling"
+effective_date: "2023-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller sells personal data, processes for targeted advertising, or profiles consumers for legal or similarly significant decisions"
+requirement: >
+  Consumers have the right to opt out of: (1) sale of PD (defined narrowly — monetary consideration
+  only; Virginia does not cover non-monetary valuable consideration as a 'sale'); (2) processing for
+  targeted advertising; (3) profiling that produces a legal or similarly significant effect.
+  No requirement to recognize universal opt-out mechanism signals (e.g., GPC) — Virginia is the
+  notable outlier. Controller must provide a clear and conspicuous mechanism to exercise opt-out.
+exceptions: []
+contract_signals:
+  - "opt-out of sale"
+  - "opt out of targeted advertising"
+  - "opt out of profiling"
+  - "right to opt out"
+  - "sale of personal data"
+cross_refs:
+  - "ccpa.rights.opt_out_sale_sharing"
+  - "cpa.rights.opt_out_sale"
+  - "modpa.rights.opt_out_sale"
+source_url: "https://law.lis.virginia.gov/vacode/title59.1/chapter53/section59.1-577/"
+git_hash: ""
