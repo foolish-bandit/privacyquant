@@ -1,0 +1,34 @@
+id: "vcdpa.sensitive_data.consent"
+statute: "VCDPA"
+section: "Va. Code § 59.1-578(B); § 59.1-575 (definitions)"
+title: "Sensitive Data — Opt-In Consent Required"
+effective_date: "2023-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller intends to process sensitive data"
+requirement: >
+  Controller must obtain the consumer's opt-in consent before processing sensitive data.
+  Sensitive data categories include: racial or ethnic origin; religious beliefs;
+  mental or physical health diagnosis; sexual orientation or gender identity;
+  citizenship or immigration status; genetic or biometric data processed for unique identification;
+  PD of a known child; precise geolocation data.
+  Note: unlike California, VCDPA uses opt-in consent — not a 'right to limit.'
+exceptions:
+  - "Processing necessary to provide a requested product or service when the sensitive data is integral to that product or service, with appropriate disclosure"
+contract_signals:
+  - "sensitive data"
+  - "sensitive personal data"
+  - "opt-in consent"
+  - "biometric data"
+  - "precise geolocation"
+  - "health diagnosis"
+  - "racial or ethnic origin"
+  - "consent to process sensitive"
+cross_refs:
+  - "ccpa.sensitive_data.categories"
+  - "cpa.sensitive_data.consent"
+  - "modpa.sensitive_data.ban_on_sale"
+source_url: "https://law.lis.virginia.gov/vacode/title59.1/chapter53/section59.1-578/"
+git_hash: ""
