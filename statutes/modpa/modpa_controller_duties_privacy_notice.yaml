@@ -1,0 +1,31 @@
+id: "modpa.controller_duties.privacy_notice"
+statute: "MODPA"
+section: "Md. Code Com. Law § 14-4604"
+title: "Privacy Notice Requirements"
+effective_date: "2025-10-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller processes personal data of Maryland consumers"
+requirement: >
+  Controller must provide a reasonably accessible, clear, and meaningful privacy notice.
+  MODPA is the strictest state for notice — must include all standard content plus:
+  specific disclosures about the strict data minimization standard; consumer health data
+  handling; the flat prohibition on sale of sensitive data; and the under-18 flat ban on
+  sale and targeted advertising. A privacy program drafted to MODPA + CA exceeds all other
+  state notice requirements.
+exceptions: []
+contract_signals:
+  - "privacy notice"
+  - "privacy policy"
+  - "privacy statement"
+  - "data processing disclosure"
+  - "consumer health data"
+cross_refs:
+  - "ccpa.controller_duties.privacy_notice"
+  - "vcdpa.controller_duties.privacy_notice"
+  - "modpa.data_minimization.strict_standard"
+  - "modpa.sensitive_data.ban_on_sale"
+source_url: "https://mgaleg.maryland.gov/2024RS/Chapters_noln/CH_182_sb0541e.pdf"
+git_hash: ""
