@@ -21,4 +21,4 @@ cross_refs:
   - "dpdpa.enforcement.parameters"
   - "nhdpa.enforcement.parameters"
 source_url: "https://webserver.rilegislature.gov/BillText/BillText24/HouseText24/H7787A.pdf"
-git_hash: ""
+git_hash: "b5cef5e10e8f90efefb04306aad49942e0e69e32"

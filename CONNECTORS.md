@@ -65,8 +65,11 @@ Covers HIPAA, CCPA, SOX, GLBA, FERPA, COPPA, FISMA, FTC HBNR, and more.
 **Why it pairs with PrivacyQuant:** PrivacyQuant covers state comprehensive privacy
 laws. US-law-mcp covers the federal sectoral overlay — HIPAA, GLBA, COPPA, FTC Act
 § 5, Health Breach Notification Rule — that modify or preempt state obligations in
-specific contexts. The `references/federal-overlays.md` file documents these
-interactions; US-law-mcp lets you query the underlying federal text directly.
+specific contexts. [`references/federal-overlays.md`](references/federal-overlays.md)
+documents these interactions in detail (HIPAA entity-level vs. data-level exemptions
+by state, GLBA preemption boundaries, COPPA teen-data interaction, FERPA and FCRA
+overlap analysis); US-law-mcp lets you query the underlying federal text directly to
+verify specific preemption language.
 
 **Install:**
 

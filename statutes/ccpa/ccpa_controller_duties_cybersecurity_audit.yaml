@@ -41,4 +41,4 @@ cross_refs:
   - "ccpa.controller_duties.data_protection_assessment"
   - "ccpa.enforcement.parameters"
 source_url: "https://cppa.ca.gov/regulations/ccpa_updates.html"
-git_hash: ""
+git_hash: "1e858e73c6a010cd73914de4e9b6c7fb4d476201"

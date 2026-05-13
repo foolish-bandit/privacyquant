@@ -38,4 +38,4 @@ cross_refs:
   - "modpa.minors.flat_ban"
   - "ccpa.sensitive_data.categories"
 source_url: "https://olis.oregonlegislature.gov/liz/2025R1/Measures/Overview/HB2008"
-git_hash: ""
+git_hash: "57f33121e60c522992e0a3940018bf62949b3d65"

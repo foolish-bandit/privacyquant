@@ -54,4 +54,4 @@ cross_refs:
   - "cpa.controller_duties.data_protection_assessment"
   - "mcdpa_mn.rights.question_profiling"
 source_url: "https://cppa.ca.gov/regulations/ccpa_updates.html"
-git_hash: ""
+git_hash: "644033dc0de3f033abc1df4d1481f162d8c335de"

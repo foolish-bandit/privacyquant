@@ -38,4 +38,4 @@ cross_refs:
   - "mcdpa_mn.rights.question_profiling"
   - "ctdpa.rights.opt_out_sale"
 source_url: "https://www.cga.ct.gov/"
-git_hash: ""
+git_hash: "eeb7e6dd85848af515c67797bd9978d5c5c05d7c"
