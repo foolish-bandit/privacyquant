@@ -16,7 +16,7 @@ statutes/          ← 93 YAML nodes across 20 state privacy laws
   ... (17 more statutes)
 
 mcp-server/        ← TypeScript MCP server
-  src/index.ts     ← server entry point (3 tools)
+  src/index.ts     ← server entry point
   src/loader.ts    ← reads YAML nodes at startup
   src/search.ts    ← keyword matching against contract_signals
   src/types.ts     ← TypeScript interfaces
@@ -25,6 +25,7 @@ scripts/
   generate_nodes.py  ← regenerates all YAML from source data
 
 .mcp.json          ← Claude Code plugin config
+CONNECTORS.md      ← recommended companion MCP connectors
 ```
 
 ## Tools
@@ -34,6 +35,14 @@ scripts/
 | `pq_fetch_requirement` | Fetch a node by exact ID (e.g. `ccpa.rights.deletion`) |
 | `pq_search_requirements` | Search by keyword or pasted contract clause text |
 | `pq_list_statutes` | List all statutes and browse node IDs |
+
+## Companion connectors
+
+PrivacyQuant works best as a focused statutory knowledge graph, not a full legal-research database. For citation verification and court-record expansion, see [CONNECTORS.md](./CONNECTORS.md).
+
+Recommended pairing:
+
+- **CourtListener MCP** — install alongside PrivacyQuant to verify citations and expand enforcement-action research with case law, PACER/RECAP docket records, citation analysis, alerts, and citation verification.
 
 ## Statutes covered
 
