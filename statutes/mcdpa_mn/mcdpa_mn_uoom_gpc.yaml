@@ -1,0 +1,25 @@
+id: "mcdpa_mn.uoom.gpc"
+statute: "MCDPA-MN"
+section: "Minn. Stat. § 325O"
+title: "Universal Opt-Out Mechanism Required"
+effective_date: "2026-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller sells personal data or processes for targeted advertising"
+requirement: >
+  Controllers must recognize and honor universal opt-out mechanism signals including GPC,
+  effective January 1, 2026.
+exceptions: []
+contract_signals:
+  - "Global Privacy Control"
+  - "GPC"
+  - "universal opt-out"
+  - "UOOM"
+cross_refs:
+  - "cpa.rights.opt_out_sale"
+  - "modpa.uoom.gpc"
+  - "dpdpa.uoom.gpc"
+source_url: "https://www.revisor.mn.gov/laws/2024/0/Session+Law/Chapter/123/"
+git_hash: ""
