@@ -1,0 +1,41 @@
+id: "ocpa.rights.geolocation_minor_amendments_2026"
+statute: "OCPA"
+section: "ORS § 646A.574; OR HB 2008 (2025)"
+title: "2026 Amendments — Precise Geolocation Sale Ban and Minor Data Sale Prohibition"
+effective_date: "2026-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller sells precise geolocation data, OR controller sells personal data of a known consumer under 16"
+requirement: >
+  OR HB 2008 (2025) amended OCPA effective January 1, 2026, adding two flat prohibitions:
+  1. PRECISE GEOLOCATION SALE BAN: Controllers may not sell precise geolocation data
+     relating to an individual's location within a 1,750-foot radius. This is a flat
+     prohibition — no opt-out mechanism available; sale is simply prohibited.
+     Note: OCPA's radius (1,750 feet) is narrower than CCPA's ~1,850 feet threshold.
+  2. MINOR DATA SALE BAN: Controllers may not sell personal data when the controller
+     has actual knowledge, or willfully disregards knowledge, that the consumer is
+     under 16 years of age. This is a flat prohibition, not an opt-in mechanism.
+  Additionally effective January 1, 2026: the 30-day right to cure EXPIRED.
+  OCPA violations are now immediately actionable without a statutory cure period.
+exceptions:
+  - "Geolocation ban applies to sale — internal use of precise geolocation data is not banned by this amendment (but may require opt-out under existing OCPA)"
+  - "Minor data ban triggered by actual knowledge or willful disregard — unknowing processing not covered"
+contract_signals:
+  - "Oregon geolocation"
+  - "precise geolocation sale"
+  - "1,750 feet"
+  - "minor data sale Oregon"
+  - "consumer under 16"
+  - "HB 2008"
+data_categories:
+  - "user.location.precise"
+  - "user.childrens"
+cross_refs:
+  - "ocpa.rights.opt_out_sale"
+  - "modpa.sensitive_data.ban_on_sale"
+  - "modpa.minors.flat_ban"
+  - "ccpa.sensitive_data.categories"
+source_url: "https://olis.oregonlegislature.gov/liz/2025R1/Measures/Overview/HB2008"
+git_hash: ""
