@@ -1,0 +1,33 @@
+id: "vcdpa.applicability.threshold"
+statute: "VCDPA"
+section: "Va. Code § 59.1-576"
+title: "Applicability Threshold"
+effective_date: "2023-01-01"
+supersedes: []
+amended_by: []
+requirement_type: threshold
+obligation_bearer: controller
+trigger: "Person conducting business in Virginia or producing products/services targeted to Virginia residents"
+requirement: >
+  Applies to persons that conduct business in Virginia or produce products or services targeted
+  to Virginia residents AND, during a calendar year, control or process PD of:
+  (a) at least 100,000 consumers; OR
+  (b) at least 25,000 consumers AND derive over 50% of gross revenue from the sale of PD.
+exceptions:
+  - "State agencies"
+  - "Financial institutions covered by GLBA (entity-level exemption)"
+  - "Covered entities and business associates under HIPAA (entity-level)"
+  - "Non-profits"
+  - "Institutions of higher education"
+  - "Employees and B2B contacts excluded from 'consumer' definition"
+contract_signals:
+  - "Virginia Consumer Data Protection Act"
+  - "VCDPA"
+  - "Virginia residents"
+  - "Va. Code § 59.1"
+cross_refs:
+  - "ccpa.applicability.threshold"
+  - "cpa.applicability.threshold"
+  - "ctdpa.applicability.threshold"
+source_url: "https://law.lis.virginia.gov/vacode/title59.1/chapter53/section59.1-576/"
+git_hash: ""
