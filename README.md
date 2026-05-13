@@ -39,12 +39,36 @@ scripts/
 
 CCPA/CPRA, VCDPA, CPA, CTDPA, UCPA, TDPSA, OCPA, MCDPA (Montana), ICDPA, INCDPA, TIPA, DPDPA, NJDPA, NHDPA, NDPA, KCDPA, MODPA, MCDPA-MN, RIDTPPA, FDBR
 
-## Using in Claude Code
+## Installing
 
-1. Clone the repo
-2. `cd mcp-server && npm install`
-3. Open the repo root in Claude Code — it picks up `.mcp.json` automatically
-4. Claude now has `pq_fetch_requirement`, `pq_search_requirements`, and `pq_list_statutes`
+### Claude Code (plugin — recommended)
+
+```bash
+/plugin marketplace add foolish-bandit/privacyquant
+/plugin install privacyquant@privacyquant
+```
+
+Then set your API key (required for `pq_check_clause`):
+
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...
+```
+
+### Claude Code (manual MCP)
+
+```bash
+git clone https://github.com/foolish-bandit/privacyquant
+cd privacyquant/mcp-server && npm install
+```
+
+Open the repo root in Claude Code — it reads `.mcp.json` automatically.
+
+### Claude Cowork
+
+Install from the Cowork plugin browser — search for **privacyquant**.
+
+Once installed, Claude has five tools: `pq_fetch_requirement`, `pq_search_requirements`,
+`pq_list_statutes`, `pq_resolve_conflict`, and `pq_check_clause`.
 
 ## Contributing
 
