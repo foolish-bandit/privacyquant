@@ -1,290 +1,233 @@
-import { z } from "zod";
-import { loadIndex } from "./loader.js";
+/**
+ * citation_auditor.ts
+ *
+ * Deterministic citation-discipline auditor for privacy-law work product.
+ * Flags claims that lack citations, unresolved citation placeholders,
+ * suspicious section numbers, and unresolvable PrivacyQuant node references.
+ *
+ * Conservative: flags possible issues without making legal judgments.
+ * Deterministic. No LLM. No live API.
+ */
+
 import type { StatuteIndex } from "./types.js";
 
-type Severity = "ERROR" | "WARNING";
+export type AuditSeverity = "error" | "warning" | "info";
 
-type CitationAuditArgs = {
-  text: string;
-  strict?: boolean;
-  include_passed_claims?: boolean;
-};
-
-type Finding = {
-  severity: Severity;
-  line_number: number;
+export interface CitationFlag {
+  severity: AuditSeverity;
+  type: string;
+  excerpt: string;
   message: string;
-  excerpt: string;
   suggestion?: string;
-};
-
-type PassedClaim = {
-  line_number: number;
-  excerpt: string;
-  citation_types: string[];
-};
-
-type AuditResult = {
-  errors_count: number;
-  warnings_count: number;
-  passed_claims_count: number;
-  publish_ready: boolean;
-  findings: Finding[];
-  passed_claims: PassedClaim[];
-};
-
-type ToolResult = { content: Array<{ type: "text"; text: string }> };
-
-type ToolServer = {
-  registerTool: (
-    name: string,
-    config: Record<string, unknown>,
-    handler: (args: CitationAuditArgs) => Promise<ToolResult>
-  ) => unknown;
-};
-
-type CitationPattern = { pattern: RegExp; label: string };
-
-let cachedIndex: StatuteIndex | null = null;
-
-function getIndex(): StatuteIndex {
-  if (!cachedIndex) cachedIndex = loadIndex();
-  return cachedIndex;
 }
 
-const CITATION_PATTERNS: CitationPattern[] = [
-  { pattern: /Cal\.?\s*Civ\.?\s*Code\s*§+\s*1798\.\d+(?:\.\d+)?(?:\([a-z0-9]+\))*/i, label: "CA Civil Code" },
-  { pattern: /11\s*C\.?C\.?R\.?\s*§+\s*7\d{3}(?:\.\d+)?(?:\([a-z0-9]+\))*/i, label: "CA Privacy Regs" },
-  { pattern: /CCPA\s*Regs?\s*§+\s*7\d{3}(?:\.\d+)?(?:\([a-z0-9]+\))*/i, label: "CCPA Regs" },
-  { pattern: /Colo\.?\s*Rev\.?\s*Stat\.?\s*§+\s*6-1-13\d{2}(?:\([a-z0-9]+\))*/i, label: "CO Privacy Act" },
-  { pattern: /4\s*C\.?C\.?R\.?\s*§+\s*904-3/i, label: "CO Privacy Rules" },
-  { pattern: /Va\.?\s*Code\s*§+\s*59\.1-5\d{2}(?:\([a-z0-9]+\))*/i, label: "VA Privacy Act" },
-  { pattern: /Conn\.?\s*Gen\.?\s*Stat\.?\s*§+\s*42-5\d{2}(?:\([a-z0-9]+\))*/i, label: "CT Privacy Act" },
-  { pattern: /Utah\s*Code\s*§+\s*13-61-\d+(?:\([a-z0-9]+\))*/i, label: "UT Privacy Act" },
-  { pattern: /Tex\.?\s*Bus\.?\s*&\s*Com\.?\s*Code\s*§+\s*541\.\d+(?:\([a-z0-9]+\))*/i, label: "TX Privacy Act" },
-  { pattern: /Or\.?\s*Rev\.?\s*Stat\.?\s*§+\s*646A\.5\d{2}(?:\([a-z0-9]+\))*/i, label: "OR Privacy Act" },
-  { pattern: /Mont\.?\s*Code\s*§+\s*30-14-28\d{2}(?:\([a-z0-9]+\))*/i, label: "MT Privacy Act" },
-  { pattern: /Fla\.?\s*Stat\.?\s*§+\s*501\.7\d{2}(?:\([a-z0-9]+\))*/i, label: "FL FDBR" },
-  { pattern: /Iowa\s*Code\s*§+\s*715D\.\d+(?:\([a-z0-9]+\))*/i, label: "IA Privacy Act" },
-  { pattern: /Ind\.?\s*Code\s*§+\s*24-15(?:-\d+)?(?:\([a-z0-9]+\))*/i, label: "IN Privacy Act" },
-  { pattern: /Tenn\.?\s*Code\s*§+\s*47-18-32\d{2}(?:\([a-z0-9]+\))*/i, label: "TN Privacy Act" },
-  { pattern: /Del\.?\s*Code\s*(?:tit\.?\s*6|Title\s*6),?\s*(?:Ch\.?|Chapter)\s*12D/i, label: "DE Privacy Act" },
-  { pattern: /Del\.?\s*Code\s*(?:tit\.?\s*6|Title\s*6)\s*§+\s*12D-\d+(?:\([a-z0-9]+\))*/i, label: "DE Privacy Act" },
-  { pattern: /N\.?J\.?\s*Stat\.?\s*§+\s*56:8-166\.\d+(?:\([a-z0-9]+\))*/i, label: "NJ Privacy Act" },
-  { pattern: /N\.?H\.?\s*Rev\.?\s*Stat\.?\s*(?:ch\.?|Chapter)\s*507-H/i, label: "NH Privacy Act" },
-  { pattern: /Neb\.?\s*Rev\.?\s*Stat\.?\s*§+\s*87-1\d{3}(?:\([a-z0-9]+\))*/i, label: "NE Privacy Act" },
-  { pattern: /Ky\.?\s*Rev\.?\s*Stat\.?\s*§+\s*367\.36\d{2}(?:\([a-z0-9]+\))*/i, label: "KY Privacy Act" },
-  { pattern: /Md\.?\s*Code\s*Com\.?\s*Law\s*§+\s*14-46\d{2}(?:\([a-z0-9]+\))*/i, label: "MD MODPA" },
-  { pattern: /Minn\.?\s*Stat\.?\s*(?:ch\.?|Chapter)\s*325O/i, label: "MN Privacy Act" },
-  { pattern: /R\.?I\.?\s*Gen\.?\s*Laws\s*§+\s*6-48\.1(?:-\d+)?(?:\([a-z0-9]+\))*/i, label: "RI Privacy Act" },
-  { pattern: /15\s*U\.?S\.?C\.?\s*§+\s*\d+/i, label: "Federal U.S.C." },
-  { pattern: /16\s*C\.?F\.?R\.?\s*(?:Part|§)\s*\d+/i, label: "Federal C.F.R." },
-  { pattern: /740\s*ILCS\s*14/i, label: "BIPA" },
-  { pattern: /Wash\.?\s*Rev\.?\s*Code\s*(?:ch\.?|Chapter)\s*19\.373/i, label: "WA MHMDA" },
-  { pattern: /`[a-z0-9_]+(?:[-_][a-z0-9_]+)?\.[a-z0-9_]+\.[a-z0-9_]+`/i, label: "PrivacyQuant node" },
+export interface CitationAuditResult {
+  flags: CitationFlag[];
+  error_count: number;
+  warning_count: number;
+  info_count: number;
+  passed_claims?: string[];
+  summary: string;
+  disclaimer: string;
+}
+
+// Patterns that indicate a citation is present
+const CITATION_PATTERNS = [
+  /Cal\.\s*Civ\.\s*Code\s*§/i,
+  /§\s*179[0-9]\.\d+/,
+  /11\s*C\.?C\.?R\.?\s*§\s*7\d{3}/,
+  /Colo\.\s*Rev\.\s*Stat\.\s*§/i,
+  /Va\.\s*Code\s*Ann\.\s*§/i,
+  /Conn\.\s*Gen\.\s*Stat\.\s*§/i,
+  /Utah\s*Code\s*Ann\.\s*§/i,
+  /Tex\.\s*Bus\.\s*&\s*Com\.\s*Code/i,
+  /ORS\s*§/i,
+  /Mont\.\s*Code\s*Ann\.\s*§/i,
+  /Iowa\s*Code\s*§/i,
+  /Fla\.\s*Stat\.\s*§/i,
+  /Md\.\s*Code\s*Ann\./i,
+  /N\.J\.\s*Stat\.\s*Ann\.\s*§/i,
+  /N\.H\.\s*Rev\.\s*Stat\.\s*§/i,
+  /Del\.\s*Code\s*Ann\./i,
+  /Minn\.\s*Stat\.\s*§/i,
+  /Ky\.\s*Rev\.\s*Stat\.\s*§/i,
+  /Ind\.\s*Code\s*§/i,
+  /R\.I\.\s*Gen\.\s*Laws\s*§/i,
+  /Neb\.\s*Rev\.\s*Stat\.\s*§/i,
+  /Tenn\.\s*Code\s*Ann\.\s*§/i,
+  /740\s*ILCS/,             // BIPA
+  /RCW\s*\d+\.\d+/i,        // Washington
+  /\d+\s*U\.S\.C\.\s*§/,
+  /\d+\s*C\.F\.R\.\s*(pt\.|§)/i,
+  /Pub\.\s*L\.\s*\d+/i,
+  // PrivacyQuant node refs
+  /\b(ccpa|vcdpa|cpa|ctdpa|ucpa|tdpsa|ocpa|mcdpa|icdpa|incdpa|tipa|dpdpa|njdpa|nhdpa|ndpa|kcdpa|modpa|mcdpa_mn|ridtppa|fdbr)\.[a-z_.]+/i,
+  // Academic / secondary
+  /\(\d{4}\)\s*\d+\s+[A-Z]/,
+  /https?:\/\/(cppa\.ca\.gov|oag\.ca\.gov|leg\.colorado\.gov|cga\.ct\.gov)/i,
 ];
 
-const SUBSTANTIVE_MARKERS = /\b(must(?:\s+not)?|shall(?:\s+not)?|is\s+(?:required|prohibited|permitted|obligated|forbidden|deemed)|are\s+(?:required|prohibited|permitted|obligated|forbidden|deemed)|has\s+(?:the|a)\s+right\s+to|have\s+(?:the|a)\s+right\s+to|right\s+to\s+(?:know|access|delete|correct|opt\s*out|opt-out|appeal|portability|limit\s*use|object|restrict)|threshold\s+of|penalt(?:y|ies)\s+(?:of|up\s+to)|civil\s+penalt|cure\s+period|effective\s+date|consumer\s+count|annual\s+(?:gross\s+)?revenue|opt[-\s]?in\s+consent|opt[-\s]?out\s+(?:right|mechanism|signal)|sensitive\s+(?:data|personal\s+information)|sale\s+of\s+(?:personal\s+information|personal\s+data|sensitive\s+data)|sharing\s+of\s+(?:personal\s+information|personal\s+data)|targeted\s+advertising|cross[-\s]?context\s+behavioral\s+advertising|controller\s+(?:must|shall|is\s+required)|processor\s+(?:must|shall|is\s+required)|service\s+provider\s+(?:must|shall|is\s+required)|business\s+(?:must|shall|is\s+required))\b/i;
+// Phrases that indicate a substantive legal claim was made
+const LEGAL_CLAIM_PATTERNS = [
+  /\brequires?\b.{0,40}(business|controller|processor|company)/i,
+  /\bmust\b.{0,40}(provide|notify|delete|disclose|respond|honor)/i,
+  /\bprohibits?\b/i,
+  /\bpenalt(y|ies)\b/i,
+  /\bviolat(es?|ion)\b/i,
+  /\b(right to|opt[- ]out|opt[- ]in)\b/i,
+  /\bdeadline\b/i,
+  /\bdays? (to|of)\b/i,
+  /\bexempt(ion)?\b/i,
+  /\bcure period\b/i,
+  /\bsensitive (data|PI|personal information)\b/i,
+  /\bapplicab(le|ility)\b/i,
+];
 
-const EXCLUDED_LINE_START = /^(\s*```|\s*\|\s*|\s*#+\s*$)/;
+// Unresolved placeholder patterns
+const PLACEHOLDER_PATTERNS = [
+  /\[citation needed\]/i,
+  /\[cite needed\]/i,
+  /\[verify\]/i,
+  /\[citation\]/i,
+  /\[source\]/i,
+  /\[ref\]/i,
+  /TODO.*citation/i,
+  /FIXME.*citation/i,
+];
 
-function splitSentences(text: string): Array<{ line: number; sentence: string }> {
-  const sentences: Array<{ line: number; sentence: string }> = [];
-  const abbreviations = ["Cal", "Va", "Colo", "Conn", "Tex", "Or", "Mont", "Fla", "Ind", "Tenn", "Del", "Md", "Minn", "Neb", "Ky", "Wash", "Ill", "U.S", "U.S.C", "C.F.R", "Civ", "Stat", "Rev", "Code", "Bus", "Com", "Prof", "Penal", "Gen", "tit", "Ch", "ch", "Inc", "Ltd", "Co", "Jan", "Feb", "Mar", "Apr", "Jun", "Jul", "Aug", "Sep", "Sept", "Oct", "Nov", "Dec", "e.g", "i.e", "v"];
-  const sentinel = "__DOT__";
-
-  text.split(/\r?\n/).forEach((lineText, index) => {
-    if (EXCLUDED_LINE_START.test(lineText)) return;
-    let masked = lineText;
-    for (const abbreviation of abbreviations) {
-      masked = masked.replace(new RegExp(`\\b${abbreviation.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\.`, "g"), `${abbreviation}${sentinel}`);
-    }
-    for (const part of masked.split(/(?<=[.!?])\s+(?=[A-Z(])/g)) {
-      const sentence = part.replaceAll(sentinel, ".").trim();
-      if (sentence) sentences.push({ line: index + 1, sentence });
-    }
-  });
-
-  return sentences;
+// Suspicious CCPA section ranges (valid: 1798.100–1798.199, 1798.199.10–1798.199.100)
+function isSuspiciousCCPASection(section: string): boolean {
+  const match = section.match(/179[0-9]\.(\d+)/);
+  if (!match) return false;
+  const sub = parseInt(match[1]);
+  // Valid range: .100–.199 and .199.xx
+  return sub > 0 && sub < 100;
 }
 
-function citationTypes(sentence: string): string[] {
-  const found = new Set<string>();
-  for (const { pattern, label } of CITATION_PATTERNS) {
-    if (pattern.test(sentence)) found.add(label);
-  }
-  return [...found];
+// Extract sentences (rough split)
+function getSentences(text: string): string[] {
+  return text
+    .split(/(?<=[.!?])\s+/)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 20);
 }
 
-function isSubstantive(sentence: string): boolean {
-  return SUBSTANTIVE_MARKERS.test(sentence);
+function hasCitation(sentence: string): boolean {
+  return CITATION_PATTERNS.some((p) => p.test(sentence));
 }
 
-function ccpaSectionWarning(sentence: string): string | null {
-  const match = /Cal\.?\s*Civ\.?\s*Code\s*§+\s*(\d+\.\d+)/i.exec(sentence);
-  if (!match) return null;
-  const section = Number(match[1]);
-  if (!Number.isFinite(section)) return null;
-  if (section < 1798.1 || section > 1798.199) {
-    return `California Civil Code citation ${match[0]} appears outside the common CCPA/CPRA codified range. Verify the section number.`;
-  }
-  return null;
+function hasLegalClaim(sentence: string): boolean {
+  return LEGAL_CLAIM_PATTERNS.some((p) => p.test(sentence));
 }
 
-function nodeReferenceWarnings(text: string, index: StatuteIndex): Finding[] {
-  const findings: Finding[] = [];
-  const regex = /`([a-z0-9_]+(?:[-_][a-z0-9_]+)?\.[a-z0-9_]+\.[a-z0-9_]+)`/gi;
-  text.split(/\r?\n/).forEach((line, idx) => {
-    for (const match of line.matchAll(regex)) {
-      const nodeId = match[1];
-      if (!index.byId.has(nodeId)) {
-        findings.push({
-          severity: "WARNING",
-          line_number: idx + 1,
-          message: `PrivacyQuant node reference not found: ${nodeId}`,
-          excerpt: line.slice(0, 240),
-          suggestion: "Use pq_search_requirements or pq_list_statutes to verify the node ID.",
-        });
-      }
-    }
-  });
-  return findings;
-}
+export function auditCitations(
+  text: string,
+  index: StatuteIndex,
+  strict = false,
+  includePassed = false
+): CitationAuditResult {
+  const flags: CitationFlag[] = [];
+  const passed: string[] = [];
 
-function auditText(text: string, includePassedClaims = false): AuditResult {
-  const index = getIndex();
-  const findings: Finding[] = [];
-  const passed_claims: PassedClaim[] = [];
-
-  for (const { line, sentence } of splitSentences(text)) {
-    if (!isSubstantive(sentence)) continue;
-    const types = citationTypes(sentence);
-    if (types.length === 0) {
-      findings.push({
-        severity: "ERROR",
-        line_number: line,
-        message: "Substantive privacy-law claim lacks an inline citation.",
-        excerpt: sentence.slice(0, 240),
-        suggestion: "Add a citation to the controlling statute, regulation, enforcement source, or PrivacyQuant node in the same sentence.",
+  // 1. Unresolved placeholders
+  for (const pattern of PLACEHOLDER_PATTERNS) {
+    const match = text.match(pattern);
+    if (match) {
+      flags.push({
+        severity: "error",
+        type: "unresolved_placeholder",
+        excerpt: match[0],
+        message: `Unresolved citation placeholder found: "${match[0]}"`,
+        suggestion: "Replace with a specific statutory citation or PrivacyQuant node ID.",
       });
+    }
+  }
+
+  // 2. Suspicious CCPA section numbers
+  const ccpaSectionMatches = text.matchAll(/§\s*(179[0-9]\.\d+)/g);
+  for (const m of ccpaSectionMatches) {
+    if (isSuspiciousCCPASection(m[1])) {
+      flags.push({
+        severity: "warning",
+        type: "suspicious_ccpa_section",
+        excerpt: `§ ${m[1]}`,
+        message: `Section § ${m[1]} is outside the CCPA/CPRA codified range (§§ 1798.100–1798.199).`,
+        suggestion:
+          "Verify this section exists. CCPA sections are §§ 1798.100–1798.199 and 1798.199.10+.",
+      });
+    }
+  }
+
+  // 3. Standalone "CPRA" without "CCPA/CPRA" or qualifying context
+  const cpraAlone = text.match(/(?<!\bCCPA\/)\bCPRA\b(?![\s\/]CPRA)/g);
+  if (cpraAlone && cpraAlone.length > 2) {
+    flags.push({
+      severity: "info",
+      type: "standalone_cpra",
+      excerpt: "CPRA",
+      message:
+        'Multiple standalone references to "CPRA" detected. Prefer "CCPA/CPRA" to avoid ambiguity about which version of the statute applies.',
+      suggestion: 'Use "CCPA/CPRA" or cite the specific Cal. Civ. Code section.',
+    });
+  }
+
+  // 4. Per-sentence: legal claim without citation
+  const sentences = getSentences(text);
+  for (const sentence of sentences) {
+    if (!hasLegalClaim(sentence)) {
+      if (includePassed) passed.push(sentence.slice(0, 80));
       continue;
     }
-
-    const warning = ccpaSectionWarning(sentence);
-    if (warning) {
-      findings.push({ severity: "WARNING", line_number: line, message: warning, excerpt: sentence.slice(0, 240) });
+    if (hasCitation(sentence)) {
+      if (includePassed) passed.push(`[cited] ${sentence.slice(0, 80)}`);
+      continue;
     }
+    // Strict: error for missing citation on legal claim
+    // Normal: warning
+    flags.push({
+      severity: strict ? "error" : "warning",
+      type: "uncited_legal_claim",
+      excerpt: sentence.slice(0, 120) + (sentence.length > 120 ? "…" : ""),
+      message: "Substantive legal claim without an inline citation.",
+      suggestion:
+        "Add a PrivacyQuant node ID (e.g., ccpa.rights.deletion) or a statutory code citation.",
+    });
+  }
 
-    if (includePassedClaims) {
-      passed_claims.push({ line_number: line, excerpt: sentence.slice(0, 240), citation_types: types });
+  // 5. PrivacyQuant node refs: validate they resolve
+  const nodeRefPattern =
+    /\b(ccpa|vcdpa|cpa|ctdpa|ucpa|tdpsa|ocpa|mcdpa|icdpa|incdpa|tipa|dpdpa|njdpa|nhdpa|ndpa|kcdpa|modpa|mcdpa_mn|ridtppa|fdbr)\.[a-z_.]+/gi;
+  const nodeRefs = [...text.matchAll(nodeRefPattern)].map((m) => m[0].toLowerCase());
+  for (const ref of new Set(nodeRefs)) {
+    if (!index.byId.has(ref)) {
+      flags.push({
+        severity: "warning",
+        type: "unresolvable_node_ref",
+        excerpt: ref,
+        message: `PrivacyQuant node reference "${ref}" does not resolve to a known node.`,
+        suggestion: "Use pq_list_statutes or pq_search_requirements to find the correct node ID.",
+      });
     }
   }
 
-  text.split(/\r?\n/).forEach((line, idx) => {
-    if (/\[citation needed/i.test(line) || /\[cite needed/i.test(line)) {
-      findings.push({
-        severity: "ERROR",
-        line_number: idx + 1,
-        message: "Unresolved citation-needed marker.",
-        excerpt: line.slice(0, 240),
-        suggestion: "Resolve the citation or remove the unsupported claim before publication.",
-      });
-    }
-    if (/\bCPRA\b/.test(line) && !/as amended by CPRA|CCPA\/CPRA|\(CPRA\)/.test(line)) {
-      findings.push({
-        severity: "WARNING",
-        line_number: idx + 1,
-        message: "Potential CCPA/CPRA naming inconsistency.",
-        excerpt: line.slice(0, 240),
-        suggestion: "Prefer citing the codified Cal. Civ. Code section; refer to CPRA as an amendment unless context requires otherwise.",
-      });
-    }
-  });
+  const errors = flags.filter((f) => f.severity === "error").length;
+  const warnings = flags.filter((f) => f.severity === "warning").length;
+  const infos = flags.filter((f) => f.severity === "info").length;
 
-  findings.push(...nodeReferenceWarnings(text, index));
-
-  const errors = findings.filter((finding) => finding.severity === "ERROR").length;
-  const warnings = findings.filter((finding) => finding.severity === "WARNING").length;
+  const summary =
+    flags.length === 0
+      ? "No citation issues found."
+      : `Found ${errors} error(s), ${warnings} warning(s), ${infos} info item(s).`;
 
   return {
-    errors_count: errors,
-    warnings_count: warnings,
-    passed_claims_count: passed_claims.length,
-    publish_ready: errors === 0,
-    findings,
-    passed_claims,
+    flags,
+    error_count: errors,
+    warning_count: warnings,
+    info_count: infos,
+    passed_claims: includePassed ? passed : undefined,
+    summary,
+    disclaimer:
+      "Citation audit flags possible issues but does not verify that cited authority " +
+      "actually supports the claim. Always verify citations against source material.",
   };
-}
-
-function renderAudit(result: AuditResult, strict = false): string {
-  const lines: string[] = [
-    "# Citation Audit",
-    "",
-    `**Errors**: ${result.errors_count}`,
-    `**Warnings**: ${result.warnings_count}`,
-    `**Passed cited claims shown**: ${result.passed_claims_count}`,
-    `**Publish ready**: ${result.publish_ready && (!strict || result.warnings_count === 0) ? "yes" : "no"}`,
-    "",
-  ];
-
-  if (result.findings.length === 0) {
-    lines.push("No citation-discipline issues found by the deterministic auditor.");
-  } else {
-    lines.push("## Findings");
-    for (const finding of result.findings) {
-      const marker = finding.severity === "ERROR" ? "ERROR" : "WARNING";
-      lines.push(`### ${marker} — line ${finding.line_number}`);
-      lines.push(finding.message);
-      if (finding.excerpt) lines.push(`> ${finding.excerpt}`);
-      if (finding.suggestion) lines.push(`Suggestion: ${finding.suggestion}`);
-      lines.push("");
-    }
-  }
-
-  if (result.passed_claims.length > 0) {
-    lines.push("## Passed Cited Claims");
-    for (const claim of result.passed_claims) {
-      lines.push(`- Line ${claim.line_number}: ${claim.citation_types.join(", ")} — ${claim.excerpt}`);
-    }
-  }
-
-  lines.push(
-    "",
-    "## Notes",
-    "- This tool is deterministic and conservative. It catches citation-discipline issues; it does not prove the cited authority supports the sentence.",
-    "- Run this on client-facing memos, articles, draft guidance, and legal analysis before publication.",
-    "- Use CourtListener MCP or primary statutory sources to verify disputed citations."
-  );
-
-  return lines.join("\n");
-}
-
-export function registerCitationAuditorTool(server: ToolServer): void {
-  server.registerTool(
-    "pq_audit_citations",
-    {
-      title: "Audit Privacy-Law Citations",
-      description: `Audit privacy-law work product for citation discipline.
-
-This deterministic tool is migrated from the old US State Privacy Navigator citation auditor.
-It flags substantive privacy-law claims that lack inline citations, unresolved citation-needed
-markers, suspicious CCPA/CPRA naming, questionable California Civil Code ranges, and missing
-PrivacyQuant node references.`,
-      inputSchema: {
-        text: z.string().min(20).max(50000).describe("Markdown or plain text to audit."),
-        strict: z.boolean().default(false).describe("Treat warnings as blocking publication in the summary."),
-        include_passed_claims: z.boolean().default(false).describe("Include cited substantive claims that passed the inline-citation check."),
-      },
-      annotations: {
-        readOnlyHint: true,
-        destructiveHint: false,
-        idempotentHint: true,
-        openWorldHint: false,
-      },
-    },
-    async (args) => {
-      const result = auditText(args.text, args.include_passed_claims ?? false);
-      return { content: [{ type: "text", text: renderAudit(result, args.strict ?? false) }] };
-    }
-  );
 }
