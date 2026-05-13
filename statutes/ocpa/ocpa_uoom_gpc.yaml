@@ -1,0 +1,26 @@
+id: "ocpa.uoom.gpc"
+statute: "OCPA"
+section: "ORS § 646A.574(1)(e)"
+title: "Universal Opt-Out Mechanism Required"
+effective_date: "2026-01-01"
+supersedes: []
+amended_by: []
+requirement_type: hard
+obligation_bearer: controller
+trigger: "Controller sells personal data or processes for targeted advertising"
+requirement: >
+  Effective January 1, 2026, controllers must recognize and honor universal opt-out mechanism
+  signals including Global Privacy Control (GPC). Cure period sunset January 1, 2026.
+exceptions: []
+contract_signals:
+  - "Global Privacy Control"
+  - "GPC"
+  - "universal opt-out"
+  - "UOOM"
+  - "opt-out preference signal"
+cross_refs:
+  - "cpa.rights.opt_out_sale"
+  - "ctdpa.uoom.gpc"
+  - "modpa.uoom.gpc"
+source_url: "https://www.oregonlegislature.gov/bills_laws/ors/ors646A.html"
+git_hash: ""
