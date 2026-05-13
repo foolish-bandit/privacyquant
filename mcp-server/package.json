@@ -10,7 +10,7 @@
     "dev": "tsx src/index.ts"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.95.2",
+    "@anthropic-ai/sdk": "~0.95.2",
     "@modelcontextprotocol/sdk": "^1.10.0",
     "js-yaml": "^4.1.0",
     "zod": "^3.23.0"

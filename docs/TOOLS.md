@@ -23,7 +23,8 @@ Use when you have a specific node ID from search results or a citation, and need
 
 ### `pq_search_requirements`
 
-Search the statutory graph by keyword or contract clause text.
+Search the statutory graph by keyword or contract clause text. Supports date-range and
+obligation-bearer filters for targeted compliance research.
 
 | Parameter | Type | Required | Description |
 |---|---|---|---|
@@ -32,6 +33,12 @@ Search the statutory graph by keyword or contract clause text.
 | `statute` | string | No | Filter to specific statute, e.g. `CCPA`, `MODPA` |
 | `requirement_type` | enum | No | `hard`, `threshold`, or `soft` |
 | `limit` | integer | No | Max results (default 5, max 20) |
+| `effective_after` | string | No | ISO date (YYYY-MM-DD). Only return nodes effective on or after this date. Use to find future requirements, e.g. CT AI training disclosure effective Aug 1, 2026. |
+| `effective_before` | string | No | ISO date (YYYY-MM-DD). Only return nodes effective on or before this date. Use for point-in-time compliance analysis. |
+| `bearer` | enum | No | `business`, `service_provider`, `third_party`, `processor`, `controller`, or `all`. Filters by obligation bearer. |
+
+All filters (`requirement_type`, `effective_after`, `effective_before`, `bearer`) are applied
+post-search, after the hybrid BM25 + keyword merge, before slicing to the result limit.
 
 When `clause_text` is provided, the tool runs the existing contract-signal extraction pipeline
 and merges extracted signals with the `query`. The user does not need to identify keywords manually.

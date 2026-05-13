@@ -143,3 +143,26 @@ export function resolveConflictWithNodes(
       "This is not legal advice.",
   };
 }
+
+export function formatResult(result: NodeAwareConflictResult): string {
+  const lines = [
+    `# Conflict Resolution with Node Evidence`,
+    `**Statutes**: ${result.statutes.join(", ")}`,
+    ``,
+  ];
+  for (const dim of result.enriched) {
+    lines.push(`## ${dim.dimension}`);
+    lines.push(`**Binding rule**: ${dim.binding_rule}`);
+    lines.push(`**Controlling statute**: ${dim.controlling_statute}`);
+    lines.push(`**Implementation baseline**: ${dim.implementation_baseline}`);
+    if (dim.node_evidence.length) {
+      lines.push(`**Supporting nodes**:`);
+      for (const ev of dim.node_evidence) {
+        lines.push(`- \`${ev.node_id}\` (${ev.statute} ${ev.section}): ${ev.requirement_excerpt}`);
+      }
+    }
+    lines.push("");
+  }
+  lines.push(`_${result.disclaimer}_`);
+  return lines.join("\n");
+}

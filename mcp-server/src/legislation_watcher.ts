@@ -206,3 +206,36 @@ export async function watchLegislation(
       "This tool does not automatically update PrivacyQuant YAML nodes.",
   };
 }
+
+export function formatResult(result: LegislationWatchResult): string {
+  const lines = [
+    `# Legislative Watch`,
+    `**States searched**: ${result.states_searched.join(", ")}`,
+    `**Keywords**: ${result.keywords_used.join(", ")}`,
+    `**Status**: ${result.api_status}${result.error_message ? ` — ${result.error_message}` : ""}`,
+    `**Bills found**: ${result.total_bills_found}`,
+    ``,
+  ];
+  if (result.api_status === "no_key") {
+    lines.push(result.error_message ?? "API key required.");
+  } else {
+    for (const [state, leads] of Object.entries(result.results_by_state)) {
+      lines.push(`## ${state}`);
+      for (const lead of leads) {
+        lines.push(`### ${lead.identifier}: ${lead.title}`);
+        lines.push(`**Latest action**: ${lead.latest_action} (${lead.latest_action_date})`);
+        lines.push(`**Status**: ${lead.status}`);
+        if (lead.sources.length) lines.push(`**Source**: ${lead.sources[0].url}`);
+        lines.push(`**Open States**: ${lead.openstates_url}`);
+        lines.push(`_${lead.verify_marker}_`);
+        lines.push("");
+      }
+    }
+    if (result.total_bills_found === 0) lines.push("No active bills found matching the search criteria.");
+    lines.push(`## Review Workflow`);
+    result.review_workflow.forEach((s) => lines.push(s));
+    lines.push("");
+  }
+  lines.push(`_${result.disclaimer}_`);
+  return lines.join("\n");
+}
