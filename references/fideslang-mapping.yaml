@@ -1,0 +1,295 @@
+# PrivacyQuant × Fideslang / IAB Tech Lab Privacy Taxonomy Cross-Reference
+#
+# Maps IAB Tech Lab Fideslang data category keys (CC-BY 4.0)
+# to PrivacyQuant statutory node IDs that govern processing of that category.
+#
+# Fideslang source: https://github.com/IABTechLab/fideslang (CC-BY 4.0)
+# Maintained at: IABTechLab/fideslang (canonical); ethyca/fideslang (contributing fork)
+#
+# Usage:
+#   - For any system that labels data with Fideslang keys, use this map to identify
+#     which statutory nodes apply to that data across PrivacyQuant's covered statutes.
+#   - When building a data inventory or DPA, cross-reference both the Fideslang key
+#     and the mapped node IDs to surface the applicable obligations.
+#
+# Schema:
+#   fideslang_key: IAB/Fideslang dot-notation taxonomy key
+#   label: Human-readable description from the Fideslang taxonomy
+#   is_sensitive: true if this category is treated as sensitive data under ≥1 state law
+#   governing_nodes: PrivacyQuant node IDs that impose requirements on this data category
+#   notes: State-specific nuances about how this category is treated
+
+schema_version: "1.0"
+last_updated: "2026-05-13"
+fideslang_version: "3.1.3"
+source_license: "CC-BY 4.0"
+
+mappings:
+
+  # ── Biometric ──────────────────────────────────────────────────────────────
+  - fideslang_key: "user.biometric"
+    label: "Encoded characteristics provided by a user (biometric)"
+    is_sensitive: true
+    governing_nodes:
+      - "ccpa.sensitive_data.categories"
+      - "vcdpa.rights.opt_out_sale"
+      - "cpa.rights.opt_out_sale"
+      - "ctdpa.rights.opt_out_sale"
+      - "tdpsa.rights.opt_out_sale"
+      - "ocpa.rights.opt_out_sale"
+      - "modpa.sensitive_data.ban_on_sale"
+      - "njdpa.applicability.threshold"
+      - "mcdpa_mn.applicability.threshold"
+    notes: >
+      Texas has the Capture or Use of Biometric Identifier (CUBI) Act as a separate statute
+      (Tex. Bus. & Com. Code Ch. 503) with per-capture violations — not just TDPSA.
+      IL has BIPA (740 ILCS 14/) — outside PrivacyQuant scope but frequently co-implicated.
+      MD flat bans sale of biometric data (MODPA § 14-4607(b)(1)).
+
+  - fideslang_key: "user.biometric.fingerprint"
+    label: "Fingerprint encoded data"
+    is_sensitive: true
+    governing_nodes:
+      - "ccpa.sensitive_data.categories"
+      - "modpa.sensitive_data.ban_on_sale"
+    notes: "See user.biometric for full state coverage."
+
+  - fideslang_key: "user.biometric.voice"
+    label: "Voice encoded data"
+    is_sensitive: true
+    governing_nodes:
+      - "ccpa.sensitive_data.categories"
+      - "tdpsa.rights.opt_out_sale"
+    notes: "TX CUBI specifically covers voiceprints."
+
+  # ── Health and Medical ─────────────────────────────────────────────────────
+  - fideslang_key: "user.health_and_medical"
+    label: "Health records or individual's personal medical information"
+    is_sensitive: true
+    governing_nodes:
+      - "ccpa.sensitive_data.categories"
+      - "vcdpa.rights.opt_out_sale"
+      - "cpa.rights.opt_out_sale"
+      - "ctdpa.rights.opt_out_sale"
+      - "tdpsa.rights.opt_out_sale"
+      - "ocpa.rights.opt_out_sale"
+      - "modpa.sensitive_data.ban_on_sale"
+      - "mcdpa_mn.applicability.threshold"
+    notes: >
+      WA My Health Data Act (MHMDA) covers consumer health data separately from CCPA scope.
+      FTC HBNR (Health Breach Notification Rule) co-implicated for health apps.
+      MD flat bans sale of health data under MODPA § 14-4607(b)(1).
+
+  - fideslang_key: "user.health_and_medical.genetic"
+    label: "Data about the genetic makeup provided by the subject"
+    is_sensitive: true
+    governing_nodes:
+      - "ccpa.sensitive_data.categories"
+      - "modpa.sensitive_data.ban_on_sale"
+    notes: "Genetic data is sensitive under all covered state laws. MODPA flat ban on sale applies."
+
+  # ── Precise Geolocation ───────────────────────────────────────────────────
+  - fideslang_key: "user.location.precise"
+    label: "Precise location derived from sensors (less than 500M)"
+    is_sensitive: true
+    governing_nodes:
+      - "ccpa.sensitive_data.categories"
+      - "vcdpa.rights.opt_out_sale"
+      - "cpa.rights.opt_out_sale"
+      - "ctdpa.rights.opt_out_sale"
+      - "tdpsa.rights.opt_out_sale"
+      - "ocpa.rights.opt_out_sale"
+      - "modpa.sensitive_data.ban_on_sale"
+      - "mcdpa_mn.applicability.threshold"
+    notes: >
+      CCPA/CPRA defines 'precise geolocation' as within 1,850 feet (roughly 500M).
+      TX/OR/MD also treat precise geolocation as sensitive data requiring opt-in.
+      TX TDPSA separately focuses on this in the context of sensitive location inference.
+
+  - fideslang_key: "user.location.imprecise"
+    label: "Imprecise location derived from sensors (more than 500M)"
+    is_sensitive: false
+    governing_nodes:
+      - "ccpa.controller_duties.notice_at_collection"
+    notes: "Generally not treated as sensitive; still subject to notice at collection."
+
+  # ── Financial ─────────────────────────────────────────────────────────────
+  - fideslang_key: "user.financial"
+    label: "Payment data and financial history"
+    is_sensitive: true
+    governing_nodes:
+      - "ccpa.sensitive_data.categories"
+      - "modpa.sensitive_data.ban_on_sale"
+    notes: >
+      CCPA treats account-number-plus-credentials as sensitive; general financial data
+      (purchase history, credit score) is personal information but not always sensitive.
+      GLBA partial preemption applies to financial institutions.
+
+  - fideslang_key: "user.financial.bank_account"
+    label: "Bank account information"
+    is_sensitive: true
+    governing_nodes:
+      - "ccpa.sensitive_data.categories"
+      - "modpa.sensitive_data.ban_on_sale"
+    notes: "Combined with access credentials, this is sensitive PI under CCPA § 1798.140(ae)(1)(B)."
+
+  # ── Government IDs ────────────────────────────────────────────────────────
+  - fideslang_key: "user.government_id"
+    label: "State provided identification data"
+    is_sensitive: true
+    governing_nodes:
+      - "ccpa.sensitive_data.categories"
+      - "modpa.sensitive_data.ban_on_sale"
+    notes: >
+      CCPA § 1798.140(ae)(1)(A) lists SSN, driver's license, state ID, passport,
+      financial account, and medical/health insurance numbers as sensitive PI.
+
+  - fideslang_key: "user.government_id.national_identification_number"
+    label: "State issued personal identification number (SSN)"
+    is_sensitive: true
+    governing_nodes:
+      - "ccpa.sensitive_data.categories"
+      - "modpa.sensitive_data.ban_on_sale"
+    notes: "SSN is per se sensitive under all state laws covering sensitive data."
+
+  # ── Race / Ethnicity ──────────────────────────────────────────────────────
+  - fideslang_key: "user.demographic.race_ethnicity"
+    label: "Race or ethnicity of data subject"
+    is_sensitive: true
+    governing_nodes:
+      - "ccpa.sensitive_data.categories"
+      - "vcdpa.rights.opt_out_sale"
+      - "cpa.rights.opt_out_sale"
+      - "ctdpa.rights.opt_out_sale"
+      - "tdpsa.rights.opt_out_sale"
+      - "ocpa.rights.opt_out_sale"
+      - "modpa.sensitive_data.ban_on_sale"
+    notes: "Opt-in required under VCDPA, CPA, CTDPA, TDPSA, OCPA, MODPA. CCPA opt-out/limit-use."
+
+  # ── Religious Belief ──────────────────────────────────────────────────────
+  - fideslang_key: "user.demographic.religious_belief"
+    label: "Religion or religious beliefs"
+    is_sensitive: true
+    governing_nodes:
+      - "ccpa.sensitive_data.categories"
+      - "vcdpa.rights.opt_out_sale"
+      - "cpa.rights.opt_out_sale"
+      - "modpa.sensitive_data.ban_on_sale"
+    notes: "Universally sensitive across covered state laws."
+
+  # ── Sexual Orientation ────────────────────────────────────────────────────
+  - fideslang_key: "user.demographic.sexual_orientation"
+    label: "Sexual orientation of data subject"
+    is_sensitive: true
+    governing_nodes:
+      - "ccpa.sensitive_data.categories"
+      - "vcdpa.rights.opt_out_sale"
+      - "cpa.rights.opt_out_sale"
+      - "ctdpa.rights.opt_out_sale"
+      - "tdpsa.rights.opt_out_sale"
+      - "ocpa.rights.opt_out_sale"
+      - "modpa.sensitive_data.ban_on_sale"
+    notes: "Universally sensitive; opt-in required under most state laws (CCPA uses limit-use)."
+
+  # ── Immigration ──────────────────────────────────────────────────────────
+  - fideslang_key: "user.government_id.immigration"
+    label: "State issued immigration or residency data"
+    is_sensitive: true
+    governing_nodes:
+      - "vcdpa.rights.opt_out_sale"
+      - "modpa.sensitive_data.ban_on_sale"
+    notes: >
+      VCDPA and MODPA explicitly list citizenship/immigration status as sensitive.
+      CCPA does not explicitly list immigration status but it may qualify under
+      other sensitive categories depending on context.
+
+  # ── Children's Data ───────────────────────────────────────────────────────
+  - fideslang_key: "user.childrens"
+    label: "Data relating to children"
+    is_sensitive: true
+    governing_nodes:
+      - "ccpa.rights.opt_out_sale_sharing"
+      - "modpa.sensitive_data.ban_on_sale"
+      - "modpa.minors.flat_ban"
+      - "tdpsa.rights.opt_out_sale"
+    notes: >
+      CCPA requires opt-in (not opt-out) for consumers under 16 for sale/sharing.
+      MODPA flat ban: sale and targeted advertising prohibited for known consumers under 18.
+      COPPA separately governs collection from under-13 children (federal; not in PrivacyQuant scope).
+      Most state laws have heightened minor protections; see individual statute nodes.
+
+  # ── Political Opinion ─────────────────────────────────────────────────────
+  - fideslang_key: "user.demographic.political_opinion"
+    label: "Political opinion or belief of data subject"
+    is_sensitive: true
+    governing_nodes:
+      - "vcdpa.rights.opt_out_sale"
+      - "cpa.rights.opt_out_sale"
+      - "modpa.sensitive_data.ban_on_sale"
+    notes: >
+      Political beliefs are sensitive under VA/CO/MD but NOT explicitly listed as sensitive
+      under CCPA/CPRA. Check individual state definitions carefully.
+
+  # ── Personal Communications ───────────────────────────────────────────────
+  - fideslang_key: "user.content.private"
+    label: "Private content, not publicly available"
+    is_sensitive: false
+    governing_nodes:
+      - "ccpa.controller_duties.notice_at_collection"
+      - "ccpa.rights.access"
+    notes: >
+      Not per se sensitive under most state laws. Covered under general PI requirements.
+      Content of personal communications may trigger CIPA (Cal. Penal Code § 630 et seq.)
+      in California — separate statute, outside PrivacyQuant scope.
+
+  # ── Browsing / Behavioral ─────────────────────────────────────────────────
+  - fideslang_key: "user.behavior.browsing_history"
+    label: "Content browsing history of a user"
+    is_sensitive: false
+    governing_nodes:
+      - "ccpa.rights.opt_out_sale_sharing"
+      - "ccpa.sale_sharing.distinction"
+    notes: >
+      Browsing history used for cross-context behavioral advertising is subject to opt-out
+      of 'sharing' under CCPA/CPRA (§ 1798.120) even if no monetary consideration.
+      GPC signal must be honored for opt-out of sharing based on browsing data.
+
+  - fideslang_key: "user.behavior.purchase_history"
+    label: "Purchase history of the subject"
+    is_sensitive: false
+    governing_nodes:
+      - "ccpa.rights.opt_out_sale_sharing"
+      - "ccpa.rights.access"
+
+  # ── Device Identifiers ────────────────────────────────────────────────────
+  - fideslang_key: "user.device.ip_address"
+    label: "Unique identifier related to device connection (IP address)"
+    is_sensitive: false
+    governing_nodes:
+      - "ccpa.controller_duties.notice_at_collection"
+      - "ccpa.rights.access"
+      - "ccpa.rights.deletion"
+    notes: >
+      IP address is PI under CCPA if it can identify a consumer or household.
+      Not sensitive per se, but used for precise geolocation inference — which is sensitive.
+
+  - fideslang_key: "user.device.cookie_id"
+    label: "Cookie unique identification number"
+    is_sensitive: false
+    governing_nodes:
+      - "ccpa.controller_duties.notice_at_collection"
+      - "ccpa.rights.opt_out_sale_sharing"
+    notes: "Persistent cookies used for targeted advertising trigger opt-out of sharing obligation."
+
+  # ── Mental Health ─────────────────────────────────────────────────────────
+  - fideslang_key: "user.health_and_medical"
+    label: "Mental health data (subset of health_and_medical)"
+    is_sensitive: true
+    governing_nodes:
+      - "ccpa.sensitive_data.categories"
+      - "vcdpa.rights.opt_out_sale"
+      - "modpa.sensitive_data.ban_on_sale"
+    notes: >
+      Mental health specifically called out in VCDPA, CPA, CTDPA, TDPSA as sensitive.
+      WA MHMDA separately governs consumer health data including mental health data
+      collected by non-HIPAA-covered entities.
